@@ -1,22 +1,6 @@
-# OKFL OS v0.6.3 — Predictive Knowledge Engine
+# OKFL OS v0.6.4 — 2025 NFL Stats Fix
 
-## Added
-- Predictive autocomplete after two characters
-- Fuzzy player, franchise, and manager matching
-- Grouped suggestions
-- Keyboard navigation with arrow keys, Enter, and Escape
-- Smart query suggestions for:
-  - who owned a player
-  - who drafted a player
-  - franchise vs franchise
-  - trades
-  - championships and records
-  - season pages
-  - live NFL weekly fantasy points
-- Hybrid results combining OKFL history and live nflverse data
-- Improved ownership and draft answers
-- Direct search prompts for live NFL queries
+Fixes 2025 weekly fantasy searches by using nflverse's current `stats_player` release path first, with the older `player_stats` path as a fallback for compatibility.
 
 ## Deploy
-Replace the repository contents with this package, commit, and let Vercel deploy.
-Node 22 and npm 10.9.2 remain pinned in package.json.
+Replace the repository files, commit, and redeploy on Vercel.

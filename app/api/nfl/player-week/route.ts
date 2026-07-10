@@ -40,17 +40,30 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const sourceUrl = `https://github.com/nflverse/nflverse-data/releases/download/player_stats/stats_player_week_${season}.csv`;
+  const sourceUrls = [
+    `https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_${season}.csv`,
+    `https://github.com/nflverse/nflverse-data/releases/download/player_stats/stats_player_week_${season}.csv`,
+  ];
 
   try {
-    const response = await fetch(sourceUrl, {
-      headers: { "User-Agent": "OKFL-OS/0.6.3" },
-      next: { revalidate: season < currentYear ? 60 * 60 * 24 * 30 : 60 * 15 },
-    });
+    let response: Response | null = null;
+    let sourceUrl = sourceUrls[0];
 
-    if (!response.ok) {
+    for (const candidate of sourceUrls) {
+      const candidateResponse = await fetch(candidate, {
+        headers: { "User-Agent": "OKFL-OS/0.6.4" },
+        next: { revalidate: season < currentYear ? 60 * 60 * 24 * 30 : 60 * 15 },
+      });
+      if (candidateResponse.ok) {
+        response = candidateResponse;
+        sourceUrl = candidate;
+        break;
+      }
+    }
+
+    if (!response) {
       return NextResponse.json(
-        { error: `NFL weekly data is unavailable for ${season}.`, sourceUrl },
+        { error: `NFL weekly data is unavailable for ${season}.`, sourceUrls },
         { status: 502 },
       );
     }
