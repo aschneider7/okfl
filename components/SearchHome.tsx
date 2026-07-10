@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useData } from "./DataProvider";
 import { Loading } from "./Page";
 
@@ -13,6 +13,58 @@ function franchiseByTerm(data: any, term: string) {
   return data.franchises.find((franchise: any) =>
     normalize(`${franchise.name} ${franchise.display_name} ${franchise.current_manager} ${franchise.original_manager}`).includes(clean),
   );
+}
+
+
+
+type LiveNflResult = {
+  player: string;
+  season: number;
+  week: number;
+  scoring: "ppr" | "half-ppr" | "standard";
+  fantasyPoints: number;
+  team: string | null;
+  opponent: string | null;
+  position: string | null;
+  stats: {
+    passingYards: number; passingTds: number; interceptions: number;
+    rushingYards: number; rushingTds: number; receptions: number;
+    receivingYards: number; receivingTds: number; fumblesLost: number;
+  };
+  source: string;
+  sourceUrl: string;
+};
+
+function parseLiveNflQuery(raw: string) {
+  const patterns = [
+    /^(.+?)\s+(20\d{2})\s+(?:week|wk)\s*(\d{1,2})\s+(?:(half[- ]?ppr|standard|ppr)(?:\s+fantasy)?\s*points?)?$/i,
+    /^how many (?:ppr )?(?:fantasy )?points did (.+?) score (?:in )?(20\d{2})\s+(?:week|wk)\s*(\d{1,2})\??$/i,
+    /^(.+?)\s+(?:week|wk)\s*(\d{1,2})\s+(20\d{2})\s+(?:(half[- ]?ppr|standard|ppr)(?:\s+fantasy)?\s*points?)?$/i,
+  ];
+
+  for (let index = 0; index < patterns.length; index += 1) {
+    const match = raw.trim().match(patterns[index]);
+    if (!match) continue;
+    if (index === 1) {
+      return { player: match[1], season: Number(match[2]), week: Number(match[3]), scoring: "ppr" as const };
+    }
+    if (index === 2) {
+      const scoringText = (match[4] || "ppr").toLowerCase().replace(" ", "-");
+      return { player: match[1], season: Number(match[3]), week: Number(match[2]), scoring: scoringText === "half-ppr" ? "half-ppr" as const : scoringText === "standard" ? "standard" as const : "ppr" as const };
+    }
+    const scoringText = (match[4] || "ppr").toLowerCase().replace(" ", "-");
+    return { player: match[1], season: Number(match[2]), week: Number(match[3]), scoring: scoringText === "half-ppr" ? "half-ppr" as const : scoringText === "standard" ? "standard" as const : "ppr" as const };
+  }
+  return null;
+}
+
+function statLine(result: LiveNflResult) {
+  const s = result.stats;
+  const pieces: string[] = [];
+  if (s.passingYards || s.passingTds || s.interceptions) pieces.push(`${s.passingYards} pass yds, ${s.passingTds} pass TD, ${s.interceptions} INT`);
+  if (s.rushingYards || s.rushingTds) pieces.push(`${s.rushingYards} rush yds, ${s.rushingTds} rush TD`);
+  if (s.receptions || s.receivingYards || s.receivingTds) pieces.push(`${s.receptions} rec, ${s.receivingYards} rec yds, ${s.receivingTds} rec TD`);
+  return pieces.join(" • ") || "No scoring statistics recorded";
 }
 
 function playerSummary(player: any) {
@@ -30,6 +82,49 @@ export function SearchHome() {
   const { data, error } = useData();
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<"asc" | "desc">("asc");
+  const [liveResult, setLiveResult] = useState<LiveNflResult | null>(null);
+  const [liveError, setLiveError] = useState("");
+  const [liveLoading, setLiveLoading] = useState(false);
+
+  const liveIntent = useMemo(() => parseLiveNflQuery(query), [query]);
+
+  useEffect(() => {
+    if (!liveIntent) {
+      setLiveResult(null);
+      setLiveError("");
+      setLiveLoading(false);
+      return;
+    }
+
+    const controller = new AbortController();
+    const timer = window.setTimeout(async () => {
+      setLiveLoading(true);
+      setLiveError("");
+      try {
+        const params = new URLSearchParams({
+          player: liveIntent.player,
+          season: String(liveIntent.season),
+          week: String(liveIntent.week),
+          scoring: liveIntent.scoring,
+        });
+        const response = await fetch(`/api/nfl/player-week?${params.toString()}`, { signal: controller.signal });
+        const payload = await response.json();
+        if (!response.ok) throw new Error(payload.error || "Live NFL lookup failed.");
+        setLiveResult(payload);
+      } catch (error) {
+        if (controller.signal.aborted) return;
+        setLiveResult(null);
+        setLiveError(error instanceof Error ? error.message : String(error));
+      } finally {
+        if (!controller.signal.aborted) setLiveLoading(false);
+      }
+    }, 450);
+
+    return () => {
+      window.clearTimeout(timer);
+      controller.abort();
+    };
+  }, [liveIntent]);
 
   const search = useMemo(() => {
     if (!data || !query.trim()) return { heading: "", results: [] as any[] };
@@ -248,6 +343,40 @@ export function SearchHome() {
           </div>
         </div>
       </section>
+
+      {liveIntent && (
+        <section className="liveNflSection" aria-live="polite">
+          <div className="liveNflHeading">
+            <div>
+              <span className="eyebrow">Live NFL lookup</span>
+              <h2>{liveIntent.player} • {liveIntent.season} Week {liveIntent.week}</h2>
+            </div>
+            <span className="internetBadge">Internet-backed</span>
+          </div>
+          {liveLoading && <div className="liveNflCard liveNflLoading">Fetching weekly NFL statistics…</div>}
+          {liveError && <div className="liveNflCard liveNflError"><b>Could not complete the live lookup.</b><span>{liveError}</span></div>}
+          {liveResult && (
+            <article className="liveNflCard">
+              <div className="liveNflTopline">
+                <div>
+                  <span className="resultType">NFL Weekly Fantasy</span>
+                  <h3>{liveResult.player}</h3>
+                  <p>{liveResult.team || "NFL team unavailable"}{liveResult.opponent ? ` vs ${liveResult.opponent}` : ""} • {liveResult.position || "Position unavailable"}</p>
+                </div>
+                <div className="fantasyPointHero">
+                  <b>{liveResult.fantasyPoints.toFixed(2)}</b>
+                  <span>{liveResult.scoring.toUpperCase()} points</span>
+                </div>
+              </div>
+              <div className="liveStatLine">{statLine(liveResult)}</div>
+              <div className="liveNflFooter">
+                <span>Scored with standard full-PPR rules: 1 point/reception, 0.1/yard, 6/rush or receiving TD, 4/pass TD.</span>
+                <a href={liveResult.sourceUrl} target="_blank" rel="noreferrer">Source: nflverse ↗</a>
+              </div>
+            </article>
+          )}
+        </section>
+      )}
 
       {query && (
         <section className="searchResultsSection">

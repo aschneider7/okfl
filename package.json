@@ -1,16 +1,11 @@
 {
   "name": "okfl-os",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "private": true,
-  "engines": {
-    "node": "22.x"
-  },
-  "packageManager": "npm@10.9.2",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
     "validate": "node scripts/validate-data.mjs"
   },
   "dependencies": {
@@ -23,5 +18,9 @@
     "@types/react": "19.1.6",
     "@types/react-dom": "19.1.5",
     "typescript": "5.8.3"
-  }
+  },
+  "engines": {
+    "node": "22.x"
+  },
+  "packageManager": "npm@10.9.2"
 }
