@@ -1,0 +1,3 @@
+"use client";import Providers from "./providers";import {SearchHome} from "@/components/SearchHome";import {useData} from "@/components/DataProvider";
+function Snapshot(){const {data}=useData();if(!data)return null;return <div className="statGrid"><div className="card stat"><b>{data.franchises.length}</b><span>Franchises</span></div><div className="card stat"><b>{data.metadata.games}</b><span>Team games</span></div><div className="card stat"><b>{data.metadata.trades}</b><span>Trades</span></div><div className="card stat"><b>{data.players.length}</b><span>Players</span></div></div>}
+export default function Home(){return <Providers><SearchHome/><Snapshot/></Providers>}

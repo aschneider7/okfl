@@ -1,0 +1,1 @@
+export function Page({title,subtitle,children}:{title:string;subtitle?:string;children:React.ReactNode}){return <section><div className="pageHead"><h1>{title}</h1>{subtitle&&<p>{subtitle}</p>}</div>{children}</section>}export function Loading(){return <div className="card">Loading OKFL data…</div>}
