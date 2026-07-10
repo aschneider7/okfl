@@ -1,31 +1,22 @@
-# OKFL OS v0.6.2 — Hybrid NFL Search
+# OKFL OS v0.6.3 — Predictive Knowledge Engine
 
-Adds internet-backed weekly NFL fantasy scoring to the existing OKFL search engine.
+## Added
+- Predictive autocomplete after two characters
+- Fuzzy player, franchise, and manager matching
+- Grouped suggestions
+- Keyboard navigation with arrow keys, Enter, and Escape
+- Smart query suggestions for:
+  - who owned a player
+  - who drafted a player
+  - franchise vs franchise
+  - trades
+  - championships and records
+  - season pages
+  - live NFL weekly fantasy points
+- Hybrid results combining OKFL history and live nflverse data
+- Improved ownership and draft answers
+- Direct search prompts for live NFL queries
 
-## Example queries
-
-- `CMC 2024 Week 11 PPR fantasy points`
-- `Christian McCaffrey 2024 wk 11 ppr points`
-- `How many PPR fantasy points did CMC score in 2024 Week 11?`
-- `Saquon Barkley 2025 Week 3 half PPR points`
-
-## How it works
-
-1. The browser recognizes a player + season + week fantasy query.
-2. `/api/nfl/player-week` fetches the requested season's nflverse weekly player-stat CSV.
-3. The server finds the best matching player and calculates fantasy points.
-4. Historical results are cached for 30 days; current-season results refresh every 15 minutes.
-
-## Default scoring
-
-- 1 point per reception for PPR
-- 0.5 points per reception for half-PPR
-- 0 points per reception for standard
-- 0.1 per rushing/receiving yard
-- 6 per rushing/receiving TD
-- 0.04 per passing yard
-- 4 per passing TD
-- -2 per interception
-- -2 per lost fumble
-
-The weekly data source is nflverse. No API key or environment variable is required.
+## Deploy
+Replace the repository contents with this package, commit, and let Vercel deploy.
+Node 22 and npm 10.9.2 remain pinned in package.json.

@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const response = await fetch(sourceUrl, {
-      headers: { "User-Agent": "OKFL-OS/0.6.2" },
+      headers: { "User-Agent": "OKFL-OS/0.6.3" },
       next: { revalidate: season < currentYear ? 60 * 60 * 24 * 30 : 60 * 15 },
     });
 
