@@ -1,21 +1,18 @@
-# OKFL OS v1.0.0 — Home 2.0 & Trade Center
+# OKFL OS v1.0.1 — Search Restore & Keeper Eligibility
 
-## Home 2.0
-- NFL-style command center
-- All-time scoring record
-- 2025 standings
-- Legacy leaderboard
-- Recent trades
-- Weekly scoring records
-- Search Engine 3.0 preserved
+## Search
+- Restored the exact Search Engine 3.0 homepage component from v0.9.2
+- Restored the same predictive layout, live weekly NFL lookup, zero-click answers, and styling
+- Kept Home 2.0 around the restored search section
+- Restored the prior global command palette behavior
 
-## Trade Center
-- Full historical trade archive
-- Filters by year, team, and player
-- Custom multi-player trade analyzer
-- Player autocomplete
-- Keeper cost and keeper-year inputs
-- Current-impact, keeper-value, OKFL-history, and championship breakdown
-- Winner, fairness grade, score difference, and written reasons
+## Trade Analyzer
+- Added a two-option keeper eligibility control for every player:
+  - Can be kept
+  - Can't be kept
+- Players marked as not keeper-eligible receive zero keeper value
+- Keeper cost and keeper year are disabled when not eligible
+- The verdict explicitly explains when no keeper value was included
 
-The analyzer is an OKFL opinion model, not a guarantee of future player performance.
+## Deploy
+Replace the repository files, commit, and redeploy through Vercel.

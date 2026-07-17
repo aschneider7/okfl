@@ -30,7 +30,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div>
             <small>Obama Keeper Fantasy League</small>
             <b>OKFL OS</b>
-            <span>v1.0.0</span>
+            <span>v1.0.1</span>
           </div>
         </div>
         <nav>
@@ -45,7 +45,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <header className="mobileHeader">
         <button onClick={() => setOpen(!open)} aria-label="Open navigation">☰</button>
-        <div><b>OKFL OS</b><span>v1.0.0</span></div>
+        <div><b>OKFL OS</b><span>v1.0.1</span></div>
         <CommandPalette />
       </header>
 

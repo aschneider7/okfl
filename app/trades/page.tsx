@@ -5,7 +5,12 @@ import { useData } from "@/components/DataProvider";
 import { Loading, Page } from "@/components/Page";
 import { analyzeTrade, type AnalyzerAsset } from "@/lib/tradeAnalyzer";
 
-const blank = (): AnalyzerAsset => ({ player: "", keeperCost: "", keeperYear: "Year 1" });
+const blank = (): AnalyzerAsset => ({
+  player: "",
+  keeperCost: "",
+  keeperYear: "Year 1",
+  keeperEligible: true,
+});
 
 function AssetRow({ asset, players, onChange, onRemove }: any) {
   const [open, setOpen] = useState(false);
@@ -35,8 +40,40 @@ function AssetRow({ asset, players, onChange, onRemove }: any) {
           </div>
         )}
       </div>
-      <input value={asset.keeperCost || ""} placeholder="Keeper cost" onChange={(event) => onChange({ ...asset, keeperCost: event.target.value })} />
-      <select value={asset.keeperYear || "Year 1"} onChange={(event) => onChange({ ...asset, keeperYear: event.target.value })}>
+      <div className="keeperEligibilityControl">
+        <button
+          type="button"
+          className={asset.keeperEligible !== false ? "active" : ""}
+          onClick={() => onChange({ ...asset, keeperEligible: true })}
+        >
+          Can be kept
+        </button>
+        <button
+          type="button"
+          className={asset.keeperEligible === false ? "active cantKeep" : ""}
+          onClick={() =>
+            onChange({
+              ...asset,
+              keeperEligible: false,
+              keeperCost: "",
+              keeperYear: "Final year",
+            })
+          }
+        >
+          Can’t be kept
+        </button>
+      </div>
+      <input
+        value={asset.keeperCost || ""}
+        disabled={asset.keeperEligible === false}
+        placeholder={asset.keeperEligible === false ? "Not eligible" : "Keeper cost"}
+        onChange={(event) => onChange({ ...asset, keeperCost: event.target.value })}
+      />
+      <select
+        value={asset.keeperYear || "Year 1"}
+        disabled={asset.keeperEligible === false}
+        onChange={(event) => onChange({ ...asset, keeperYear: event.target.value })}
+      >
         <option>Year 1</option><option>Year 2</option><option>Year 3</option><option>Final year</option>
       </select>
       <button type="button" className="removeAsset" onClick={onRemove}>×</button>
@@ -82,7 +119,7 @@ export default function TradesPage() {
         <div>
           <span className="eyebrow">Front-office decision lab</span>
           <h2>Historical deals + custom analyzer</h2>
-          <p>The model weighs current impact, keeper cost, remaining keeper window, OKFL production, and championship context.</p>
+          <p>The model weighs current impact, keeper eligibility, keeper cost, remaining keeper window, OKFL production, and championship context.</p>
         </div>
         <div className="tradeHeroStats">
           <div><b>{data.trade_analysis.length}</b><span>Trades</span></div>

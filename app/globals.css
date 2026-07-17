@@ -371,7 +371,8 @@ body{background:linear-gradient(180deg,#f7f8fa 0,#eef1f4 480px,#e9edf1 100%)}
 @media(max-width:760px){.keepersHero,.timeMachineHero,.rulesHero{display:grid;padding:21px 16px}.keepersHero h2,.timeMachineHero h2,.rulesHero h2{font-size:27px}.keeperHeroStats,.rulesHeroMarks{min-width:0}.keeperToolbar{display:grid}.keeperFilters{grid-template-columns:1fr}.keeperSearch{grid-column:auto}.resetFilters{width:100%}.keeperTableCard{overflow:hidden}.keeperTable{min-width:720px}.timeSelectors{display:grid;grid-template-columns:1fr 1fr}.timeSummaryGrid{grid-template-columns:1fr 1fr}.scoreboardGrid{grid-template-columns:1fr}.ruleCategoryTabs{flex-wrap:nowrap;overflow:auto;padding-bottom:3px}.ruleCategoryTabs button{flex:0 0 auto}.rulebookIndex{display:none}.ruleAccordion>button{grid-template-columns:58px 1fr 24px;padding:13px 11px}}
 @media(max-width:430px){.keeperHeroStats,.rulesHeroMarks{grid-template-columns:1fr}.keeperHeroStats div+div,.rulesHeroMarks div+div{border-left:0;border-top:1px solid rgba(255,255,255,.18)}.timeSummaryGrid{grid-template-columns:1fr}.timeSelectors{grid-template-columns:1fr}}
 
-/* v1.0.0 Home 2.0 and Trade Center */
+
+/* v1.0.1 Home 2.0 and Trade Center */
 .home2{display:grid;gap:18px}.home2Hero{display:grid;grid-template-columns:1.35fr .65fr;gap:24px;align-items:center;border-radius:12px;background:linear-gradient(125deg,#06152e,#0d274d 62%,#b11226);color:#fff;padding:38px;box-shadow:0 18px 45px rgba(3,18,43,.22)}.home2Hero h1{margin:8px 0;font-size:46px;line-height:1.02;letter-spacing:-.04em}.home2Hero p{max-width:700px;color:#dce7f5;font-size:16px;line-height:1.65}.home2Actions{display:flex;gap:10px;margin-top:22px}.home2Actions a{border:1px solid rgba(255,255,255,.28);border-radius:6px;padding:11px 15px;color:#fff;text-decoration:none;font-weight:900}.home2Actions a:first-child{background:#fff;color:#071a36}.home2FeatureScore{display:grid;align-content:center;min-height:240px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.09);padding:24px;text-align:center}.home2FeatureScore span{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:#cbd8e8}.home2FeatureScore b{font-size:60px;line-height:1;margin:16px 0 8px}.home2FeatureScore strong{font-size:21px}.home2FeatureScore small{margin-top:8px;color:#cbd8e8}
 .home2Ticker{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid #cad5e3;background:#fff}.home2Ticker div{padding:13px 15px}.home2Ticker div+div{border-left:1px solid #dce3ec}.home2Ticker span{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.09em;color:#728096}.home2Ticker b{display:block;margin-top:4px}
 .home2Grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.home2Panel{border:1px solid #cad5e3;border-radius:8px;background:#fff;overflow:hidden;box-shadow:0 8px 20px rgba(16,34,61,.07)}.home2Panel>header{display:flex;justify-content:space-between;align-items:end;padding:18px 20px;border-bottom:4px solid #b11226;background:#071a36;color:#fff}.home2Panel h2{margin:4px 0 0}.home2Panel header a{color:#dce7f5;font-size:11px;text-decoration:none}.home2Rows>div{display:grid;grid-template-columns:34px 1fr auto 75px;align-items:center;gap:10px;padding:12px 18px;border-bottom:1px solid #e2e7ed}.home2Rows>div>span{display:grid;place-items:center;width:25px;height:25px;background:#071a36;color:#fff;font-size:10px}.home2Rows small{color:#718096}.home2Rows strong{text-align:right;color:#b11226}.home2Trades>div{padding:13px 18px;border-bottom:1px solid #e2e7ed}.home2Trades span{font-size:9px;color:#718096;text-transform:uppercase}.home2Trades p{margin:5px 0;font-size:12px;line-height:1.5}.home2Trades b{font-size:10px;color:#b11226}.home2Search{scroll-margin-top:20px}
@@ -383,3 +384,48 @@ body{background:linear-gradient(180deg,#f7f8fa 0,#eef1f4 480px,#e9edf1 100%)}
 
 @media(max-width:1000px){.home2Hero{grid-template-columns:1fr}.home2Grid{grid-template-columns:1fr}.tradeCenterHero{display:grid}.tradeHeroStats{min-width:0}.tradeBuilder,.tradeResultGrid{grid-template-columns:1fr}.tradeSide+article{border-left:0;border-top:1px solid #dce3ec}.tradeAssetRow{grid-template-columns:1fr 1fr 120px 36px}.tradeFactors{grid-template-columns:1fr 1fr}}
 @media(max-width:760px){.home2Hero{padding:24px 17px}.home2Hero h1{font-size:35px}.home2Ticker{grid-template-columns:1fr 1fr}.home2Ticker div+div{border-left:0;border-top:1px solid #dce3ec}.home2Rows>div{grid-template-columns:30px 1fr auto}.home2Rows strong{display:none}.tradeCenterHero{padding:22px 16px}.tradeHeroStats{grid-template-columns:1fr}.tradeHeroStats div+div{border-left:0;border-top:1px solid rgba(255,255,255,.17)}.tradeAnalyzer>header{display:grid;gap:12px}.tradeAnalyzer>header>button{width:100%}.tradeAssetRow{grid-template-columns:1fr}.removeAsset{height:38px}.tradeVerdict>header{align-items:flex-start}.tradeGrade{min-width:68px;height:68px;font-size:11px}.tradeArchiveHead{display:grid;gap:10px}.tradeArchiveHead>div:last-child{display:grid}.tradeCards>article>div{grid-template-columns:1fr}.tradeCards section+section{border-left:0;border-top:1px solid #e0e6ee}}
+
+/* v1.0.1 keeper eligibility control */
+.tradeAssetRow{
+  grid-template-columns:minmax(170px,1fr) minmax(190px,auto) 130px 115px 36px;
+}
+.keeperEligibilityControl{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  min-height:42px;
+  border:1px solid #c9d4e2;
+  border-radius:5px;
+  overflow:hidden;
+  background:#fff;
+}
+.keeperEligibilityControl button{
+  border:0;
+  background:#fff;
+  color:#5d6b7f;
+  padding:0 8px;
+  font-size:9px;
+  font-weight:900;
+  line-height:1.15;
+  cursor:pointer;
+}
+.keeperEligibilityControl button+button{border-left:1px solid #dce3ec}
+.keeperEligibilityControl button.active{
+  background:#071a36;
+  color:#fff;
+}
+.keeperEligibilityControl button.active.cantKeep{
+  background:#b11226;
+}
+.tradeAssetRow input:disabled,.tradeAssetRow select:disabled{
+  background:#edf1f5;
+  color:#8995a5;
+  cursor:not-allowed;
+}
+@media(max-width:1100px){
+  .tradeAssetRow{grid-template-columns:1fr 1fr}
+  .removeAsset{height:42px}
+}
+@media(max-width:760px){
+  .tradeAssetRow{grid-template-columns:1fr}
+  .keeperEligibilityControl{min-height:48px}
+}

@@ -5,6 +5,7 @@ export type AnalyzerAsset = {
   player: string;
   keeperCost?: string;
   keeperYear?: string;
+  keeperEligible?: boolean;
 };
 
 export type EvaluatedAsset = {
@@ -107,13 +108,16 @@ export function evaluateAsset(data: AnyData, asset: AnalyzerAsset): EvaluatedAss
     Math.max(5, recentImpact(player) * positionMultiplier(position)),
   );
 
-  const round = roundFromCost(asset.keeperCost);
-  const keeperYear = keeperYearNumber(asset.keeperYear);
-  const keeperValue = Math.min(
-    120,
-    (round ? Math.max(0, 15 - round) * 6.5 : 0) +
-      Math.max(0, 4 - keeperYear) * 14,
-  );
+  const keeperEligible = asset.keeperEligible !== false;
+  const round = keeperEligible ? roundFromCost(asset.keeperCost) : null;
+  const keeperYear = keeperEligible ? keeperYearNumber(asset.keeperYear) : 3;
+  const keeperValue = keeperEligible
+    ? Math.min(
+        120,
+        (round ? Math.max(0, 15 - round) * 6.5 : 0) +
+          Math.max(0, 4 - keeperYear) * 14,
+      )
+    : 0;
 
   const trackedPoints = (player.season_stats ?? []).reduce(
     (sum: number, row: any) => sum + Number(row.points ?? 0),
@@ -145,7 +149,8 @@ export function evaluateAsset(data: AnyData, asset: AnalyzerAsset): EvaluatedAss
   else if (currentImpact >= 45) notes.push("Useful current contributor.");
   else notes.push("Limited recent tracked impact.");
 
-  if (keeperValue >= 75) notes.push("Premium keeper surplus.");
+  if (!keeperEligible) notes.push("Not keeper-eligible; no keeper value was added.");
+  else if (keeperValue >= 75) notes.push("Premium keeper surplus.");
   else if (keeperValue >= 45) notes.push("Meaningful keeper value.");
   else if (round) notes.push("Expensive keeper cost relative to the model.");
   else notes.push("No keeper cost entered.");
