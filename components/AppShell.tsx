@@ -14,6 +14,7 @@ const links = [
   ["/records", "Records", "R"],
   ["/time-machine", "Time Machine", "T"],
   ["/rules", "Rules", "§"],
+  ["/commissioner", "Commissioner", "⚙"],
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -28,7 +29,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div>
             <small>Obama Keeper Fantasy League</small>
             <b>OKFL OS</b>
-            <span>v0.6.1</span>
+            <span>v0.6.5</span>
           </div>
         </div>
         <nav>
@@ -43,7 +44,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <header className="mobileHeader">
         <button onClick={() => setOpen(!open)} aria-label="Open navigation">☰</button>
-        <div><b>OKFL OS</b><span>v0.6.1</span></div>
+        <div><b>OKFL OS</b><span>v0.6.5</span></div>
         <span className="mobileStatus">Live</span>
       </header>
 
