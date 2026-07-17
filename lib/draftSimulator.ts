@@ -178,9 +178,15 @@ export function scorePlayer(params:{
   const scarcity=positionScarcity(pool,player.position)*.65;
   const personality=positionPreference(manager,player.position);
 
-  // Stable pseudo-random personality variation so re-renders do not reorder the board.
-  const hash=[...player.name].reduce((sum,char)=>sum+char.charCodeAt(0),seed+manager.slot*31+round*17);
-  const variation=((hash%101)-50)*manager.tendencies.risk*2.4;
+  // A per-mock seed keeps one draft stable while allowing the next mock to develop differently.
+  const hashInput=`${seed}:${manager.slot}:${round}:${player.name}`;
+  let hash=2166136261;
+  for(const char of hashInput){
+    hash^=char.charCodeAt(0);
+    hash=Math.imul(hash,16777619);
+  }
+  const normalized=(hash>>>0)/4294967295*2-1;
+  const variation=normalized*(90+manager.tendencies.risk*360);
 
   return pprAdjustedValue(player)+need+qbNeed+youth+veteran+keeper+scarcity+personality+variation;
 }

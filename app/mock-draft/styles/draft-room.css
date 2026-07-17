@@ -138,6 +138,15 @@
   min-width: 108px;
 }
 .draftRoomV3 .draftV2TeamSelect .startMockButton:hover { background: #db1636; }
+.draftRoomV3 .speedControl {
+  background: #091a27;
+  border: 1px solid #31506a;
+  border-radius: 5px;
+  display: flex;
+  padding: 2px;
+}
+.draftRoomV3 .speedControl button { border: 0; height: 28px; padding: 0 8px; }
+.draftRoomV3 .speedControl button.active { background: var(--draft-blue); color: #03131e; }
 
 .draftRoomV3 .draftV2Identity {
   align-items: center;

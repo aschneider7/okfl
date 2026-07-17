@@ -10,6 +10,7 @@
 
 .draftRoomV3 .draftV2Cell.active { animation: draftCurrentPick 1.8s ease-in-out infinite; }
 .draftV2OnClock.isUserTurn .statusDot { animation: draftStatusPulse 1.5s ease-in-out infinite; }
+.draftRoomV3 .draftV2Recent>div:first-of-type { animation: draftFeedIn .22s ease-out; }
 .draftRoomV3 button,
 .draftRoomV3 select,
 .draftRoomV3 input,
@@ -22,4 +23,9 @@
     scroll-behavior: auto !important;
     transition-duration: .01ms !important;
   }
+}
+
+@keyframes draftFeedIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
 }

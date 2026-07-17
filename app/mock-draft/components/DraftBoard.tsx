@@ -5,11 +5,11 @@ import {pickKey} from "../types";
 import {BoardCell} from "./BoardCell";
 
 export function DraftBoard() {
-  const {board, complete, current, controlledFranchise, userOnClock} = useDraft();
+  const {board, complete, current, controlledFranchise, userOnClock, paused} = useDraft();
   return <section className="draftV2BoardPanel">
     <header><div><span className="eyebrow">Official 2026 order</span><h2>Live draft board</h2></div>
       <div className={`clockStatus ${userOnClock ? "yourTurn" : ""}`}>
-        <span>{complete ? "Complete" : userOnClock ? "Your pick" : "On the clock"}</span><b>{current ? `${current.round}.${current.slot}` : "—"}</b>
+        <span>{complete ? "Complete" : paused ? "Paused" : userOnClock ? "Your pick" : "On the clock"}</span><b>{current ? `${current.round}.${current.slot}` : "—"}</b>
       </div></header>
     <div className="draftV2BoardScroller">
       <div className="draftV2ManagerRow"><div className="draftRoundCorner">RD</div>{managers.map((manager) => <div

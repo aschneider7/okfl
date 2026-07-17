@@ -9,9 +9,9 @@ type SidebarTab = "recommendations" | "roster" | "recent" | "intel";
 
 export function DraftSidebar() {
   const [activeTab, setActiveTab] = useState<SidebarTab>("recommendations");
-  const {userOnClock, currentManager, complete, started, recommendations, controlledRoster, recentPicks} = useDraft();
+  const {userOnClock, currentManager, complete, started, paused, recommendations, controlledRoster, recentPicks} = useDraft();
   const status = userOnClock ? "Make your selection from the player pool."
-    : complete ? "The full mock is complete." : started ? "AI managers are advancing the board."
+    : complete ? "The full mock is complete." : paused ? "Simulation paused. Resume when ready." : started ? "AI managers are advancing the board."
       : "Select a franchise and enter the draft.";
   const tabs: {id: SidebarTab; label: string; count?: number}[] = [
     {id: "recommendations", label: "Best", count: recommendations.length},

@@ -3,6 +3,7 @@ import type {DraftManager, DraftPick, DraftPlayer} from "@/lib/draftSimulator";
 export type {DraftManager, DraftPick, DraftPlayer};
 
 export type Recommendation = {player: DraftPlayer; score: number};
+export type SimulationSpeed = "normal" | "turbo";
 
 export const POSITION_CLASS: Record<string, string> = {
   QB: "posQB", RB: "posRB", WR: "posWR", TE: "posTE", K: "posK", DEF: "posDEF",

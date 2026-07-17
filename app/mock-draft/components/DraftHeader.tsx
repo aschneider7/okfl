@@ -3,14 +3,14 @@ import {useDraft} from "../context/DraftContext";
 import {DraftControls} from "./DraftControls";
 
 export function DraftHeader() {
-  const {started, controlledManager, lastMessage, overall, complete} = useDraft();
+  const {started, controlledManager, lastMessage, overall, complete, paused, isSimulating} = useDraft();
   return <>
     <section className="draftV2Setup">
       <div className="draftV2Brand"><span className="eyebrow">OKFL Draft Room <i>V3</i></span>
         <h2>{started ? `${controlledManager.manager}'s Draft Room` : "Choose your franchise"}</h2><p>{lastMessage}</p>
       </div>
       <div className="draftHeaderStatus" aria-label="Draft progress">
-        <span>{complete ? "Final" : started ? "Live mock" : "Pre-draft"}</span>
+        <span>{complete ? "Final" : paused ? "Paused" : isSimulating ? "AI selecting" : started ? "Live mock" : "Pre-draft"}</span>
         <b>{complete ? "Complete" : `Pick ${overall} of 170`}</b>
       </div>
       <DraftControls />

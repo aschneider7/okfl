@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./site-refresh.css";
 import { AppShell } from "@/components/AppShell";
 import { DataProvider } from "@/components/DataProvider";
 
 export const metadata: Metadata = {
-  title: "OKFL OS",
+  title: "OKFL OS · Version 3",
   description: "Obama Keeper Fantasy League archive and analytics",
 };
 

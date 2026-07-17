@@ -1,57 +1,51 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
-import { CommandPalette } from "@/components/CommandPalette";
+import {usePathname} from "next/navigation";
+import {useState} from "react";
+import {CommandPalette} from "@/components/CommandPalette";
 
 const links = [
-  ["/", "Home", "⌂"],
-  ["/franchises", "Franchises", "F"],
-  ["/compare", "Compare", "↔"],
-  ["/trades", "Trades", "⇄"],
-  ["/drafts", "Drafts", "D"],
-  ["/mock-draft", "Mock Draft", "M"],
-  ["/keepers", "Keepers", "K"],
-  ["/records", "Records", "R"],
-  ["/time-machine", "Time Machine", "T"],
-  ["/rules", "Rules", "§"],
-  ["/commissioner", "Commissioner", "⚙"],
-];
+  ["/", "Home", "01"],
+  ["/franchises", "Franchises", "02"],
+  ["/compare", "Compare", "03"],
+  ["/trades", "Trades", "04"],
+  ["/drafts", "Draft History", "05"],
+  ["/mock-draft", "Draft Room", "06"],
+  ["/keepers", "Keepers", "07"],
+  ["/records", "Records", "08"],
+  ["/time-machine", "Time Machine", "09"],
+  ["/rules", "Rules", "10"],
+  ["/commissioner", "Commissioner", "11"],
+] as const;
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+export function AppShell({children}: {children: React.ReactNode}) {
   const path = usePathname();
   const [open, setOpen] = useState(false);
 
-  return (
-    <div className="shell">
-      <aside className={open ? "sidebar open" : "sidebar"}>
-        <div className="brand">
-          <div className="brandMark">O</div>
-          <div>
-            <small>Obama Keeper Fantasy League</small>
-            <b>OKFL OS</b>
-            <span>v2.0.0</span>
-          </div>
-        </div>
-        <nav>
-          {links.map(([href, label, icon]) => (
-            <Link key={href} href={href} onClick={() => setOpen(false)} className={path === href || (href !== "/" && path.startsWith(href)) ? "active" : ""}>
-              <i>{icon}</i><span>{label}</span>
-            </Link>
-          ))}
-        </nav>
-        <div className="sidebarStatus"><span>✓</span><div><b>Data verified</b><small>2021–2025 archive</small></div></div>
-      </aside>
+  return <div className="shell">
+    <aside className={open ? "sidebar open" : "sidebar"}>
+      <div className="brand">
+        <div className="brandMark">O</div>
+        <div className="brandCopy"><small>Obama Keeper Fantasy League</small><b>OKFL OS</b><span>Version 3</span></div>
+      </div>
+      <div className="navLabel">League workspace</div>
+      <nav>{links.map(([href, label, index]) => {
+        const active = path === href || (href !== "/" && path.startsWith(href));
+        return <Link key={href} href={href} onClick={() => setOpen(false)} className={active ? "active" : ""}>
+          <i>{index}</i><span>{label}</span>
+        </Link>;
+      })}</nav>
+      <div className="sidebarStatus"><span>OK</span><div><b>Archive verified</b><small>2021–2025 · Live 2026</small></div></div>
+    </aside>
 
-      <header className="mobileHeader">
-        <button onClick={() => setOpen(!open)} aria-label="Open navigation">☰</button>
-        <div><b>OKFL OS</b><span>v2.0.0</span></div>
-        <CommandPalette />
-      </header>
+    <header className="mobileHeader">
+      <button onClick={() => setOpen(!open)} aria-label="Open navigation"><span /><span /><span /></button>
+      <div><b>OKFL OS</b><span>Version 3</span></div>
+      <CommandPalette />
+    </header>
 
-      <main className="main"><div className="desktopCommand"><CommandPalette /></div>{children}</main>
-      {open && <button className="backdrop" onClick={() => setOpen(false)} aria-label="Close menu" />}
-    </div>
-  );
+    <main className="main"><div className="desktopCommand"><CommandPalette /></div>{children}</main>
+    {open && <button className="backdrop" onClick={() => setOpen(false)} aria-label="Close menu" />}
+  </div>;
 }

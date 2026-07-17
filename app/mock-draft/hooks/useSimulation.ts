@@ -1,7 +1,8 @@
 import {explainPick, overallToRoundSlot, pickGrade, teamRoster} from "@/lib/draftSimulator";
-import {DRAFT_ROUNDS, managers} from "@/lib/draftSimulator";
-import type {DraftManager, DraftPick, DraftPlayer} from "../types";
+import type {DraftManager, DraftPick, DraftPlayer, SimulationSpeed} from "../types";
 import {rankRecommendations} from "./useRecommendations";
+
+export const SIMULATION_DELAYS: Record<SimulationSpeed, number> = {normal: 320, turbo: 55};
 
 export function createDraftPick(params: {
   player: DraftPlayer;
@@ -27,34 +28,13 @@ export function createDraftPick(params: {
   };
 }
 
-export function simulateUntilUser(params: {
-  initialPicks: DraftPick[];
-  initialOverall: number;
-  pool: DraftPlayer[];
+export function chooseAiPlayer(params: {
+  picks: DraftPick[];
   keepers: DraftPick[];
-  controlledFranchise: string;
+  overall: number;
+  available: DraftPlayer[];
+  manager: DraftManager;
+  simulationSeed: number;
 }) {
-  const {pool, keepers, controlledFranchise} = params;
-  let picks = [...params.initialPicks];
-  let overall = params.initialOverall;
-  let available = pool.filter((player) => ![...keepers, ...picks].some(
-    (pick) => pick.player.name.toLowerCase() === player.name.toLowerCase(),
-  ));
-
-  while (overall <= DRAFT_ROUNDS * 10) {
-    if (keepers.some((pick) => pick.overall === overall)) {
-      overall += 1;
-      continue;
-    }
-    const spot = overallToRoundSlot(overall);
-    const manager = managers.find((row) => row.slot === spot.slot)!;
-    if (manager.franchiseId === controlledFranchise) break;
-    const player = rankRecommendations({picks, keepers, overall, available, manager})[0]?.player;
-    if (!player) break;
-    picks.push(createDraftPick({player, manager, overall, picks, keepers, available}));
-    available = available.filter((row) => row.name !== player.name);
-    overall += 1;
-  }
-
-  return {picks, overall, complete: overall > DRAFT_ROUNDS * 10};
+  return rankRecommendations(params)[0]?.player ?? null;
 }
