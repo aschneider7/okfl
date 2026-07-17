@@ -1,14 +1,41 @@
+import {useState} from "react";
 import {useDraft} from "../context/DraftContext";
 import {BestAvailable} from "./BestAvailable";
+import {ManagerIntel} from "./ManagerIntel";
 import {RecentPicks} from "./RecentPicks";
+import {RosterPanel} from "./RosterPanel";
+
+type SidebarTab = "recommendations" | "roster" | "recent" | "intel";
 
 export function DraftSidebar() {
-  const {userOnClock, currentManager, complete, started} = useDraft();
-  const status = userOnClock ? "Pick a player below. The simulator will immediately make every AI selection until your next turn."
-    : complete ? "The full mock is complete." : started ? "The simulator is advancing to your next pick."
-      : "Press Start Mock to auto-draft every pick before your first selection.";
-  return <aside className="draftV2Sidebar"><article className="draftV2OnClock">
-    <span className="eyebrow">{userOnClock ? "You are on the clock" : "Draft status"}</span>
-    <h2>{currentManager?.manager || "Draft complete"}</h2><p>{status}</p>
-  </article><BestAvailable /><RecentPicks /></aside>;
+  const [activeTab, setActiveTab] = useState<SidebarTab>("recommendations");
+  const {userOnClock, currentManager, complete, started, recommendations, controlledRoster, recentPicks} = useDraft();
+  const status = userOnClock ? "Make your selection from the player pool."
+    : complete ? "The full mock is complete." : started ? "AI managers are advancing the board."
+      : "Select a franchise and enter the draft.";
+  const tabs: {id: SidebarTab; label: string; count?: number}[] = [
+    {id: "recommendations", label: "Best", count: recommendations.length},
+    {id: "roster", label: "Roster", count: controlledRoster.length},
+    {id: "recent", label: "Feed", count: recentPicks.length},
+    {id: "intel", label: "Intel"},
+  ];
+
+  return <aside className="draftV2Sidebar">
+    <article className={`draftV2OnClock ${userOnClock ? "isUserTurn" : ""}`}>
+      <div><span className="statusDot" /><span className="eyebrow">{userOnClock ? "You are on the clock" : "Draft status"}</span></div>
+      <h2>{currentManager?.manager || "Draft complete"}</h2><p>{status}</p>
+    </article>
+    <div className="draftSidebarTabs" role="tablist" aria-label="Draft information">
+      {tabs.map((tab) => <button key={tab.id} role="tab" aria-selected={activeTab === tab.id}
+        className={activeTab === tab.id ? "active" : ""} onClick={() => setActiveTab(tab.id)}>
+        {tab.label}{tab.count !== undefined && <span>{tab.count}</span>}
+      </button>)}
+    </div>
+    <div className="draftSidebarPanel" role="tabpanel">
+      {activeTab === "recommendations" && <BestAvailable />}
+      {activeTab === "roster" && <RosterPanel />}
+      {activeTab === "recent" && <RecentPicks />}
+      {activeTab === "intel" && <ManagerIntel />}
+    </div>
+  </aside>;
 }

@@ -2,7 +2,7 @@ import {useMemo, useState} from "react";
 import {
   DRAFT_ROUNDS, fallbackPprPool, keeperOverall, managers, overallToRoundSlot, projectedKeepers,
 } from "@/lib/draftSimulator";
-import type {ActivePanel, DraftPick, DraftPlayer} from "../types";
+import type {DraftPick, DraftPlayer} from "../types";
 import {useBoard} from "./useBoard";
 import {useRecommendations} from "./useRecommendations";
 import {createDraftPick, simulateUntilUser} from "./useSimulation";
@@ -32,7 +32,6 @@ export function useDraftEngine() {
   const [position, setPosition] = useState("ALL");
   const [selectedPlayer, setSelectedPlayer] = useState<DraftPlayer | null>(null);
   const [lastMessage, setLastMessage] = useState("Choose a team and press Start Mock.");
-  const [activePanel, setActivePanel] = useState<ActivePanel>("players");
 
   const keepers = useMemo(buildKeeperPicks, []);
   const allPicks = useMemo(() => [...keepers, ...draftPicks], [keepers, draftPicks]);
@@ -89,7 +88,7 @@ export function useDraftEngine() {
   return {
     controlledFranchise, setControlledFranchise, draftPicks, overall, started, complete,
     query, setQuery, position, setPosition, selectedPlayer, setSelectedPlayer,
-    lastMessage, activePanel, setActivePanel, keepers, allPicks, available, current,
+    lastMessage, keepers, allPicks, available, current,
     currentManager, controlledManager, userOnClock, recommendations, ...boardState,
     startMock, makeUserPick, undoUserTurn, reset,
   };

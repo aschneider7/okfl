@@ -1,0 +1,104 @@
+.draftRoomV3 .draftV2Workspace {
+  background: var(--draft-panel);
+  border: 1px solid var(--draft-border);
+  border-radius: 8px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+.playerPoolHeader {
+  align-items: center;
+  background: #0b1a27;
+  border-bottom: 1px solid var(--draft-border);
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr auto auto;
+  padding: 9px 12px;
+}
+.playerPoolHeader h2 { font-size: 15px; margin: 2px 0 0; }
+.playerPoolFilters { display: flex; gap: 5px; }
+.draftRoomV3 .playerPoolFilters select,
+.draftRoomV3 .playerPoolFilters input {
+  background: #102537;
+  border: 1px solid #2b465b;
+  border-radius: 4px;
+  color: white;
+  font-size: 9px;
+  height: 30px;
+  padding: 0 9px;
+}
+.draftRoomV3 .playerPoolFilters select { width: 72px; }
+.draftRoomV3 .playerPoolFilters input { width: 190px; }
+.draftRoomV3 .playerPoolFilters input::placeholder { color: #70899c; }
+.draftRoomV3 .playerPoolFilters input:focus,
+.draftRoomV3 .playerPoolFilters select:focus { border-color: var(--draft-blue); outline: none; }
+.availableCount { color: var(--draft-muted); font-size: 8px; text-transform: uppercase; }
+.availableCount b { color: white; font-size: 12px; margin-right: 3px; }
+
+.draftRoomV3 .draftV2PlayerGrid {
+  background: #081520;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  max-height: 310px;
+  overflow: auto;
+  scrollbar-color: #38546c #081522;
+  scrollbar-width: thin;
+}
+.draftRoomV3 .draftV2PlayerGrid>button {
+  background: #0d1c29;
+  border: 0;
+  border-bottom: 1px solid #1c3040;
+  border-right: 1px solid #1c3040;
+  color: white;
+  gap: 8px;
+  grid-template-columns: 34px 1fr 88px 42px;
+  min-width: 0;
+  padding: 7px 9px;
+}
+.draftRoomV3 .draftV2PlayerGrid>button:hover { background: #132a3c; }
+.draftRoomV3 .draftV2PlayerGrid>button.selected { background: #16364a; box-shadow: inset 3px 0 0 var(--draft-blue); }
+.draftRoomV3 .draftV2PlayerGrid>button:disabled { cursor: not-allowed; opacity: .67; }
+.draftRoomV3 .playerPosition { border-radius: 4px; color: #06111c; font-size: 7px; height: 26px; }
+.draftRoomV3 .playerCardIdentity { min-width: 0; }
+.draftRoomV3 .playerCardIdentity b { font-size: 9px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.draftRoomV3 .playerCardIdentity span { color: var(--draft-muted); font-size: 7px; }
+.draftRoomV3 .playerRanks { gap: 8px; }
+.draftRoomV3 .playerRanks span { color: #7891a4; font-size: 6px; }
+.draftRoomV3 .playerRanks b { color: #d8e7f1; font-size: 9px; }
+.draftRoomV3 .draftV2PlayerGrid>button>strong { color: #5dd3ff; font-size: 10px; }
+
+.draftRoomV3 .draftV2SelectionBar {
+  background: rgba(9, 27, 41, .96);
+  border: 1px solid var(--draft-blue);
+  border-radius: 8px;
+  bottom: 10px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .45);
+  color: white;
+  gap: 10px;
+  grid-template-columns: 38px 1fr auto auto;
+  margin: 8px 8px 0;
+  padding: 9px 11px;
+}
+.draftRoomV3 .selectionPosition { border-radius: 5px; font-size: 9px; height: 34px; width: 34px; }
+.draftRoomV3 .draftV2SelectionBar>div:nth-child(2)>span { color: #65d4ff; font-size: 6px; }
+.draftRoomV3 .draftV2SelectionBar>div:nth-child(2)>b { font-size: 13px; }
+.draftRoomV3 .draftV2SelectionBar>div:nth-child(2)>small { color: var(--draft-muted); font-size: 7px; }
+.draftRoomV3 .draftV2SelectionBar>button {
+  background: #172e40;
+  border: 1px solid #315169;
+  border-radius: 4px;
+  color: white;
+  font-size: 9px;
+  height: 34px;
+  padding: 0 11px;
+}
+.draftRoomV3 .draftV2SelectionBar .draftPlayerButton { background: var(--draft-accent); border-color: #e33b56; }
+
+@media(max-width: 760px) {
+  .playerPoolHeader { grid-template-columns: 1fr auto; }
+  .playerPoolFilters { grid-column: 1 / -1; }
+  .draftRoomV3 .playerPoolFilters input { min-width: 0; width: 100%; }
+  .draftRoomV3 .draftV2PlayerGrid { grid-template-columns: 1fr; max-height: 390px; }
+  .draftRoomV3 .draftV2PlayerGrid>button { grid-template-columns: 32px 1fr 75px 38px; }
+  .draftRoomV3 .draftV2SelectionBar { grid-template-columns: 34px 1fr; }
+  .draftRoomV3 .draftV2SelectionBar .draftPlayerButton { grid-column: 1 / -1; }
+}
