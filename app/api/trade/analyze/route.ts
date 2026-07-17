@@ -57,7 +57,7 @@ function parseCsv(text: string) {
 async function loadMarketPlayers() {
   const response = await fetch(VALUES_URL, {
     next: { revalidate: 21600 },
-    headers: { "User-Agent": "OKFL-OS/1.0.2" },
+    headers: { "User-Agent": "OKFL-OS/2.0.0" },
   });
   if (!response.ok) throw new Error(`Market data returned ${response.status}.`);
   const rows = parseCsv(await response.text());
@@ -69,8 +69,8 @@ async function loadMarketPlayers() {
     pos: row[index.pos],
     team: row[index.team],
     age: Number.isFinite(Number(row[index.age])) ? Number(row[index.age]) : null,
-    ecr2qb: Number.isFinite(Number(row[index.ecr_2qb])) ? Number(row[index.ecr_2qb]) : null,
-    value2qb: Number(row[index.value_2qb] || 0),
+    ecrPpr: Number.isFinite(Number(row[index.ecr_1qb])) ? Number(row[index.ecr_1qb]) : null,
+    valuePpr: Number(row[index.value_1qb] || 0),
     scrapeDate: row[index.scrape_date],
   }));
 }
@@ -133,7 +133,7 @@ export async function POST(request: Request) {
       source: "DynastyProcess weekly market values",
       sourceUrl: "https://github.com/dynastyprocess/data",
       marketDate: sideA[0]?.market.scrapeDate || sideB[0]?.market.scrapeDate || null,
-      format: "2QB",
+      format: "Full PPR with slight OKFL QB bump",
     });
   } catch (error) {
     return NextResponse.json(

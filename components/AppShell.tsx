@@ -11,6 +11,7 @@ const links = [
   ["/compare", "Compare", "↔"],
   ["/trades", "Trades", "⇄"],
   ["/drafts", "Drafts", "D"],
+  ["/mock-draft", "Mock Draft", "M"],
   ["/keepers", "Keepers", "K"],
   ["/records", "Records", "R"],
   ["/time-machine", "Time Machine", "T"],
@@ -30,7 +31,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div>
             <small>Obama Keeper Fantasy League</small>
             <b>OKFL OS</b>
-            <span>v1.2.0</span>
+            <span>v2.0.0</span>
           </div>
         </div>
         <nav>
@@ -45,7 +46,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <header className="mobileHeader">
         <button onClick={() => setOpen(!open)} aria-label="Open navigation">☰</button>
-        <div><b>OKFL OS</b><span>v1.2.0</span></div>
+        <div><b>OKFL OS</b><span>v2.0.0</span></div>
         <CommandPalette />
       </header>
 

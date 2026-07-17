@@ -129,7 +129,7 @@ export default function TradesPage() {
         <div>
           <span className="eyebrow">Front-office decision lab</span>
           <h2>Historical deals + custom analyzer</h2>
-          <p>The model is future-facing only: live 2QB market value, age-adjusted consensus rank, keeper eligibility, keeper round, and remaining keeper years. Past Keeper adj. is not used.</p>
+          <p>The model is future-facing only: full-PPR market value, a slight five-pick quarterback adjustment, keeper eligibility, keeper round, and remaining keeper years. Past OKFL performance is not used.</p>
         </div>
         <div className="tradeHeroStats">
           <div><b>{data.trade_analysis.length}</b><span>Trades</span></div>

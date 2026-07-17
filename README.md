@@ -1,24 +1,28 @@
-# OKFL OS v1.2.0 — Selectable Draft Team + PPR Valuation
+# OKFL OS v2.0.0 — Draft Room 2.0
 
-## Mock Draft
-- Fixed official 2026 draft order
-- Select any one of the 10 teams to control
-- AI controls the other nine teams
-- Projected keepers remain locked into their exact round and snake-draft slot
-- Keeper rounds are automatically skipped for that team
-- Recommendations adapt to the selected team and its preloaded keepers
+## Navigation
+- Added a visible top-level **Mock Draft** tab.
+- Route: `/mock-draft`
+
+## Draft flow
+1. Select any team in the fixed official 2026 draft order.
+2. Press **Start Mock**.
+3. The simulator instantly makes every AI pick before your first selection.
+4. You make your pick.
+5. The simulator immediately makes every pick until your next turn.
+6. Locked projected keeper picks are displayed and skipped automatically.
 
 ## Rankings
-- Full-PPR ranking is the base
-- QBs receive a modest OKFL premium instead of using a pure superflex board
-- Historical OKFL drafts imply an estimated QB premium of about 0.40 rounds
-- Roster needs, scarcity, keeper upside, youth, and manager tendencies remain active
+- Full-PPR rankings are the base.
+- Quarterbacks move up only five picks for OKFL demand.
+- This is not a pure 2QB or superflex ranking board.
+- The model also considers roster need, positional scarcity, keeper upside, age, and manager personality.
 
-## Trade Analyzer
-- Uses the same future-facing full-PPR base
-- Applies the same modest OKFL QB premium
-- No championship, ownership, or historical-production inputs
-- Keeper eligibility, round cost, and remaining keeper years are the only league-history adjustments
+## Manager personalities
+Each AI franchise has a visible archetype, motto, risk level, QB urgency, keeper focus, and position preferences.
 
-## Deploy
-Replace repository files, commit, and redeploy through Vercel.
+## Trade analyzer
+- Uses the same full-PPR base.
+- Quarterbacks receive the same slight five-pick adjustment.
+- Keeper eligibility, keeper round, and remaining keeper years are included.
+- Past ownership, championships, and historical OKFL production are excluded.
