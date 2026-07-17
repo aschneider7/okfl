@@ -1,25 +1,27 @@
-# OKFL OS v0.9.0 — NFL Redesign & Weekly Search Repair
+# OKFL OS v0.9.1 — Global Search Fix & Utility Page Redesign
 
 ## Fixed
-- Restored weekly player fantasy-stat searches
-- Supports multiple query formats and 2024/2025 data
-- Predictive result rail is now rendered as real clickable buttons
-- Global command palette recognizes weekly NFL queries
-- Uses Next.js router navigation instead of hard page reloads
+- Global corner search now receives the OKFL data context on every route
+- Command palette works from Franchises, Keepers, Rules, Time Machine, and every other page
+- Keyboard shortcuts `/`, Ctrl+K, and Cmd+K remain supported
 
-## Weekly query examples
-- `CMC 2025 Week 4 PPR points`
-- `2025 Week 4 Christian McCaffrey`
-- `Christian McCaffrey Week 11 2024`
-- `How many PPR points did CMC score in 2024 Week 11?`
-- `Saquon Barkley fantasy stats 2025 Week 8`
+## Keeper Center
+- Filter by franchise, season, status, and player text
+- Sort by season, franchise, player, cost, keeper year, or status
+- Team keeper-volume leaderboard
+- Cleaner badges and responsive table layout
 
-## Full UI redesign
-- NFL-inspired navy, red, white and silver visual system
-- Scoreboard-style weekly stat answers
-- Stronger navigation, tables, cards and page headers
-- Clickable predictive cards on desktop and mobile
-- Redesigned global command palette
+## Time Machine
+- Broadcast-style season/week selector
+- Archived matchup scoreboards
+- Weekly top scorer, average, closest game, and biggest win
+- Season standings context
+
+## Rulebook
+- Searchable rules
+- Category filters
+- Expandable rule cards
+- Rulebook index and improved visual hierarchy
 
 ## Deploy
 Replace the repository files, commit, and redeploy through Vercel.
