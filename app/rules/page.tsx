@@ -1,7 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import Providers from "../providers";
+import { useState } from "react";
 import { Page, Loading } from "@/components/Page";
 import { useData } from "@/components/DataProvider";
 
@@ -14,14 +13,14 @@ function View() {
   if (!data) return <Loading />;
 
   const categories = [...new Set(data.rules.map((rule: any) => rule.category))].sort();
-  const filtered = useMemo(() => {
-    const term = query.toLowerCase().trim();
-    return data.rules.filter((rule: any) => {
-      const categoryMatch = category === "all" || rule.category === category;
-      const termMatch = !term || `${rule.id} ${rule.category} ${rule.rule}`.toLowerCase().includes(term);
-      return categoryMatch && termMatch;
-    });
-  }, [data.rules, category, query]);
+  const term = query.toLowerCase().trim();
+  const filtered = data.rules.filter((rule: any) => {
+    const categoryMatch = category === "all" || rule.category === category;
+    const termMatch =
+      !term ||
+      `${rule.id} ${rule.category} ${rule.rule}`.toLowerCase().includes(term);
+    return categoryMatch && termMatch;
+  });
 
   const grouped = categories
     .map((name) => ({ name, rules: filtered.filter((rule: any) => rule.category === name) }))
@@ -86,5 +85,5 @@ function View() {
 }
 
 export default function Rules() {
-  return <Providers><View /></Providers>;
+  return <View />;
 }

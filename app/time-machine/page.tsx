@@ -1,7 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import Providers from "../providers";
+import { useState } from "react";
 import { Page, Loading } from "@/components/Page";
 import { useData } from "@/components/DataProvider";
 
@@ -18,14 +17,23 @@ function View() {
     .filter((game: any) => game.season === season && game.week === week && game.franchise_id < game.opponent_id)
     .sort((a: any, b: any) => Number(b.score + b.opp_score) - Number(a.score + a.opp_score));
 
-  const weekStats = useMemo(() => {
-    const teamRows = data.weekly_games.filter((game: any) => game.season === season && game.week === week);
-    const highest = [...teamRows].sort((a: any, b: any) => Number(b.score) - Number(a.score))[0];
-    const closest = [...games].sort((a: any, b: any) => Math.abs(Number(a.margin)) - Math.abs(Number(b.margin)))[0];
-    const biggest = [...games].sort((a: any, b: any) => Math.abs(Number(b.margin)) - Math.abs(Number(a.margin)))[0];
-    const average = teamRows.length ? teamRows.reduce((sum: number, game: any) => sum + Number(game.score), 0) / teamRows.length : 0;
-    return { highest, closest, biggest, average };
-  }, [data.weekly_games, games, season, week]);
+  const teamRows = data.weekly_games.filter(
+    (game: any) => game.season === season && game.week === week,
+  );
+  const highest = [...teamRows].sort(
+    (a: any, b: any) => Number(b.score) - Number(a.score),
+  )[0];
+  const closest = [...games].sort(
+    (a: any, b: any) => Math.abs(Number(a.margin)) - Math.abs(Number(b.margin)),
+  )[0];
+  const biggest = [...games].sort(
+    (a: any, b: any) => Math.abs(Number(b.margin)) - Math.abs(Number(a.margin)),
+  )[0];
+  const average = teamRows.length
+    ? teamRows.reduce((sum: number, game: any) => sum + Number(game.score), 0) /
+      teamRows.length
+    : 0;
+  const weekStats = { highest, closest, biggest, average };
 
   const standings = data.regular_standings
     .filter((row: any) => row.season === season)
@@ -90,5 +98,5 @@ function View() {
 }
 
 export default function TimeMachine() {
-  return <Providers><View /></Providers>;
+  return <View />;
 }

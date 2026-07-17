@@ -1,7 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import Providers from "../providers";
+import { useState } from "react";
 import { Page, Loading } from "@/components/Page";
 import { useData } from "@/components/DataProvider";
 
@@ -28,9 +27,9 @@ function View() {
   const teams = [...data.franchises].sort((a: any, b: any) => a.name.localeCompare(b.name));
   const statuses = [...new Set(data.keepers.map((keeper: any) => keeper.status).filter(Boolean))].sort();
 
-  const filtered = useMemo(() => {
-    const term = query.trim().toLowerCase();
-    const rows = data.keepers.filter((keeper: any) => {
+  const term = query.trim().toLowerCase();
+  const filtered = data.keepers
+    .filter((keeper: any) => {
       const teamMatch = team === "all" || keeper.franchise_id === team;
       const yearMatch = year === "all" || String(keeper.season) === year;
       const statusMatch = status === "all" || keeper.status === status;
@@ -40,9 +39,8 @@ function View() {
           .toLowerCase()
           .includes(term);
       return teamMatch && yearMatch && statusMatch && textMatch;
-    });
-
-    return rows.sort((a: any, b: any) => {
+    })
+    .sort((a: any, b: any) => {
       let left: any = a[sortKey];
       let right: any = b[sortKey];
       if (sortKey === "cost") {
@@ -54,13 +52,12 @@ function View() {
       const comparison = left < right ? -1 : left > right ? 1 : 0;
       return direction === "asc" ? comparison : -comparison;
     });
-  }, [data.keepers, team, year, status, query, sortKey, direction]);
 
-  const teamSummary = useMemo(() => {
-    const counts = new Map<string, number>();
-    filtered.forEach((keeper: any) => counts.set(keeper.franchise, (counts.get(keeper.franchise) || 0) + 1));
-    return [...counts.entries()].sort((a, b) => b[1] - a[1]);
-  }, [filtered]);
+  const counts = new Map<string, number>();
+  filtered.forEach((keeper: any) =>
+    counts.set(keeper.franchise, (counts.get(keeper.franchise) || 0) + 1),
+  );
+  const teamSummary = [...counts.entries()].sort((a, b) => b[1] - a[1]);
 
   function sort(column: SortKey) {
     if (sortKey === column) setDirection((current) => (current === "asc" ? "desc" : "asc"));
@@ -197,5 +194,5 @@ function View() {
 }
 
 export default function Keepers() {
-  return <Providers><View /></Providers>;
+  return <View />;
 }
