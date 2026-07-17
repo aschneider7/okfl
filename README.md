@@ -1,27 +1,21 @@
-# OKFL OS v0.9.1 — Global Search Fix & Utility Page Redesign
+# OKFL OS v1.0.0 — Home 2.0 & Trade Center
 
-## Fixed
-- Global corner search now receives the OKFL data context on every route
-- Command palette works from Franchises, Keepers, Rules, Time Machine, and every other page
-- Keyboard shortcuts `/`, Ctrl+K, and Cmd+K remain supported
+## Home 2.0
+- NFL-style command center
+- All-time scoring record
+- 2025 standings
+- Legacy leaderboard
+- Recent trades
+- Weekly scoring records
+- Search Engine 3.0 preserved
 
-## Keeper Center
-- Filter by franchise, season, status, and player text
-- Sort by season, franchise, player, cost, keeper year, or status
-- Team keeper-volume leaderboard
-- Cleaner badges and responsive table layout
+## Trade Center
+- Full historical trade archive
+- Filters by year, team, and player
+- Custom multi-player trade analyzer
+- Player autocomplete
+- Keeper cost and keeper-year inputs
+- Current-impact, keeper-value, OKFL-history, and championship breakdown
+- Winner, fairness grade, score difference, and written reasons
 
-## Time Machine
-- Broadcast-style season/week selector
-- Archived matchup scoreboards
-- Weekly top scorer, average, closest game, and biggest win
-- Season standings context
-
-## Rulebook
-- Searchable rules
-- Category filters
-- Expandable rule cards
-- Rulebook index and improved visual hierarchy
-
-## Deploy
-Replace the repository files, commit, and redeploy through Vercel.
+The analyzer is an OKFL opinion model, not a guarantee of future player performance.
