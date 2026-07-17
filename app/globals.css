@@ -429,3 +429,9 @@ body{background:linear-gradient(180deg,#f7f8fa 0,#eef1f4 480px,#e9edf1 100%)}
   .tradeAssetRow{grid-template-columns:1fr}
   .keeperEligibilityControl{min-height:48px}
 }
+
+/* v1.0.2 future-facing trade model */
+.tradeAnalyzer>header>button:disabled{opacity:.7;cursor:wait}
+.tradeAnalyzeError{margin:14px 18px 0;border:1px solid #fecaca;background:#fff1f2;color:#991b1b;padding:11px 13px;font-size:12px;font-weight:800}
+.tradeFactors{grid-template-columns:1fr 1fr}
+.tradeReasons a{border:1px solid #cad5e3;background:#071a36;color:#fff;padding:7px 10px;font-size:10px;text-decoration:none}

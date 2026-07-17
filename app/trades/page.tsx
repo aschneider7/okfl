@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useData } from "@/components/DataProvider";
 import { Loading, Page } from "@/components/Page";
-import { analyzeTrade, type AnalyzerAsset } from "@/lib/tradeAnalyzer";
+import type { AnalyzerAsset } from "@/lib/futureTradeAnalyzer";
 
 const blank = (): AnalyzerAsset => ({
   player: "",
@@ -86,6 +86,8 @@ export default function TradesPage() {
   const [sideA, setSideA] = useState<AnalyzerAsset[]>([blank()]);
   const [sideB, setSideB] = useState<AnalyzerAsset[]>([blank()]);
   const [result, setResult] = useState<any>(null);
+  const [analyzing, setAnalyzing] = useState(false);
+  const [analyzeError, setAnalyzeError] = useState("");
   const [year, setYear] = useState("all");
   const [team, setTeam] = useState("all");
   const [query, setQuery] = useState("");
@@ -119,7 +121,7 @@ export default function TradesPage() {
         <div>
           <span className="eyebrow">Front-office decision lab</span>
           <h2>Historical deals + custom analyzer</h2>
-          <p>The model weighs current impact, keeper eligibility, keeper cost, remaining keeper window, OKFL production, and championship context.</p>
+          <p>The model is future-facing only: live 2QB market value, age-adjusted consensus rank, keeper eligibility, keeper round, and remaining keeper years. Past OKFL history is not used.</p>
         </div>
         <div className="tradeHeroStats">
           <div><b>{data.trade_analysis.length}</b><span>Trades</span></div>
@@ -131,8 +133,33 @@ export default function TradesPage() {
       <section className="tradeAnalyzer">
         <header>
           <div><span className="eyebrow">Custom analyzer</span><h2>Build your trade</h2></div>
-          <button type="button" onClick={() => setResult(analyzeTrade(data, sideA, sideB))}>Analyze trade</button>
+          <button
+            type="button"
+            disabled={analyzing}
+            onClick={async () => {
+              setAnalyzing(true);
+              setAnalyzeError("");
+              try {
+                const response = await fetch("/api/trade/analyze", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ sideA, sideB }),
+                });
+                const body = await response.json();
+                if (!response.ok) throw new Error(body.error || "Trade analysis failed.");
+                setResult(body);
+              } catch (error) {
+                setResult(null);
+                setAnalyzeError(error instanceof Error ? error.message : String(error));
+              } finally {
+                setAnalyzing(false);
+              }
+            }}
+          >
+            {analyzing ? "Pulling live values…" : "Analyze trade"}
+          </button>
         </header>
+        {analyzeError && <div className="tradeAnalyzeError">{analyzeError}</div>}
         <div className="tradeBuilder">
           {(["A", "B"] as const).map((side) => {
             const rows = side === "A" ? sideA : sideB;
@@ -152,7 +179,7 @@ export default function TradesPage() {
         {result && (
           <section className="tradeVerdict">
             <header>
-              <div><span className="eyebrow">Model verdict</span><h2>{result.winner === "Even" ? "Essentially even" : `${result.winner} wins`}</h2><p>{result.grade} • {result.difference.toFixed(1)} value-point difference</p></div>
+              <div><span className="eyebrow">Model verdict</span><h2>{result.winner === "Even" ? "Essentially even" : `${result.winner} wins`}</h2><p>{result.grade} • {Math.round(result.difference).toLocaleString()} value-point difference • {result.format} market dated {result.marketDate || "current"}</p></div>
               <span className="tradeGrade">{result.grade}</span>
             </header>
             <div className="tradeResultGrid">
@@ -160,22 +187,20 @@ export default function TradesPage() {
                 <article className={result.winner === side.label ? "winner" : ""} key={side.label}>
                   <div className="tradeResultTop"><b>{side.label}</b><strong>{side.total.toFixed(1)}</strong></div>
                   <div className="tradeFactors">
-                    <div><span>Current</span><b>{side.currentImpact.toFixed(1)}</b></div>
-                    <div><span>Keeper</span><b>{side.keeperValue.toFixed(1)}</b></div>
-                    <div><span>OKFL history</span><b>{side.historicalValue.toFixed(1)}</b></div>
-                    <div><span>Titles</span><b>{side.championshipValue.toFixed(1)}</b></div>
+                    <div><span>Market value</span><b>{Math.round(side.marketValue).toLocaleString()}</b></div>
+                    <div><span>Keeper bonus</span><b>{Math.round(side.keeperValue).toLocaleString()}</b></div>
                   </div>
                   {side.assets.map((asset: any) => (
                     <div className="assetResult" key={asset.player}>
-                      <header><b>{asset.player}</b><strong>{asset.total.toFixed(1)}</strong></header>
-                      <span>{asset.position} • {asset.nflTeam}</span>
+                      <header><b>{asset.player}</b><strong>{Math.round(asset.total).toLocaleString()}</strong></header>
+                      <span>{asset.position} • {asset.nflTeam} • Age {asset.age ?? "—"} • 2QB rank {asset.marketRank ?? "—"}</span>
                       <ul>{asset.notes.map((note: string) => <li key={note}>{note}</li>)}</ul>
                     </div>
                   ))}
                 </article>
               ))}
             </div>
-            <div className="tradeReasons"><b>Why:</b>{result.reasons.map((reason: string) => <span key={reason}>{reason}</span>)}</div>
+            <div className="tradeReasons"><b>Why:</b>{result.reasons.map((reason: string) => <span key={reason}>{reason}</span>)}<a href={result.sourceUrl} target="_blank" rel="noreferrer">Source: {result.source} ↗</a></div>
           </section>
         )}
       </section>
