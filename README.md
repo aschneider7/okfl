@@ -1,34 +1,37 @@
-# OKFL OS v0.6.7 — Commissioner Repair Center
+# OKFL OS v0.7.0 — Search Engine 2.0 & Franchise Profiles
 
-This update makes unresolved Sleeper identity issues editable directly inside the password-protected Commissioner tab.
+## Search Engine 2.0
+- Global command palette available from every page
+- Open with `/`, `Ctrl+K`, or `Cmd+K`
+- Predictive fuzzy search across players, franchises, managers, seasons and major sections
+- Keyboard navigation
+- Direct navigation to full franchise scouting reports
+- Existing natural-language and live NFL search remain on the homepage
 
-## New capabilities
+## Franchise Profiles 2.0
+- Dedicated route for every franchise: `/franchises/F01` through `/franchises/F10`
+- Original dynamic tags ranked against league behavior
+- Unique signature identity for each franchise
+- Eight-dimension Franchise DNA
+- Career record, win rate, PF, PA, titles, runner-ups, average finish and Legacy Score
+- Best weekly score and biggest win
+- Final-finish timeline
+- Regular-season history
+- Draft grades
+- Recent trades and keeper decisions
 
-- Assign an unresolved Sleeper user to F01–F10
-- Assign an orphaned roster directly to F01–F10
-- Add an optional commissioner note to each correction
-- Save verified identity aliases permanently in Supabase
-- Reuse saved corrections during every later Sleeper sync
-- Update existing user, roster, and matchup rows immediately
-- View saved mappings
-- View a permanent commissioner audit log
-- See a healthy status when all identities are resolved
-
-## Required migration
-
-After `001_okfl_schema.sql`, run:
-
-```text
-supabase/002_commissioner_repairs.sql
-```
-
-Open the file and paste its SQL contents into Supabase SQL Editor. Do not paste only the filename.
+## Tag inputs
+Tags use actual league-wide rankings for:
+- trade volume
+- keeper usage
+- late-round hits
+- win percentage
+- scoring
+- final-finish quality
+- consistency
+- weekly volatility
+- positional draft preferences
+- championships and runner-up history
 
 ## Deploy
-
-1. Run the second SQL migration.
-2. Replace the GitHub repository files with this package.
-3. Commit and redeploy in Vercel.
-4. Open `/commissioner`.
-5. Resolve each issue using the new dropdowns.
-6. Run **Sync Sleeper Now** again.
+Replace the repository files with this package, commit, and redeploy through Vercel.

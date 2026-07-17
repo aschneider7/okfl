@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { CommandPalette } from "@/components/CommandPalette";
 
 const links = [
   ["/", "Home", "⌂"],
@@ -29,7 +30,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div>
             <small>Obama Keeper Fantasy League</small>
             <b>OKFL OS</b>
-            <span>v0.6.5</span>
+            <span>v0.7.0</span>
           </div>
         </div>
         <nav>
@@ -44,11 +45,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <header className="mobileHeader">
         <button onClick={() => setOpen(!open)} aria-label="Open navigation">☰</button>
-        <div><b>OKFL OS</b><span>v0.6.5</span></div>
-        <span className="mobileStatus">Live</span>
+        <div><b>OKFL OS</b><span>v0.7.0</span></div>
+        <CommandPalette />
       </header>
 
-      <main className="main">{children}</main>
+      <main className="main"><div className="desktopCommand"><CommandPalette /></div>{children}</main>
       {open && <button className="backdrop" onClick={() => setOpen(false)} aria-label="Close menu" />}
     </div>
   );

@@ -349,7 +349,7 @@ export function SearchHome() {
           label: franchise.display_name,
           detail: `Current manager: ${franchise.current_manager}`,
           query: franchise.name,
-          href: "/franchises",
+          href: `/franchises/${franchise.id}`,
           score,
         });
       }
@@ -583,7 +583,7 @@ export function SearchHome() {
           type: "Franchise",
           title: franchise.display_name,
           detail: `${metric.wins}-${metric.losses}${metric.ties ? `-${metric.ties}` : ""} career record • ${Number(metric.win_pct).toFixed(1)}% win rate • ${metric.championships} title${metric.championships === 1 ? "" : "s"}`,
-          href: "/franchises",
+          href: `/franchises/${franchise.id}`,
           stats: [
             ["PF", Number(metric.pf).toFixed(1)],
             ["PA", Number(metric.pa).toFixed(1)],
