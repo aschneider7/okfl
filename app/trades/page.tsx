@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useData } from "@/components/DataProvider";
 import { Loading, Page } from "@/components/Page";
 import type { AnalyzerAsset } from "@/lib/futureTradeAnalyzer";
@@ -86,11 +86,19 @@ export default function TradesPage() {
   const [sideA, setSideA] = useState<AnalyzerAsset[]>([blank()]);
   const [sideB, setSideB] = useState<AnalyzerAsset[]>([blank()]);
   const [result, setResult] = useState<any>(null);
+  const [marketPlayers,setMarketPlayers] = useState<any[]>([]);
   const [analyzing, setAnalyzing] = useState(false);
   const [analyzeError, setAnalyzeError] = useState("");
   const [year, setYear] = useState("all");
   const [team, setTeam] = useState("all");
   const [query, setQuery] = useState("");
+
+  useEffect(()=>{
+    fetch("/api/trade-values",{cache:"no-store"})
+      .then((response)=>response.ok?response.json():Promise.reject())
+      .then((body)=>setMarketPlayers(body.players||body.values||body.data||[]))
+      .catch(()=>setMarketPlayers([]));
+  },[]);
 
   if (!data) return <Loading />;
 
@@ -121,7 +129,7 @@ export default function TradesPage() {
         <div>
           <span className="eyebrow">Front-office decision lab</span>
           <h2>Historical deals + custom analyzer</h2>
-          <p>The model is future-facing only: live 2QB market value, age-adjusted consensus rank, keeper eligibility, keeper round, and remaining keeper years. Past OKFL history is not used.</p>
+          <p>The model is future-facing only: live 2QB market value, age-adjusted consensus rank, keeper eligibility, keeper round, and remaining keeper years. Past Keeper adj. is not used.</p>
         </div>
         <div className="tradeHeroStats">
           <div><b>{data.trade_analysis.length}</b><span>Trades</span></div>
