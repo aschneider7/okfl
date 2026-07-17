@@ -1,4 +1,6 @@
 
+import draftPlayerDepth from "./draft-player-depth.json";
+
 export type DraftManager = {
   slot: number;
   franchiseId: string;
@@ -97,7 +99,7 @@ export const projectedKeepers = [
   {franchiseId:"F07",player:"Dallas Goedert",round:15,position:"TE"},
 ];
 
-const starterTargets:Record<string,number>={QB:2,RB:2,WR:3,TE:1};
+const starterTargets:Record<string,number>={QB:2,RB:2,WR:3,TE:1,K:1,DEF:1};
 
 export function snakeSlot(round:number,pickInRound:number){
   return round%2===1?pickInRound:11-pickInRound;
@@ -279,9 +281,20 @@ export function fallbackPprPool():DraftPlayer[]{
     ["Hunter Henry","TE","NE",89,330,31],["Roschon Johnson","RB","CHI",90,300,25],
   ];
 
-  return rows.map((row)=>({
+  const rankedDepth=draftPlayerDepth.map((player,index)=>({
+    name:player.name,
+    position:player.position,
+    team:player.team,
+    pprRank:rows.length+index+1,
+    pprValue:Math.max(250,10000-(rows.length+index)*100),
+    age:null,
+    keeperEligible:true,
+    source:"2025-archive-depth",
+  }));
+
+  return [...rows.map((row)=>({
     name:String(row[0]),position:String(row[1]),team:String(row[2]),
     pprRank:Number(row[3]),pprValue:Number(row[4]),age:Number(row[5]),
     keeperEligible:true,source:"ppr-fallback"
-  }));
+  })),...rankedDepth];
 }

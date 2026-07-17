@@ -5,7 +5,7 @@ import { AppShell } from "@/components/AppShell";
 import { DataProvider } from "@/components/DataProvider";
 
 export const metadata: Metadata = {
-  title: "OKFL OS · Version 3",
+  title: "OKFL OS · Version 3.1",
   description: "Obama Keeper Fantasy League archive and analytics",
 };
 

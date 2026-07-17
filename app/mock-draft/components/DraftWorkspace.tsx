@@ -9,7 +9,7 @@ export function DraftWorkspace() {
       <div><span className="eyebrow">Player pool</span><h2>Best available</h2></div>
       <div className="playerPoolFilters">
         <select aria-label="Filter players by position" value={position} onChange={(event) => setPosition(event.target.value)}>
-          {["ALL", "QB", "RB", "WR", "TE"].map((value) => <option key={value}>{value}</option>)}</select>
+          {["ALL", "QB", "RB", "WR", "TE", "K", "DEF"].map((value) => <option key={value}>{value}</option>)}</select>
         <input aria-label="Search available players" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search player" />
       </div>
       <span className="availableCount"><b>{available.length}</b> available</span>

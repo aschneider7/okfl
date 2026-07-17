@@ -97,8 +97,18 @@
   .playerPoolHeader { grid-template-columns: 1fr auto; }
   .playerPoolFilters { grid-column: 1 / -1; }
   .draftRoomV3 .playerPoolFilters input { min-width: 0; width: 100%; }
-  .draftRoomV3 .draftV2PlayerGrid { grid-template-columns: 1fr; max-height: 390px; }
-  .draftRoomV3 .draftV2PlayerGrid>button { grid-template-columns: 32px 1fr 75px 38px; }
-  .draftRoomV3 .draftV2SelectionBar { grid-template-columns: 34px 1fr; }
+  .draftRoomV3 .draftV2PlayerGrid { grid-template-columns: 1fr; max-height: 440px; }
+  .draftRoomV3 .draftV2PlayerGrid>button { grid-template-columns: 36px 1fr 72px 40px; min-height: 54px; padding: 8px; }
+  .draftRoomV3 .playerCardIdentity b { font-size: 11px; }
+  .draftRoomV3 .playerCardIdentity span { font-size: 8px; }
+  .draftRoomV3 .draftV2SelectionBar {
+    bottom: calc(59px + env(safe-area-inset-bottom));
+    grid-template-columns: 34px 1fr auto;
+    left: 5px;
+    margin: 0;
+    position: fixed;
+    right: 5px;
+  }
+  .draftRoomV3 .draftV2SelectionBar>button { min-height: 42px; }
   .draftRoomV3 .draftV2SelectionBar .draftPlayerButton { grid-column: 1 / -1; }
 }

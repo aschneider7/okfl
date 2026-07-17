@@ -257,6 +257,7 @@ button { border-radius: 6px; }
 
 .mobileHeader>button:first-child { background: transparent !important; display: grid; gap: 3px; padding: 8px !important; }
 .mobileHeader>button:first-child span { background: #173349; display: block; height: 1px; width: 18px; }
+.mobileDock { display: none; }
 
 @media(max-width: 980px) and (min-width: 761px) {
   .shell .sidebar { width: 210px !important; }
@@ -264,14 +265,102 @@ button { border-radius: 6px; }
 }
 
 @media(max-width: 760px) {
+  body { padding-bottom: calc(62px + env(safe-area-inset-bottom)); }
   .shell .sidebar { width: min(280px, 88vw) !important; }
-  .shell .main { margin: 0 !important; padding: 16px 10px 40px !important; }
-  .mobileHeader { background: rgba(247, 249, 250, .96) !important; border-bottom: 1px solid var(--line); height: 56px !important; }
+  .shell .sidebar nav { overflow-y: auto; padding-bottom: 12px; }
+  .shell .main { margin: 0 !important; padding: 14px 9px 30px !important; }
+  .mobileHeader {
+    background: rgba(247, 249, 250, .96) !important;
+    border-bottom: 1px solid var(--line);
+    height: 54px !important;
+    padding: 0 10px !important;
+  }
+  .mobileDock {
+    align-items: stretch;
+    background: rgba(7, 26, 46, .97);
+    border-top: 1px solid #254358;
+    bottom: 0;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    left: 0;
+    padding: 5px 5px calc(5px + env(safe-area-inset-bottom));
+    position: fixed;
+    right: 0;
+    z-index: 80;
+  }
+  .mobileDock a {
+    align-items: center;
+    border-radius: 5px;
+    color: #7794a8;
+    display: flex;
+    flex-direction: column;
+    font-size: 7px;
+    font-weight: 800;
+    gap: 2px;
+    justify-content: center;
+    min-height: 45px;
+  }
+  .mobileDock a i { font-size: 6px; font-style: normal; }
+  .mobileDock a.active { background: #102f44; color: #70d8ff; }
   .pageHead { align-items: start; display: grid; gap: 6px; }
   .pageHead p { text-align: left; }
+  .pageHead h1 { font-size: 26px !important; }
+  .page { overflow: hidden; }
+  .page p, .page td, .page th, .page b, .page span { overflow-wrap: anywhere; }
+  .page input, .page select, .page textarea { font-size: 16px !important; min-height: 44px; }
+  .page button { min-height: 42px; }
   .home2Hero { padding: 25px 17px !important; }
+  .home2Hero h1 { font-size: 34px !important; }
+  .home2Actions { display: grid !important; }
+  .home2Actions a { text-align: center; }
   .home2FeatureScore { min-height: 170px !important; }
   .home2Panel>header { padding: 13px 14px !important; }
+  .home2Ticker {
+    display: flex !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory;
+  }
+  .home2Ticker>div { flex: 0 0 135px; scroll-snap-align: start; }
+  .home2Grid, .franchiseGrid, .profileGrid, .compareGrid, .tradeBuilder, .tradeResultGrid,
+  .detailGrid, .lowerGrid, .commissionerGrid, .commissionerActions { grid-template-columns: 1fr !important; }
+  .franchiseCard { padding: 15px !important; }
+  .profileIntro { display: grid !important; gap: 9px !important; }
+  .careerStrip { grid-template-columns: repeat(2, minmax(110px, 1fr)) !important; }
+  .insightCards, .commissionerStats { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .tableWrap {
+    margin-left: -2px;
+    margin-right: -2px;
+    max-width: calc(100vw - 16px);
+    overflow-x: auto !important;
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tableWrap table { min-width: 680px; }
+  .tableWrap th, .tableWrap td { padding: 10px 9px !important; white-space: nowrap; }
+  .tableWrap th:first-child, .tableWrap td:first-child {
+    background: #f8fafb;
+    left: 0;
+    position: sticky;
+    z-index: 2;
+  }
+  .tradeAssetRow { grid-template-columns: 1fr !important; }
+  .tradeSide+article { border-left: 0 !important; border-top: 1px solid var(--line); }
+  .tradeCards>article>div { grid-template-columns: 1fr !important; }
+  .search3Hero { border-radius: 10px !important; gap: 20px !important; padding: 23px 14px !important; }
+  .search3Copy h1 { font-size: 36px !important; }
+  .search3Input { border-radius: 8px !important; padding-left: 12px !important; }
+  .search3Examples { margin-left: -2px; margin-right: -2px; }
+  .search3Welcome, .zeroAnswer, .noAnswer, .answerLoading, .answerError { border-radius: 10px !important; padding: 18px !important; }
+  .command3Overlay { align-items: end; display: flex; padding: 0 !important; }
+  .command3 {
+    border-radius: 14px 14px 0 0 !important;
+    margin: auto 0 0 !important;
+    max-height: 88dvh;
+    width: 100%;
+  }
+  .command3Body { min-height: 0 !important; }
+  .command3List { max-height: 65dvh !important; }
+  .command3>footer { padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
 }
 
 @media(prefers-reduced-motion: reduce) {

@@ -17,6 +17,7 @@
 }
 
 .draftRoomV3 .draftV2BoardPanel h2 { font-size: 15px; margin: 2px 0 0; }
+.boardSwipeHint { display: none; }
 .draftRoomV3 .clockStatus {
   background: #102538;
   border: 1px solid #29445a;
@@ -114,8 +115,20 @@
 .draftRoomV3 .posDEF { background: #a8b1bd !important; }
 
 @media(max-width: 760px) {
-  .draftRoomV3 .draftV2BoardScroller { max-height: 610px; }
+  .draftRoomV3 .draftV2BoardPanel>header { padding: 10px; }
+  .draftRoomV3 .draftV2BoardPanel h2 { font-size: 14px; }
+  .boardSwipeHint { color: #7894a7; display: block; font-size: 7px; margin-top: 2px; }
+  .draftRoomV3 .draftV2BoardScroller {
+    max-height: 548px;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+  }
   .draftRoomV3 .draftV2ManagerRow,
-  .draftRoomV3 .draftV2Board { grid-template-columns: 30px repeat(10, 88px); min-width: 930px; }
-  .draftRoomV3 .draftV2Board { grid-auto-rows: 40px; grid-template-rows: repeat(17, 40px); }
+  .draftRoomV3 .draftV2Board { grid-template-columns: 30px repeat(10, 102px); min-width: 1058px; }
+  .draftRoomV3 .draftV2ManagerRow>div { scroll-snap-align: start; }
+  .draftRoomV3 .draftV2Board { grid-auto-rows: 45px; grid-template-rows: repeat(17, 45px); }
+  .draftRoomV3 .draftV2Player b { font-size: 8px; }
+  .draftRoomV3 .draftV2Player small { font-size: 6px; }
+  .draftRoomV3 .draftV2Player footer span { font-size: 5px; }
 }

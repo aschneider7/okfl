@@ -7,7 +7,7 @@ import {BoardCell} from "./BoardCell";
 export function DraftBoard() {
   const {board, complete, current, controlledFranchise, userOnClock, paused} = useDraft();
   return <section className="draftV2BoardPanel">
-    <header><div><span className="eyebrow">Official 2026 order</span><h2>Live draft board</h2></div>
+    <header><div><span className="eyebrow">Official 2026 order</span><h2>Live draft board</h2><span className="boardSwipeHint">Swipe to explore the full board →</span></div>
       <div className={`clockStatus ${userOnClock ? "yourTurn" : ""}`}>
         <span>{complete ? "Complete" : paused ? "Paused" : userOnClock ? "Your pick" : "On the clock"}</span><b>{current ? `${current.round}.${current.slot}` : "—"}</b>
       </div></header>

@@ -136,3 +136,12 @@
   .draftRoomV3 .draftV2Sidebar { min-height: 360px; }
   .draftSidebarPanel { max-height: 320px; }
 }
+
+@media(max-width: 760px) {
+  .draftRoomV3 .draftV2Sidebar { border-radius: 7px; min-height: 0; }
+  .draftRoomV3 .draftV2OnClock { padding: 10px 11px; }
+  .draftRoomV3 .draftV2OnClock h2 { font-size: 17px; }
+  .draftSidebarTabs button { font-size: 7px; min-height: 40px; }
+  .draftSidebarPanel { max-height: 235px; }
+  .draftRoomV3 .draftV2Recommendations>button { min-height: 48px; }
+}

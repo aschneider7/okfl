@@ -1,12 +1,12 @@
 {
   "name": "okfl-os",
-  "version": "2.0.0",
+  "version": "3.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "validate": "node scripts/validate-data.mjs"
+    "validate": "node scripts/validate-data.mjs && node scripts/validate-draft.mjs"
   },
   "dependencies": {
     "next": "16.2.10",

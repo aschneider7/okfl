@@ -19,6 +19,8 @@ const links = [
   ["/commissioner", "Commissioner", "11"],
 ] as const;
 
+const mobileLinks = links.filter(([href]) => ["/", "/trades", "/mock-draft", "/keepers", "/records"].includes(href));
+
 export function AppShell({children}: {children: React.ReactNode}) {
   const path = usePathname();
   const [open, setOpen] = useState(false);
@@ -27,7 +29,7 @@ export function AppShell({children}: {children: React.ReactNode}) {
     <aside className={open ? "sidebar open" : "sidebar"}>
       <div className="brand">
         <div className="brandMark">O</div>
-        <div className="brandCopy"><small>Obama Keeper Fantasy League</small><b>OKFL OS</b><span>Version 3</span></div>
+        <div className="brandCopy"><small>Obama Keeper Fantasy League</small><b>OKFL OS</b><span>Version 3.1</span></div>
       </div>
       <div className="navLabel">League workspace</div>
       <nav>{links.map(([href, label, index]) => {
@@ -41,11 +43,19 @@ export function AppShell({children}: {children: React.ReactNode}) {
 
     <header className="mobileHeader">
       <button onClick={() => setOpen(!open)} aria-label="Open navigation"><span /><span /><span /></button>
-      <div><b>OKFL OS</b><span>Version 3</span></div>
+      <div><b>OKFL OS</b><span>Version 3.1</span></div>
       <CommandPalette />
     </header>
 
     <main className="main"><div className="desktopCommand"><CommandPalette /></div>{children}</main>
+    <nav className="mobileDock" aria-label="Primary mobile navigation">
+      {mobileLinks.map(([href, label, index]) => {
+        const active = path === href || (href !== "/" && path.startsWith(href));
+        return <Link key={href} href={href} className={active ? "active" : ""}>
+          <i>{index}</i><span>{label === "Draft Room" ? "Draft" : label}</span>
+        </Link>;
+      })}
+    </nav>
     {open && <button className="backdrop" onClick={() => setOpen(false)} aria-label="Close menu" />}
   </div>;
 }

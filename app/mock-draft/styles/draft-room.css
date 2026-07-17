@@ -204,11 +204,14 @@
   .main:has(.draftRoomV3) .pageHead { display: block; margin: 4px 4px 10px; }
   .main:has(.draftRoomV3) .pageHead p { margin-top: 5px; text-align: left; }
   .draftRoomV3 { border-radius: 11px; padding: 7px; }
-  .draftRoomV3 .draftV2Setup { display: grid; gap: 10px; padding: 12px; }
+  .draftRoomV3 .draftV2Setup { display: grid; gap: 10px; padding: 12px; position: sticky; top: 58px; z-index: 35; }
   .draftRoomV3 .draftV2TeamSelect { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
   .draftRoomV3 .draftV2TeamSelect label { grid-column: 1 / -1; }
   .draftRoomV3 .draftV2TeamSelect select,
   .draftRoomV3 .draftV2TeamSelect button { width: 100%; }
-  .draftRoomV3 .draftV2Identity { grid-template-columns: 34px 1fr; }
-  .draftRoomV3 .identityMeters { grid-column: 1 / -1; }
+  .draftRoomV3 .draftV2Identity { grid-template-columns: 34px 1fr; margin: 6px 0; }
+  .draftRoomV3 .identityMeters { display: none; }
+  .draftRoomV3 .draftV2Layout { display: flex; flex-direction: column; }
+  .draftRoomV3 .draftV2Sidebar { min-height: 0; order: -1; }
+  .draftRoomV3:has(.draftV2SelectionBar) { padding-bottom: 150px; }
 }
