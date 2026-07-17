@@ -30,12 +30,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div>
             <small>Obama Keeper Fantasy League</small>
             <b>OKFL OS</b>
-            <span>v0.7.0</span>
+            <span>v0.8.0</span>
           </div>
         </div>
         <nav>
           {links.map(([href, label, icon]) => (
-            <Link key={href} href={href} onClick={() => setOpen(false)} className={path === href ? "active" : ""}>
+            <Link key={href} href={href} onClick={() => setOpen(false)} className={path === href || (href !== "/" && path.startsWith(href)) ? "active" : ""}>
               <i>{icon}</i><span>{label}</span>
             </Link>
           ))}
@@ -45,7 +45,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <header className="mobileHeader">
         <button onClick={() => setOpen(!open)} aria-label="Open navigation">☰</button>
-        <div><b>OKFL OS</b><span>v0.7.0</span></div>
+        <div><b>OKFL OS</b><span>v0.8.0</span></div>
         <CommandPalette />
       </header>
 

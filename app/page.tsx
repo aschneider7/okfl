@@ -1,3 +1,6 @@
-"use client";import Providers from "./providers";import {SearchHome} from "@/components/SearchHome";import {useData} from "@/components/DataProvider";
-function Snapshot(){const {data}=useData();if(!data)return null;const live=data.live_2026;return <><div className="statGrid"><div className="card stat"><b>{data.franchises.length}</b><span>Franchises</span></div><div className="card stat"><b>{data.metadata.games}</b><span>Archived team games</span></div><div className="card stat"><b>{data.metadata.trades}</b><span>Archived trades</span></div><div className="card stat"><b>{data.players.length}</b><span>Players</span></div></div>{live&&<section className="liveLeagueCard card"><div><span className="eyebrow">Live from Sleeper</span><h2>2026 league connection</h2><p>Last synced {new Date(live.synced_at).toLocaleString()} • NFL Week {live.nfl_state?.week??"—"}</p></div><div className="liveLeagueStats"><div><b>{live.trades?.length??0}</b><span>Trades</span></div><div><b>{live.transactions?.length??0}</b><span>Transactions</span></div><div><b>{live.matchups?.length??0}</b><span>Team-week rows</span></div></div></section>}</>};
-export default function Home(){return <Providers><SearchHome/><Snapshot/></Providers>}
+"use client";
+import {Suspense} from 'react';
+import Providers from './providers';
+import {SearchEngine3} from '@/components/SearchEngine3';
+function SearchFallback(){return <div className="search3Loading">Building the OKFL knowledge index…</div>}
+export default function Home(){return <Providers><Suspense fallback={<SearchFallback/>}><SearchEngine3/></Suspense></Providers>}
