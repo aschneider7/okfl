@@ -46,12 +46,49 @@ async function sleeper<T>(path: string): Promise<T> {
   return response.json() as Promise<T>;
 }
 
-function mapUsers(users: any[]) {
+async function loadCommissionerOverrides() {
+  const supabase=createAdminSupabase();
+  const [aliasesResult,rostersResult]=await Promise.all([
+    supabase
+      .from("identity_aliases")
+      .select("external_user_id,username,display_name,team_name,franchise_id")
+      .eq("league_id",OKFL_LEAGUE_ID)
+      .eq("season",SYNC_SEASON)
+      .eq("platform","sleeper")
+      .eq("verified",true),
+    supabase
+      .from("roster_identity_overrides")
+      .select("roster_id,franchise_id")
+      .eq("league_id",OKFL_LEAGUE_ID)
+      .eq("season",SYNC_SEASON),
+  ]);
+  if(aliasesResult.error) throw aliasesResult.error;
+  if(rostersResult.error) throw rostersResult.error;
+
+  const userById:Record<string,string>={};
+  const aliasMap:Record<string,string>={};
+  for(const row of aliasesResult.data??[]) {
+    if(row.external_user_id) userById[row.external_user_id]=row.franchise_id;
+    for(const value of [row.username,row.display_name,row.team_name]) {
+      if(value) aliasMap[norm(value)]=row.franchise_id;
+    }
+  }
+  const rosterMap:Record<string,string>={};
+  for(const row of rostersResult.data??[]) {
+    rosterMap[String(row.roster_id)]=row.franchise_id;
+  }
+  return {userById,aliasMap,rosterMap};
+}
+
+function mapUsers(users: any[], saved:{userById:Record<string,string>;aliasMap:Record<string,string>}) {
   const userToFranchise: Record<string,string> = {};
   const unresolved: any[] = [];
   const mappedUsers = users.map((user) => {
     const candidates = [user.username, user.display_name, user.metadata?.team_name];
-    const franchiseId = candidates.map(norm).map((value) => identityAliases[value]).find(Boolean) ?? null;
+    const franchiseId =
+      saved.userById[user.user_id] ??
+      candidates.map(norm).map((value) => saved.aliasMap[value] ?? identityAliases[value]).find(Boolean) ??
+      null;
     if (franchiseId) userToFranchise[user.user_id] = franchiseId;
     else unresolved.push({
       user_id:user.user_id,
@@ -68,11 +105,11 @@ function mapUsers(users: any[]) {
   return { mappedUsers, userToFranchise, unresolved };
 }
 
-function buildRosterMap(rosters: any[], userToFranchise: Record<string,string>) {
+function buildRosterMap(rosters: any[], userToFranchise: Record<string,string>, savedRosterMap:Record<string,string>) {
   const rosterToFranchise: Record<string,string> = {};
   const unresolved: any[] = [];
   const mappedRosters = rosters.map((roster) => {
-    const franchiseId = userToFranchise[roster.owner_id] ?? null;
+    const franchiseId = savedRosterMap[String(roster.roster_id)] ?? userToFranchise[roster.owner_id] ?? null;
     if (franchiseId) rosterToFranchise[String(roster.roster_id)] = franchiseId;
     else unresolved.push({ roster_id:roster.roster_id, owner_id:roster.owner_id });
     return {
@@ -368,8 +405,13 @@ export async function syncSleeper() {
       Promise.all(weeks.map((week)=>sleeper<any[]>(`/league/${SLEEPER_LEAGUE_ID}/matchups/${week}`).catch(()=>[])))
     ]);
 
-    const { mappedUsers,userToFranchise,unresolved:unresolvedUsers } = mapUsers(users);
-    const { mappedRosters,rosterToFranchise,unresolved:unresolvedRosters } = buildRosterMap(rosters,userToFranchise);
+    const savedOverrides=await loadCommissionerOverrides();
+    const { mappedUsers,userToFranchise,unresolved:unresolvedUsers } = mapUsers(users,savedOverrides);
+    const { mappedRosters,rosterToFranchise,unresolved:unresolvedRosters } = buildRosterMap(
+      rosters,
+      userToFranchise,
+      savedOverrides.rosterMap
+    );
     const { mapped:transactions,mappedTrades } = mapTransactions(transactionWeeks,rosterToFranchise);
     const matchups = mapMatchups(matchupWeeks,rosterToFranchise);
 
