@@ -1,4 +1,4 @@
-# OKFL OS v0.7.0 — Search Engine 2.0 & Franchise Profiles
+# OKFL OS v0.7.1 — Search Engine 2.0 & Franchise Profiles
 
 ## Search Engine 2.0
 - Global command palette available from every page
@@ -35,3 +35,9 @@ Tags use actual league-wide rankings for:
 
 ## Deploy
 Replace the repository files with this package, commit, and redeploy through Vercel.
+
+
+## v0.7.1 deployment fix
+- Added `draft_grades` to the shared `OKFLData` type.
+- Added the full set of Franchise DNA metric fields to the shared `Metric` type.
+- Fixes the Vercel TypeScript failure in `app/franchises/[id]/page.tsx`.
