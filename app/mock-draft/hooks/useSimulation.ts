@@ -1,5 +1,5 @@
 import {explainPick, overallToRoundSlot, pickGrade, teamRoster} from "@/lib/draftSimulator";
-import type {DraftManager, DraftPick, DraftPlayer, SimulationSpeed} from "../types";
+import type {DraftManager, DraftMode, DraftPick, DraftPlayer, SimulationSpeed} from "../types";
 import {rankRecommendations} from "./useRecommendations";
 
 export const SIMULATION_DELAYS: Record<SimulationSpeed, number> = {normal: 320, turbo: 55};
@@ -35,6 +35,7 @@ export function chooseAiPlayer(params: {
   available: DraftPlayer[];
   manager: DraftManager;
   simulationSeed: number;
+  draftMode: DraftMode;
 }) {
   return rankRecommendations(params)[0]?.player ?? null;
 }

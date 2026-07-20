@@ -3,7 +3,7 @@ import {PlayerCard} from "./PlayerCard";
 
 export function DraftWorkspace() {
   const {available, filteredPlayers, position, setPosition, query, setQuery, recommendations,
-    selectedPlayer, setSelectedPlayer, userOnClock} = useDraft();
+    selectedPlayer, setSelectedPlayer, userOnClock, watchlist, queue, toggleWatchlist, toggleQueue} = useDraft();
   return <section className="draftV2Workspace">
     <header className="playerPoolHeader">
       <div><span className="eyebrow">Player pool</span><h2>Best available</h2></div>
@@ -16,6 +16,7 @@ export function DraftWorkspace() {
     </header>
     <div className="draftV2PlayerGrid">{filteredPlayers.map((player) => <PlayerCard key={player.name} player={player}
       recommendation={recommendations.find((row) => row.player.name === player.name)}
-      selected={selectedPlayer?.name === player.name} disabled={!userOnClock} onSelect={() => setSelectedPlayer(player)} />)}</div>
+      selected={selectedPlayer?.name === player.name} disabled={!userOnClock} watched={watchlist.includes(player.name)} queued={queue.includes(player.name)}
+      onSelect={() => setSelectedPlayer(player)} onWatch={() => toggleWatchlist(player)} onQueue={() => toggleQueue(player)} />)}</div>
   </section>;
 }

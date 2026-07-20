@@ -1,6 +1,6 @@
-import type {DraftManager, DraftPick, DraftPlayer} from "@/lib/draftSimulator";
+import type {DraftManager, DraftMode, DraftPick, DraftPlayer} from "@/lib/draftSimulator";
 
-export type {DraftManager, DraftPick, DraftPlayer};
+export type {DraftManager, DraftMode, DraftPick, DraftPlayer};
 
 export type Recommendation = {player: DraftPlayer; score: number};
 export type SimulationSpeed = "normal" | "turbo";

@@ -4,17 +4,19 @@ import {BestAvailable} from "./BestAvailable";
 import {ManagerIntel} from "./ManagerIntel";
 import {RecentPicks} from "./RecentPicks";
 import {RosterPanel} from "./RosterPanel";
+import {StrategyPanel} from "./StrategyPanel";
 
-type SidebarTab = "recommendations" | "roster" | "recent" | "intel";
+type SidebarTab = "recommendations" | "strategy" | "roster" | "recent" | "intel";
 
 export function DraftSidebar() {
   const [activeTab, setActiveTab] = useState<SidebarTab>("recommendations");
-  const {userOnClock, currentManager, complete, started, paused, recommendations, controlledRoster, recentPicks} = useDraft();
+  const {userOnClock, currentManager, complete, started, paused, recommendations, controlledRoster, recentPicks, queuedPlayers, watchedPlayers} = useDraft();
   const status = userOnClock ? "Make your selection from the player pool."
     : complete ? "The full mock is complete." : paused ? "Simulation paused. Resume when ready." : started ? "AI managers are advancing the board."
       : "Select a franchise and enter the draft.";
   const tabs: {id: SidebarTab; label: string; count?: number}[] = [
     {id: "recommendations", label: "Best", count: recommendations.length},
+    {id: "strategy", label: "Queue", count: queuedPlayers.length + watchedPlayers.length},
     {id: "roster", label: "Roster", count: controlledRoster.length},
     {id: "recent", label: "Feed", count: recentPicks.length},
     {id: "intel", label: "Intel"},
@@ -33,6 +35,7 @@ export function DraftSidebar() {
     </div>
     <div className="draftSidebarPanel" role="tabpanel">
       {activeTab === "recommendations" && <BestAvailable />}
+      {activeTab === "strategy" && <StrategyPanel />}
       {activeTab === "roster" && <RosterPanel />}
       {activeTab === "recent" && <RecentPicks />}
       {activeTab === "intel" && <ManagerIntel />}

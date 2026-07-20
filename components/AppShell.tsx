@@ -29,7 +29,7 @@ export function AppShell({children}: {children: React.ReactNode}) {
     <aside className={open ? "sidebar open" : "sidebar"}>
       <div className="brand">
         <div className="brandMark">O</div>
-        <div className="brandCopy"><small>Obama Keeper Fantasy League</small><b>OKFL OS</b><span>Version 3.1</span></div>
+        <div className="brandCopy"><small>Obama Keeper Fantasy League</small><b>OKFL OS</b><span>Version 3.2</span></div>
       </div>
       <div className="navLabel">League workspace</div>
       <nav>{links.map(([href, label, index]) => {
@@ -43,7 +43,7 @@ export function AppShell({children}: {children: React.ReactNode}) {
 
     <header className="mobileHeader">
       <button onClick={() => setOpen(!open)} aria-label="Open navigation"><span /><span /><span /></button>
-      <div><b>OKFL OS</b><span>Version 3.1</span></div>
+      <div><b>OKFL OS</b><span>Version 3.2</span></div>
       <CommandPalette />
     </header>
 

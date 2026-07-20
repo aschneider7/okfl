@@ -1,12 +1,12 @@
 {
   "name": "okfl-os",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "validate": "node scripts/validate-data.mjs && node scripts/validate-draft.mjs"
+    "validate": "node scripts/validate-data.mjs && node scripts/validate-draft.mjs && node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/validate-trade.mts"
   },
   "dependencies": {
     "next": "16.2.10",

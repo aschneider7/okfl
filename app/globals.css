@@ -17,6 +17,7 @@ body{background:radial-gradient(circle at 88% 0%,rgba(30,94,255,.08),transparent
 a{text-decoration:none;color:inherit}
 button,input,select{font:inherit}
 button{cursor:pointer}
+.appError{display:grid;place-items:start;align-content:center;min-height:100vh;max-width:680px;margin:auto;padding:32px}.appError span{color:var(--blue);font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.appError h1{margin:8px 0;font-size:clamp(32px,5vw,54px)}.appError p{color:var(--muted);line-height:1.6}.appError button{border:0;border-radius:8px;background:var(--blue);color:#fff;padding:12px 18px;font-weight:900}
 .shell{min-height:100vh}
 .sidebar{position:fixed;inset:0 auto 0 0;width:258px;background:linear-gradient(180deg,#09235a 0%,#123eaf 55%,#1d58e5 100%);color:white;padding:26px 18px;z-index:50;display:flex;flex-direction:column;box-shadow:14px 0 36px rgba(9,35,90,.16)}
 .brand{display:flex;align-items:center;gap:12px;padding:0 8px 28px}
@@ -435,6 +436,14 @@ body{background:linear-gradient(180deg,#f7f8fa 0,#eef1f4 480px,#e9edf1 100%)}
 .tradeAnalyzeError{margin:14px 18px 0;border:1px solid #fecaca;background:#fff1f2;color:#991b1b;padding:11px 13px;font-size:12px;font-weight:800}
 .tradeFactors{grid-template-columns:1fr 1fr}
 .tradeReasons a{border:1px solid #cad5e3;background:#071a36;color:#fff;padding:7px 10px;font-size:10px;text-decoration:none}
+
+/* Trade Machine 2.0 */
+.tradeHeaderActions{display:flex;gap:8px}.tradeAnalyzer>header .tradeHeaderActions button{border:0;border-radius:5px;background:#b11226;color:#fff;padding:11px 16px;font-weight:900}.tradeAnalyzer>header .tradeHeaderActions button.secondary{border:1px solid rgba(255,255,255,.3);background:transparent}.tradeShareMessage{margin:14px 18px 0;border:1px solid #bae6fd;background:#f0f9ff;color:#075985;padding:11px 13px;font-size:12px;font-weight:800}
+.tradeTeamContext{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;padding:11px;border:1px solid #dce5ef;background:#f6f8fb}.tradeTeamContext label{display:grid;gap:4px}.tradeTeamContext label>span,.tradeNeeds>span{color:#68768a;font-size:8px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.tradeTeamContext select{height:38px;border:1px solid #c9d4e2;background:#fff;padding:0 9px}.tradeNeeds{grid-column:1/-1;display:grid;gap:5px}.tradeNeeds>div{display:flex;gap:5px}.tradeNeeds button{min-width:42px;border:1px solid #c8d3e0;background:#fff;color:#526175;padding:7px 9px;font-size:9px;font-weight:900}.tradeNeeds button.active{border-color:#123eaf;background:#123eaf;color:#fff}
+.addAssetActions{display:flex;gap:7px}.tradePickRow .assetTypeBadge,.pickValueHint{display:flex;align-items:center;height:42px;padding:0 10px;border:1px solid #c9d4e2;background:#f4f7fb;color:#526175;font-size:10px;font-weight:800}.tradePickRow{grid-template-columns:minmax(120px,1fr) 100px 120px minmax(100px,1fr) 36px}.tradeFactors{grid-template-columns:repeat(3,1fr)}
+.fairnessNudge{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:16px;border:1px solid #bfdbfe;background:#eff6ff;padding:13px 15px}.fairnessNudge>div{display:grid;gap:3px}.fairnessNudge b{font-size:13px}.fairnessNudge small{color:#617086}.fairnessNudge button{border:0;background:#123eaf;color:#fff;padding:9px 12px;font-weight:900}
+@media(max-width:1100px){.tradePickRow{grid-template-columns:1fr 1fr}.tradePickRow .removeAsset{grid-column:auto}.tradeHeaderActions{width:100%}.tradeHeaderActions button{flex:1}}
+@media(max-width:760px){.tradeHeaderActions{display:grid;grid-template-columns:1fr 1fr}.tradeTeamContext{grid-template-columns:1fr}.tradeNeeds{grid-column:auto}.tradePickRow{grid-template-columns:1fr}.fairnessNudge{align-items:stretch;display:grid}.fairnessNudge button{min-height:44px}.addAssetActions{display:grid;grid-template-columns:1fr 1fr}.tradeFactors{grid-template-columns:repeat(3,1fr)}}
 
 /* Legacy Draft Room styles are isolated below V3's route-scoped styles. */
 @layer legacyDraft {

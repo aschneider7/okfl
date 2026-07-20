@@ -7,7 +7,7 @@ import "./styles/draft-room.css";
 
 export default function MockDraftPage() {
   return <Page title="2026 OKFL Draft Room"
-    subtitle="Full-PPR rankings, a modest quarterback bump, locked projected keepers, and AI managers with distinct OKFL identities.">
+    subtitle="Choose a simulation style, build a queue, save your mock, and receive an explainable final draft grade.">
     <DraftProvider><DraftLayout /></DraftProvider>
   </Page>;
 }

@@ -3,10 +3,10 @@ import {useDraft} from "../context/DraftContext";
 import {DraftControls} from "./DraftControls";
 
 export function DraftHeader() {
-  const {started, controlledManager, lastMessage, overall, complete, paused, isSimulating} = useDraft();
+  const {started, controlledManager, lastMessage, overall, complete, paused, isSimulating, draftMode} = useDraft();
   return <>
     <section className="draftV2Setup">
-      <div className="draftV2Brand"><span className="eyebrow">OKFL Draft Room <i>V3</i></span>
+      <div className="draftV2Brand"><span className="eyebrow">OKFL Draft Room <i>V4</i></span>
         <h2>{started ? `${controlledManager.manager}'s Draft Room` : "Choose your franchise"}</h2><p>{lastMessage}</p>
       </div>
       <div className="draftHeaderStatus" aria-label="Draft progress">
@@ -23,7 +23,7 @@ export function DraftHeader() {
         <div><span>Keeper focus</span><i><b style={{width: `${controlledManager.tendencies.keeperFocus * 100}%`}} /></i></div>
         <div><span>Risk</span><i><b style={{width: `${controlledManager.tendencies.risk * 100}%`}} /></i></div>
       </div>
-      <div className="draftV2ModelNote"><b>PPR-first board</b><span>Moderate {OKFL_QB_PREMIUM_PICKS}-pick QB adjustment</span></div>
+      <div className="draftV2ModelNote"><b>{draftMode[0].toUpperCase() + draftMode.slice(1)} simulation</b><span>PPR board • {OKFL_QB_PREMIUM_PICKS}-pick QB adjustment</span></div>
     </section>
   </>;
 }

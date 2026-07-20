@@ -28,7 +28,7 @@
   background: #091722;
   border-bottom: 1px solid var(--draft-border);
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   padding: 4px;
 }
 .draftSidebarTabs button {
@@ -131,6 +131,21 @@
 .draftRoomV3 .draftV2Intel article>b { color: #69d4ff; font-size: 7px; }
 .draftRoomV3 .draftV2Intel p { color: var(--draft-muted); font-size: 7px; margin: 3px 0 5px; min-height: 0; }
 .draftRoomV3 .draftV2Intel small { background: #172d3e; color: #a8bfce; font-size: 6px; }
+
+.draftStrategyPanel { color: white; }
+.draftStrategyPanel>header { padding: 13px 13px 8px; }
+.draftStrategyPanel h2 { font-size: 14px; margin: 2px 0 0; }
+.draftStrategyPanel>section { border-top: 1px solid #1d3142; padding: 10px 11px; }
+.draftStrategyPanel>section>div { display: grid; gap: 2px; margin-bottom: 7px; }
+.draftStrategyPanel>section>div>b { font-size: 9px; }
+.draftStrategyPanel>section>div>span,.draftStrategyPanel>section>p { color: var(--draft-muted); font-size: 7px; }
+.draftStrategyPanel article { align-items: center; border-top: 1px solid #1a2d3d; display: grid; gap: 5px; grid-template-columns: 20px 1fr 26px; padding: 6px 0; }
+.draftStrategyPanel article>span { color: #61d4ff; font-size: 9px; font-weight: 900; text-align: center; }
+.draftStrategyPanel article button { background: transparent; border: 0; color: white; min-width: 0; text-align: left; }
+.draftStrategyPanel article button:nth-child(2) { display: grid; }
+.draftStrategyPanel article button:nth-child(2) b { font-size: 9px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.draftStrategyPanel article button:nth-child(2) small { color: var(--draft-muted); font-size: 7px; }
+.draftStrategyPanel article button:last-child { color: #8aa1b3; font-size: 16px; text-align: center; }
 
 @media(max-width: 1250px) {
   .draftRoomV3 .draftV2Sidebar { min-height: 360px; }

@@ -42,6 +42,8 @@ export type DraftPick = {
   explanation: string[];
 };
 
+export type DraftMode = "realistic" | "balanced" | "chaos";
+
 export const DRAFT_ROUNDS = 17;
 export const OKFL_QB_PREMIUM_PICKS = 5;
 
@@ -166,19 +168,23 @@ export function scorePlayer(params:{
   pool:DraftPlayer[];
   round:number;
   seed:number;
+  mode?:DraftMode;
 }){
-  const {player,manager,roster,pool,round,seed}=params;
+  const {player,manager,roster,pool,round,seed,mode="realistic"}=params;
   const rosterCounts=counts(roster);
   const target=starterTargets[player.position]||0;
   const missing=Math.max(0,target-(rosterCounts[player.position]||0));
 
-  const need=missing*230*manager.tendencies.needWeight;
+  const personalityStrength=mode==="balanced"?.45:mode==="chaos"?1.35:1;
+  const needStrength=mode==="balanced"?1.15:mode==="chaos"?.7:1;
+  const volatility=mode==="balanced"?.4:mode==="chaos"?2.25:1;
+  const need=missing*230*manager.tendencies.needWeight*needStrength;
   const qbNeed=player.position==="QB"&&missing>0?260*manager.tendencies.qbAggression:0;
   const youth=player.age?Math.max(-250,(27-player.age)*34*manager.tendencies.youth):0;
   const veteran=player.age?Math.max(0,(player.age-27)*28*manager.tendencies.veteran):0;
   const keeper=keeperUpside(player,round)*manager.tendencies.keeperFocus;
   const scarcity=positionScarcity(pool,player.position)*.65;
-  const personality=positionPreference(manager,player.position);
+  const personality=positionPreference(manager,player.position)*personalityStrength;
 
   // A per-mock seed keeps one draft stable while allowing the next mock to develop differently.
   const hashInput=`${seed}:${manager.slot}:${round}:${player.name}`;
@@ -188,7 +194,7 @@ export function scorePlayer(params:{
     hash=Math.imul(hash,16777619);
   }
   const normalized=(hash>>>0)/4294967295*2-1;
-  const variation=normalized*(90+manager.tendencies.risk*360);
+  const variation=normalized*(90+manager.tendencies.risk*360)*volatility;
 
   return pprAdjustedValue(player)+need+qbNeed+youth+veteran+keeper+scarcity+personality+variation;
 }
@@ -297,4 +303,19 @@ export function fallbackPprPool():DraftPlayer[]{
     pprRank:Number(row[3]),pprValue:Number(row[4]),age:Number(row[5]),
     keeperEligible:true,source:"ppr-fallback"
   })),...rankedDepth];
+}
+
+export function draftReport(picks:DraftPick[],franchiseId:string){
+  const team=picks.filter((pick)=>pick.franchiseId===franchiseId);
+  const live=team.filter((pick)=>!pick.keeper);
+  const gradePoints:Record<string,number>={"A+":4.3,A:4,"B+":3.4,B:3,C:2,D:1};
+  const average=live.length?live.reduce((sum,pick)=>sum+(gradePoints[pick.grade||"C"]||2),0)/live.length:0;
+  const rosterCounts=counts(team.map((pick)=>pick.player));
+  const filled=Object.entries(starterTargets).filter(([position,target])=>(rosterCounts[position]||0)>=target).length;
+  const coverage=Math.round(filled/Object.keys(starterTargets).length*100);
+  const steals=live.filter((pick)=>["A+","A"].includes(pick.grade||"")).length;
+  const reaches=live.filter((pick)=>pick.grade==="D").length;
+  const score=Math.max(0,Math.min(100,Math.round(average/4.3*72+coverage*.23+Math.min(5,steals)*2-reaches*2)));
+  const grade=score>=94?"A+":score>=88?"A":score>=82?"B+":score>=75?"B":score>=66?"C":"D";
+  return {grade,score,coverage,steals,reaches,totalPlayers:team.length};
 }

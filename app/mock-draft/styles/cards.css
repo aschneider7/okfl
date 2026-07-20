@@ -43,20 +43,29 @@
   scrollbar-color: #38546c #081522;
   scrollbar-width: thin;
 }
-.draftRoomV3 .draftV2PlayerGrid>button {
+.draftRoomV3 .draftPlayerCard {
   background: #0d1c29;
-  border: 0;
   border-bottom: 1px solid #1c3040;
   border-right: 1px solid #1c3040;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  min-width: 0;
+}
+.draftRoomV3 .draftPlayerMain {
+  align-items: center;
+  background: transparent;
+  border: 0;
   color: white;
+  display: grid;
   gap: 8px;
   grid-template-columns: 34px 1fr 88px 42px;
   min-width: 0;
   padding: 7px 9px;
+  text-align: left;
 }
-.draftRoomV3 .draftV2PlayerGrid>button:hover { background: #132a3c; }
-.draftRoomV3 .draftV2PlayerGrid>button.selected { background: #16364a; box-shadow: inset 3px 0 0 var(--draft-blue); }
-.draftRoomV3 .draftV2PlayerGrid>button:disabled { cursor: not-allowed; opacity: .67; }
+.draftRoomV3 .draftPlayerCard:hover { background: #132a3c; }
+.draftRoomV3 .draftPlayerCard.selected { background: #16364a; box-shadow: inset 3px 0 0 var(--draft-blue); }
+.draftRoomV3 .draftPlayerMain:disabled { cursor: not-allowed; opacity: .67; }
 .draftRoomV3 .playerPosition { border-radius: 4px; color: #06111c; font-size: 7px; height: 26px; }
 .draftRoomV3 .playerCardIdentity { min-width: 0; }
 .draftRoomV3 .playerCardIdentity b { font-size: 9px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -64,7 +73,11 @@
 .draftRoomV3 .playerRanks { gap: 8px; }
 .draftRoomV3 .playerRanks span { color: #7891a4; font-size: 6px; }
 .draftRoomV3 .playerRanks b { color: #d8e7f1; font-size: 9px; }
-.draftRoomV3 .draftV2PlayerGrid>button>strong { color: #5dd3ff; font-size: 10px; }
+.draftRoomV3 .draftPlayerMain>strong { color: #5dd3ff; font-size: 10px; }
+.draftPlayerActions { align-content: center; border-left: 1px solid #1c3040; display: grid; padding: 4px; }
+.draftPlayerActions button { background: transparent; border: 0; border-radius: 3px; color: #7791a5; font-size: 8px; min-width: 48px; padding: 4px; }
+.draftPlayerActions button span { margin-left: 3px; }
+.draftPlayerActions button.active { background: #17384c; color: #70d8ff; }
 
 .draftRoomV3 .draftV2SelectionBar {
   background: rgba(9, 27, 41, .96);
@@ -98,7 +111,10 @@
   .playerPoolFilters { grid-column: 1 / -1; }
   .draftRoomV3 .playerPoolFilters input { min-width: 0; width: 100%; }
   .draftRoomV3 .draftV2PlayerGrid { grid-template-columns: 1fr; max-height: 440px; }
-  .draftRoomV3 .draftV2PlayerGrid>button { grid-template-columns: 36px 1fr 72px 40px; min-height: 54px; padding: 8px; }
+  .draftRoomV3 .draftPlayerCard { grid-template-columns: 1fr; }
+  .draftRoomV3 .draftPlayerMain { grid-template-columns: 36px 1fr 72px 40px; min-height: 54px; padding: 8px; }
+  .draftPlayerActions { border-left: 0; border-top: 1px solid #1c3040; display: flex; justify-content: flex-end; }
+  .draftPlayerActions button { min-height: 36px; min-width: 76px; }
   .draftRoomV3 .playerCardIdentity b { font-size: 11px; }
   .draftRoomV3 .playerCardIdentity span { font-size: 8px; }
   .draftRoomV3 .draftV2SelectionBar {
