@@ -6,12 +6,12 @@ import {useState} from "react";
 import {CommandPalette} from "@/components/CommandPalette";
 
 const links = [
-  ["/", "Home", "HM"], ["/franchises", "Franchises", "FR"], ["/compare", "Compare", "VS"],
+  ["/", "Home", "HM"], ["/power-rankings", "Power Rankings", "PR"], ["/franchises", "Franchises", "FR"], ["/compare", "Compare", "VS"],
   ["/trades", "Trade Center", "TR"], ["/drafts", "Draft History", "DH"], ["/mock-draft", "Draft Room", "DR"], ["/live-draft", "Live Draft", "LD"],
   ["/keepers", "Keepers", "KP"], ["/records", "Record Book", "RB"], ["/time-machine", "Time Machine", "TM"],
   ["/rules", "Rulebook", "RL"], ["/commissioner", "Commissioner", "CM"],
 ] as const;
-const mobileLinks = links.filter(([href]) => ["/", "/trades", "/live-draft", "/keepers", "/records"].includes(href));
+const mobileLinks = links.filter(([href]) => ["/", "/power-rankings", "/trades", "/live-draft", "/records"].includes(href));
 
 export function AppShell({children}: {children: React.ReactNode}) {
   const path = usePathname(); const [open, setOpen] = useState(false);
@@ -24,8 +24,8 @@ export function AppShell({children}: {children: React.ReactNode}) {
       <div className="sidebarStatus"><span><i /></span><div><b>Archive online</b><small>2021–2025 verified · 2026 live</small></div></div>
     </aside>
     <header className="mobileHeader"><button onClick={() => setOpen(!open)} aria-label="Open navigation" aria-expanded={open}><span /><span /><span /></button><div><b>OKFL OS</b><span>{current}</span></div><CommandPalette /></header>
-    <main className="main"><div className="topbar"><div className="topbarContext"><span>League intelligence</span><b>{current}</b></div><div className="topbarActions"><span className="seasonChip"><i />2026 season</span><CommandPalette /></div></div>{children}</main>
-    <nav className="mobileDock" aria-label="Primary mobile navigation">{mobileLinks.map(([href, label, glyph]) => { const active = path === href || (href !== "/" && path.startsWith(href)); return <Link key={href} href={href} className={active ? "active" : ""}><i>{glyph}</i><span>{label === "Live Draft" ? "Live" : label === "Trade Center" ? "Trades" : label === "Record Book" ? "Records" : label}</span></Link>; })}</nav>
+    <main className="main"><div className="topbar"><div className="topbarContext"><span>League intelligence</span><b>{current}</b></div><div className="topbarActions"><span className="seasonChip"><i />2026 season</span><CommandPalette /></div></div><div className="routeStage" key={path}>{children}</div></main>
+    <nav className="mobileDock" aria-label="Primary mobile navigation">{mobileLinks.map(([href, label, glyph]) => { const active = path === href || (href !== "/" && path.startsWith(href)); return <Link key={href} href={href} className={active ? "active" : ""}><i>{glyph}</i><span>{label === "Live Draft" ? "Live" : label === "Power Rankings" ? "Power" : label === "Trade Center" ? "Trades" : label === "Record Book" ? "Records" : label}</span></Link>; })}</nav>
     {open && <button className="backdrop" onClick={() => setOpen(false)} aria-label="Close menu" />}
   </div>;
 }

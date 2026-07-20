@@ -16,7 +16,7 @@ export function createAdminSupabase() {
     },
     global: {
       headers: {
-        "X-Client-Info": "okfl-os-server/5.3.0",
+        "X-Client-Info": "okfl-os-server/6.0.0",
       },
     },
   });
