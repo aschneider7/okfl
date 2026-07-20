@@ -2,6 +2,7 @@
 @import "./sidebar.css";
 @import "./cards.css";
 @import "./animations.css";
+@import "./sleek-overhaul.css";
 
 .draftRoomV3 {
   --draft-bg: #07131f;

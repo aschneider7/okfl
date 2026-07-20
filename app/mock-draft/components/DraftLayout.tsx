@@ -7,7 +7,8 @@ import {DraftReport} from "./DraftReport";
 
 export function DraftLayout() {
   return <div className="draftRoomV3"><DraftHeader />
-    <div className="draftV2Layout"><DraftBoard /><DraftSidebar /></div>
-    <DraftReport /><DraftWorkspace /><StatusBar />
+    <DraftBoard /><DraftReport />
+    <div className="draftV2Workbench"><DraftWorkspace /><DraftSidebar /></div>
+    <StatusBar />
   </div>;
 }
