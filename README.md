@@ -1,4 +1,4 @@
-# OKFL OS 4.3.1
+# OKFL OS 4.3.2
 
 The Obama Keeper Fantasy League command center for historical research, franchise intelligence, trade analysis, keeper decisions, live records, and mock drafts.
 

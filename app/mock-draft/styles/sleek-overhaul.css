@@ -49,9 +49,10 @@
   height: 36px;
 }
 .draftRoomV3 .draftV2TeamSelect select {
-  background: #f4f6fb;
-  border-color: #d9deea;
-  color: #111827;
+  -webkit-text-fill-color: #111827 !important;
+  background: #f4f6fb !important;
+  border-color: #d9deea !important;
+  color: #111827 !important;
   color-scheme: light;
   font-size: 11px;
   font-weight: 850;
@@ -59,9 +60,9 @@
   padding-inline: 11px 30px;
 }
 .draftRoomV3 .draftV2TeamSelect label:first-child select { min-width: 138px; }
-.draftRoomV3 .draftV2TeamSelect select option { background: #ffffff; color: #111827; font-weight: 700; }
+.draftRoomV3 .draftV2TeamSelect select option { background: #ffffff !important; color: #111827 !important; font-weight: 700; }
 .draftRoomV3 .draftV2TeamSelect select:focus { border-color: #a99fff; box-shadow: 0 0 0 3px rgba(139, 124, 246, .2); outline: none; }
-.draftRoomV3 .draftV2TeamSelect select:disabled { color: #3e4759; opacity: .82; }
+.draftRoomV3 .draftV2TeamSelect select:disabled { -webkit-text-fill-color: #3e4759 !important; color: #3e4759 !important; opacity: 1; }
 .draftRoomV3 .draftV2TeamSelect button:hover { background: #222a3d; border-color: #59657f; }
 .draftRoomV3 .draftV2TeamSelect .rankingsRefresh { color: #aeb8cf; }
 .draftRoomV3 .draftV2TeamSelect .startMockButton {
