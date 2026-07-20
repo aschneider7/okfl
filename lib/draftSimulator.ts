@@ -91,6 +91,7 @@ export const projectedKeepers = [
   {franchiseId:"F06",player:"Jaylen Waddle",round:6,position:"WR"},
 
   {franchiseId:"F03",player:"Rome Odunze",round:7,position:"WR"},
+  {franchiseId:"F03",player:"Travis Etienne Jr.",round:10,position:"RB"},
   {franchiseId:"F03",player:"Kyren Williams",round:12,position:"RB"},
 
   {franchiseId:"F10",player:"Trey McBride",round:4,position:"TE"},
