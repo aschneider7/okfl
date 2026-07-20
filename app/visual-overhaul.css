@@ -225,10 +225,29 @@ button { border-radius: 9px; }
 .franchiseId { color: var(--blue); }.franchiseCard h2 { color: var(--ink); font-size: 22px !important; }
 .signatureMark { background: #17362e !important; border-radius: 12px !important; color: #fff; }
 .signatureTitle { background: #f2f0ea !important; border: 1px solid #e1dfd9; border-radius: 10px !important; }
+.signatureMark small { color: #b9ddd3 !important; }
+.signatureTitle b { color: #14251f !important; }
+.signatureTitle p { color: #56635e !important; }
 .primaryRecord { background: #0d1b2e !important; border-radius: 11px !important; }.winRate { background: var(--blue-soft) !important; border-color: #d3e4d7 !important; border-radius: 11px !important; }
 .franchiseStats div, .miniGrid div { background: #f2ecdf !important; border-color: #e3e1dc !important; border-radius: 10px !important; }
 .profileTags em { border-radius: 999px !important; }.miniDna i { background: #e4e2dc !important; }.miniDna i b { background: var(--blue) !important; }
-.profileCardFooter { background: #15332b !important; border-radius: 10px !important; color: #fff; }
+.profileCardFooter { align-items: center; background: #15332b !important; border: 0 !important; border-radius: 10px !important; color: #fff !important; min-height: 40px; padding: 10px 13px !important; }
+.profileCardFooter span, .profileCardFooter b { color: #fff !important; line-height: 1.2; }
+.identityLeaders { background: #fffbf2; border: 1px solid var(--line); border-radius: 17px; box-shadow: var(--shadow); margin-bottom: 18px; overflow: hidden; }
+.identityLeaders>header { align-items: end; background: #17362e; color: #fff; display: flex; gap: 30px; justify-content: space-between; padding: 20px 22px; }
+.identityLeaders>header h2 { color: #fff; font-size: 25px; margin: 5px 0 0; }
+.identityLeaders>header .eyebrow { color: #79dfbd; }
+.identityLeaders>header p { color: #c3d7d0; font-size: 11px; line-height: 1.5; margin: 0; max-width: 410px; }
+.identityLeaders>div { display: grid; grid-template-columns: repeat(4,1fr); }
+.identityLeaders a { color: #15231e; display: grid; min-width: 0; padding: 18px 20px; text-decoration: none; }
+.identityLeaders a+a { border-left: 1px solid #dedbd2; }
+.identityLeaders a:hover { background: #f3f0e7; }
+.identityLeaders a>span { color: #6d7b75; font-size: 7px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+.identityLeaders h3 { color: #287c60; font-size: 11px; margin: 6px 0 2px; text-transform: uppercase; }
+.identityLeaders a>b { font-size: 19px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.identityLeaders footer { align-items: center; display: flex; justify-content: space-between; margin-top: 14px; }
+.identityLeaders footer small { color: #66746e; font-size: 8px; }
+.identityLeaders footer strong { background: #e3f2eb; border-radius: 999px; color: #17684e; display: grid; font-size: 11px; height: 29px; place-items: center; width: 29px; }
 .compareGrid { gap: 16px; margin-bottom: 16px; }.compareGrid article { overflow: hidden; position: relative; }.compareGrid article::before { background: var(--blue); content: ""; height: 4px; left: 0; position: absolute; right: 0; top: 0; }.compareGrid article:nth-child(2)::before { background: var(--red); }
 
 /* Trade Center */
@@ -292,6 +311,9 @@ button { border-radius: 9px; }
   .search3Hero { border-radius:17px !important; padding:25px 15px !important; }.search3Copy h1 { font-size:40px !important; }.command3 { border-radius:20px 20px 0 0 !important; }.command3Body>aside { display:none !important; }
   .draftRoomV3 { border-radius:14px !important; }.draftReport { border-radius:10px !important; }
 }
+
+@media(max-width:1000px){.identityLeaders>div{grid-template-columns:1fr 1fr}.identityLeaders a:nth-child(3){border-left:0;border-top:1px solid #dedbd2}.identityLeaders a:nth-child(4){border-top:1px solid #dedbd2}}
+@media(max-width:600px){.identityLeaders>header{align-items:flex-start;display:grid;gap:8px;padding:17px}.identityLeaders>div{grid-template-columns:1fr}.identityLeaders a+a,.identityLeaders a:nth-child(3){border-left:0;border-top:1px solid #dedbd2}}
 
 @media(prefers-reduced-motion: reduce) {
   html { scroll-behavior:auto; }.shell *, .shell *::before, .shell *::after { animation-duration:.01ms !important; transition-duration:.01ms !important; }.loadingCard span { animation:none; }

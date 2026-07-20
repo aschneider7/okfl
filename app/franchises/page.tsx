@@ -10,16 +10,27 @@ import {buildFranchiseProfile} from "@/lib/franchiseProfiles";
 function View(){
   const {data}=useData();
   if(!data)return <Loading/>;
+  const profiles=data.franchises.map((franchise:any)=>buildFranchiseProfile(data,franchise.id)).filter(Boolean) as NonNullable<ReturnType<typeof buildFranchiseProfile>>[];
+  const traitLeader=(label:string)=>profiles.slice().sort((a,b)=>(b.dna.find((row)=>row.label===label)?.value||0)-(a.dna.find((row)=>row.label===label)?.value||0))[0];
+  const identityLeaders=[
+    {eyebrow:"Most active market",title:"Trade Trigger",profile:traitLeader("Trading pulse"),trait:"Trading pulse"},
+    {eyebrow:"Best long-game planner",title:"Keeper Architect",profile:traitLeader("Keeper craft"),trait:"Keeper craft"},
+    {eyebrow:"Best value finder",title:"Sleeper Hunter",profile:traitLeader("Draft excavation"),trait:"Draft excavation"},
+    {eyebrow:"Highest weekly variance",title:"Chaos Index",profile:traitLeader("Weekly volatility"),trait:"Weekly volatility"},
+  ];
 
   return <Page title="Franchise Scouting Reports" subtitle="Distinct identities built from actual league behavior—not recycled labels.">
     <div className="profileIntro card">
       <div><span className="eyebrow">Franchise Profiles 3.0</span><h2>Every front office now has its own fingerprint.</h2></div>
       <p>Primary identities and scouting lenses compare each team against the league baseline across trades, keepers, positional investment, weekly volatility, final finishes and historical success.</p>
     </div>
+    <section className="identityLeaders"><header><div><span className="eyebrow">New · League identity leaders</span><h2>Who owns each front-office superlative?</h2></div><p>Calculated from the same league-relative DNA model used in every scouting report.</p></header><div>{identityLeaders.map((leader)=>{
+      const value=leader.profile.dna.find((row)=>row.label===leader.trait)?.value||0;
+      return <Link href={`/franchises/${leader.profile.franchise.id}`} key={leader.title}><span>{leader.eyebrow}</span><h3>{leader.title}</h3><b>{leader.profile.franchise.name}</b><footer><small>{leader.trait}</small><strong>{value}</strong></footer></Link>;
+    })}</div></section>
     <div className="franchiseGrid profileGrid">
-      {data.franchises.map((franchise:any)=>{
-        const profile=buildFranchiseProfile(data,franchise.id);
-        if(!profile)return null;
+      {profiles.map((profile)=>{
+        const {franchise}=profile;
         const {metric,tags,dna,signature,lenses}=profile;
         return <Link href={`/franchises/${franchise.id}`} className="franchiseCard profileCard" key={franchise.id}>
           <header className="franchiseCardHeader">
