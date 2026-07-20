@@ -753,17 +753,18 @@ export function SearchHome() {
 
   return (
     <>
-      <section className="searchHero">
+      <section className="searchHero scoutSearch">
         <div className="searchHeroInner">
-          <span className="eyebrow">The OKFL knowledge engine</span>
-          <h1>Ask the league historian anything.</h1>
+          <span className="eyebrow">The scouting desk</span>
+          <h1>What do you want to know?</h1>
           <p>
-            Search OKFL history, compare franchises, trace players, or pull live NFL fantasy
-            scores from the internet.
+            Search five seasons of league history, compare franchises, trace any player,
+            or pull a live NFL fantasy score.
           </p>
 
           <div className="predictiveSearch">
             <div className="searchControls">
+              <div className="searchInputFrame"><span className="searchGlyph">?</span>
               <input
                 ref={inputRef}
                 value={query}
@@ -776,6 +777,8 @@ export function SearchHome() {
                 aria-autocomplete="list"
                 aria-expanded={focused && predictiveSuggestions.length > 0}
               />
+              <kbd>ENTER</kbd></div>
+              <label className="searchSort"><span>Result order</span>
               <select
                 value={sort}
                 onChange={(event) => setSort(event.target.value as "asc" | "desc")}
@@ -784,6 +787,7 @@ export function SearchHome() {
                 <option value="asc">Oldest first</option>
                 <option value="desc">Newest first</option>
               </select>
+              </label>
             </div>
 
             {focused && predictiveSuggestions.length > 0 && (
@@ -822,7 +826,7 @@ export function SearchHome() {
             )}
           </div>
 
-          <div className="chips">
+          <div className="chips"><span className="quickSearchLabel">Try a search</span>
             {suggestions.map((suggestion) => (
               <button type="button" key={suggestion} onClick={() => setQuery(suggestion)}>
                 {suggestion}

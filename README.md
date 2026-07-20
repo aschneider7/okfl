@@ -1,4 +1,4 @@
-# OKFL OS 4.0
+# OKFL OS 4.1
 
 The Obama Keeper Fantasy League command center for historical research, franchise intelligence, trade analysis, keeper decisions, live records, and mock drafts.
 
@@ -12,7 +12,7 @@ The Obama Keeper Fantasy League command center for historical research, franchis
 
 ## Visual system
 
-Version 4.0 introduces a unified front-office design system across desktop and mobile: midnight navigation, warm data surfaces, cobalt interactions, restrained signal-red accents, and an electric-lime live-state color.
+Version 4.1 introduces the Clubhouse visual system across desktop and mobile: deep forest navigation, warm parchment surfaces, emerald interactions, copper-orange accents, and championship-gold highlights.
 
 ## Validation
 
