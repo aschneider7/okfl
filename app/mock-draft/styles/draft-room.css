@@ -131,7 +131,9 @@
 }
 
 .draftRoomV3 .draftV2TeamSelect select:disabled { color: #8298aa; }
+.draftRoomV3 .draftV2TeamSelect button:disabled { cursor: wait; opacity: .62; }
 .draftRoomV3 .draftV2TeamSelect button:hover { background: #1a344a; border-color: #4c7898; }
+.draftRoomV3 .draftV2TeamSelect .rankingsRefresh { color: #8edcff; }
 .draftRoomV3 .draftV2TeamSelect .startMockButton {
   background: var(--draft-accent);
   border-color: #e03450;
@@ -179,9 +181,11 @@
 .draftRoomV3 .identityMeters span { color: var(--draft-muted); font-size: 7px; }
 .draftRoomV3 .identityMeters i { background: #1c3244; height: 3px; }
 .draftRoomV3 .identityMeters i b { background: linear-gradient(90deg, var(--draft-blue), #6bd3ff); }
-.draftRoomV3 .draftV2ModelNote { border-left-color: var(--draft-border); padding-left: 12px; }
+.draftRoomV3 .draftV2ModelNote { border-left-color: var(--draft-border); gap: 2px; padding-left: 12px; }
 .draftRoomV3 .draftV2ModelNote b { font-size: 9px; }
 .draftRoomV3 .draftV2ModelNote span { color: var(--draft-muted); font-size: 7px; }
+.draftRoomV3 .draftV2ModelNote a { color: #66d4ff; font-size: 7px; font-weight: 800; text-decoration: none; width: fit-content; }
+.draftRoomV3 .draftV2ModelNote a:hover { text-decoration: underline; }
 
 .draftReport {
   align-items: center;
@@ -216,7 +220,7 @@
   .draftRoomV3 .draftV2Setup { grid-template-columns: 1fr auto; }
   .draftHeaderStatus { display: none; }
   .draftRoomV3 .draftV2Identity { grid-template-columns: 38px 1fr 1.4fr; }
-  .draftRoomV3 .draftV2ModelNote { display: none; }
+  .draftRoomV3 .draftV2ModelNote { border-left: 0; border-top: 1px solid var(--draft-border); grid-column: 1 / -1; padding: 8px 0 0; }
   .draftRoomV3 .draftV2Layout { grid-template-columns: 1fr; }
   .draftRoomV3 .draftV2Sidebar { min-height: 390px; }
 }

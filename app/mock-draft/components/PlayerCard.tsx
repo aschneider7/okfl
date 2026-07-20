@@ -9,8 +9,8 @@ export function PlayerCard({player, recommendation, selected, disabled, watched,
   return <article className={`draftPlayerCard ${selected ? "selected" : ""}`}>
     <button className="draftPlayerMain" disabled={disabled} onClick={onSelect}>
       <div className={`playerPosition ${POSITION_CLASS[player.position] || ""}`}>{player.position}</div>
-      <div className="playerCardIdentity"><b>{player.name}</b><span>{player.team} • Age {player.age || "—"}</span></div>
-      <div className="playerRanks"><span>PPR <b>{player.pprRank}</b></span><span>OKFL <b>{pprAdjustedRank(player)}</b></span></div>
+      <div className="playerCardIdentity"><b>{player.name}</b><span>{player.team} • {player.marketAdp ? `Market ADP ${player.marketAdp.toFixed(1)}` : `Age ${player.age || "—"}`}</span></div>
+      <div className="playerRanks"><span>{player.marketAdp ? "ADP" : "PPR"} <b>{player.marketAdp?.toFixed(1) || player.pprRank}</b></span><span>OKFL <b>{pprAdjustedRank(player)}</b></span></div>
       <strong>{Math.round(recommendation?.score ?? pprAdjustedValue(player))}</strong>
     </button>
     <div className="draftPlayerActions"><button type="button" className={watched ? "active" : ""} aria-pressed={watched} onClick={onWatch}>{watched ? "★" : "☆"}<span>Watch</span></button>

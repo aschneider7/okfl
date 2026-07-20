@@ -27,6 +27,7 @@ export type DraftPlayer = {
   age?: number | null;
   keeperEligible: boolean;
   source?: string;
+  marketAdp?: number;
 };
 
 export type DraftPick = {
@@ -127,6 +128,10 @@ export function pprAdjustedValue(player:DraftPlayer){
   return base+(player.position==="QB"?OKFL_QB_PREMIUM_PICKS*100:0);
 }
 
+export function draftRankLabel(player:DraftPlayer){
+  return player.marketAdp?`PPR ADP ${player.marketAdp.toFixed(1)}`:`PPR rank ${player.pprRank}`;
+}
+
 export function teamRoster(picks:DraftPick[],franchiseId:string){
   return picks.filter((pick)=>pick.franchiseId===franchiseId).map((pick)=>pick.player);
 }
@@ -210,7 +215,7 @@ export function explainPick(params:{
   const rosterCounts=counts(roster);
   const notes:string[]=[];
 
-  notes.push(`PPR rank ${player.pprRank}${player.position==="QB"?`, adjusted to ${pprAdjustedRank(player)} for OKFL quarterback demand`:""}.`);
+  notes.push(`${draftRankLabel(player)}${player.position==="QB"?`, adjusted to board rank ${pprAdjustedRank(player)} for OKFL quarterback demand`:""}.`);
   if((starterTargets[player.position]||0)>(rosterCounts[player.position]||0))
     notes.push(`Fills an open ${player.position} starter slot.`);
   if(keeperUpside(player,round)>=250)

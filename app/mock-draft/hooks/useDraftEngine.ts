@@ -1,7 +1,8 @@
-import {useEffect, useMemo, useState} from "react";
+import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {
   DRAFT_ROUNDS, draftReport, fallbackPprPool, keeperOverall, managers, overallToRoundSlot, projectedKeepers,
 } from "@/lib/draftSimulator";
+import {draftPlayerKey, fallbackRankingsMeta, type DraftRankingsMeta, type DraftRankingsResponse} from "@/lib/draftRankings";
 import type {DraftMode, DraftPick, DraftPlayer, SimulationSpeed} from "../types";
 import {useBoard} from "./useBoard";
 import {useRecommendations} from "./useRecommendations";
@@ -32,7 +33,9 @@ function buildKeeperPicks(): DraftPick[] {
 function newSimulationSeed() { return Math.floor(Math.random() * 2_147_483_647) + 1; }
 
 export function useDraftEngine() {
-  const [pool] = useState<DraftPlayer[]>(fallbackPprPool);
+  const [pool, setPool] = useState<DraftPlayer[]>(fallbackPprPool);
+  const [rankingsMeta, setRankingsMeta] = useState<DraftRankingsMeta>(() => fallbackRankingsMeta(fallbackPprPool()));
+  const [rankingsLoading, setRankingsLoading] = useState(true);
   const [controlledFranchise, setControlledFranchise] = useState("F01");
   const [draftPicks, setDraftPicks] = useState<DraftPick[]>([]);
   const [overall, setOverall] = useState(1); const [started, setStarted] = useState(false); const [complete, setComplete] = useState(false);
@@ -43,12 +46,14 @@ export function useDraftEngine() {
   const [draftMode, setDraftMode] = useState<DraftMode>("realistic"); const [paused, setPaused] = useState(false);
   const [watchlist, setWatchlist] = useState<string[]>([]); const [queue, setQueue] = useState<string[]>([]);
   const [hasSavedDraft, setHasSavedDraft] = useState(false);
+  const startedRef = useRef(started);
+  startedRef.current = started;
 
   const keepers = useMemo(buildKeeperPicks, []);
   const allPicks = useMemo(() => [...keepers, ...draftPicks], [keepers, draftPicks]);
   const available = useMemo(() => {
-    const drafted = new Set(allPicks.map((pick) => pick.player.name.toLowerCase()));
-    return pool.filter((player) => !drafted.has(player.name.toLowerCase()));
+    const drafted = new Set(allPicks.map((pick) => draftPlayerKey(pick.player.name)));
+    return pool.filter((player) => !drafted.has(draftPlayerKey(player.name)));
   }, [allPicks, pool]);
   const current = overall <= TOTAL_PICKS ? overallToRoundSlot(overall) : null;
   const currentManager = current ? managers.find((manager) => manager.slot === current.slot)! : null;
@@ -62,6 +67,29 @@ export function useDraftEngine() {
   const queuedPlayers = queue.filter((name) => availableNames.has(name)).map((name) => available.find((player) => player.name === name)!).filter(Boolean);
   const watchedPlayers = watchlist.filter((name) => availableNames.has(name)).map((name) => available.find((player) => player.name === name)!).filter(Boolean);
   const report = useMemo(() => draftReport(allPicks, controlledFranchise), [allPicks, controlledFranchise]);
+
+  const refreshRankings = useCallback(async () => {
+    if (started) return;
+    setRankingsLoading(true);
+    try {
+      const response = await fetch("/api/draft/rankings", {cache: "no-store"});
+      if (!response.ok) throw new Error(`Rankings request failed with ${response.status}.`);
+      const result = await response.json() as DraftRankingsResponse;
+      if (!Array.isArray(result.players) || result.players.length < 170 || !result.meta) throw new Error("Rankings response was incomplete.");
+      if (startedRef.current) return;
+      setPool(result.players); setRankingsMeta(result.meta);
+      setLastMessage(result.meta.source === "live"
+        ? `Live PPR market loaded: ${result.meta.playerCount} players with kickers and defenses.`
+        : "Live rankings are unavailable, so the protected OKFL board is loaded.");
+    } catch (error) {
+      if (startedRef.current) return;
+      const fallback = fallbackPprPool();
+      setPool(fallback); setRankingsMeta(fallbackRankingsMeta(fallback, error instanceof Error ? error.message : undefined));
+      setLastMessage("Live rankings are unavailable, so the protected OKFL board is loaded.");
+    } finally { setRankingsLoading(false); }
+  }, [started]);
+
+  useEffect(() => { void refreshRankings(); }, [refreshRankings]);
 
   useEffect(() => { setHasSavedDraft(Boolean(window.localStorage.getItem(STORAGE_KEY))); }, []);
   useEffect(() => {
@@ -141,6 +169,7 @@ export function useDraftEngine() {
     selectedPlayer, setSelectedPlayer, lastMessage, keepers, allPicks, available, current, currentManager, controlledManager,
     userOnClock, isSimulating, recommendations, simulationSpeed, setSimulationSpeed, draftMode, setDraftMode, paused,
     watchlist, queue, watchedPlayers, queuedPlayers, toggleWatchlist, toggleQueue, hasSavedDraft, report,
+    rankingsMeta, rankingsLoading, refreshRankings,
     ...boardState, startMock, resumeMock, makeUserPick, undoUserTurn, reset, togglePause, shareRecap,
   };
 }
