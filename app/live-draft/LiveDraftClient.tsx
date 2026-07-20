@@ -36,10 +36,15 @@ export function LiveDraftClient({initialCode}: {initialCode: string}) {
   const [roomCodeInput, setRoomCodeInput] = useState(initialCode);
   const [hostName, setHostName] = useState("");
   const [roomName, setRoomName] = useState("2026 OKFL Live Draft");
+  const [clockSeconds, setClockSeconds] = useState(30);
+  const [secondsRemaining, setSecondsRemaining] = useState(30);
   const [joinFranchise, setJoinFranchise] = useState("");
   const [joinName, setJoinName] = useState("");
   const [joinPin, setJoinPin] = useState("");
   const channelRef = useRef<RealtimeChannel | null>(null);
+  const serverOffsetRef = useRef(0);
+  const automatedOverallRef = useRef(0);
+  const timeoutOverallRef = useRef(0);
 
   const loadRoom = useCallback(async (code: string, quiet = false) => {
     if (!code) return;
@@ -100,7 +105,7 @@ export function LiveDraftClient({initialCode}: {initialCode: string}) {
   async function createRoom(event: React.FormEvent) {
     event.preventDefault(); setBusy(true); setMessage("Creating secure room...");
     try {
-      const result = await requestJson("/api/live-draft/rooms", {method: "POST", body: JSON.stringify({hostName, roomName})});
+      const result = await requestJson("/api/live-draft/rooms", {method: "POST", body: JSON.stringify({hostName, roomName, clockSeconds})});
       if (!result.snapshot || !result.hostToken) throw new Error("The room response was incomplete.");
       const next = {roomCode: result.snapshot.room.code, hostToken: result.hostToken};
       saveCredentials(next); setSeatPins(result.seatPins || []); setSnapshot(result.snapshot); setRoomCodeInput(result.snapshot.room.code);
@@ -129,7 +134,7 @@ export function LiveDraftClient({initialCode}: {initialCode: string}) {
     if (!snapshot || !credentials.hostToken) return; setBusy(true);
     try {
       const result = await requestJson(`/api/live-draft/rooms/${snapshot.room.code}/action`, {method: "POST", body: JSON.stringify({action, hostToken: credentials.hostToken})});
-      if (result.snapshot) setSnapshot(result.snapshot); setMessage(action === "undo" ? "Last live pick removed; room paused." : `Room ${action}d.`); await announceChange();
+      if (result.snapshot) setSnapshot(result.snapshot); setMessage(action === "undo" ? "Last live pick removed; room paused." : action === "start" ? "Draft started. Open franchises are now AI-controlled." : `Room ${action}d.`); await announceChange();
     } catch (error) { setMessage(error instanceof Error ? error.message : "Host action failed."); }
     finally { setBusy(false); }
   }
@@ -137,7 +142,7 @@ export function LiveDraftClient({initialCode}: {initialCode: string}) {
   async function draftPlayer(player: DraftPlayer) {
     if (!snapshot || !credentials.seatToken) return; setBusy(true);
     try {
-      const result = await requestJson(`/api/live-draft/rooms/${snapshot.room.code}/pick`, {method: "POST", body: JSON.stringify({actorToken: credentials.seatToken, player})});
+      const result = await requestJson(`/api/live-draft/rooms/${snapshot.room.code}/pick`, {method: "POST", body: JSON.stringify({actorToken: credentials.seatToken, player, expectedOverall: snapshot.room.currentOverall})});
       if (result.snapshot) setSnapshot(result.snapshot); setMessage(`${player.name} is officially on the board.`); await announceChange();
     } catch (error) { setMessage(error instanceof Error ? error.message : "Pick failed."); }
     finally { setBusy(false); }
@@ -159,10 +164,47 @@ export function LiveDraftClient({initialCode}: {initialCode: string}) {
   const canPick = Boolean(snapshot?.room.status === "live" && currentSeat?.franchiseId === credentials.franchiseId && credentials.seatToken);
   const isHost = Boolean(credentials.hostToken);
 
+  useEffect(() => {
+    if (!snapshot) return;
+    serverOffsetRef.current = Date.parse(snapshot.serverTime) - Date.now();
+  }, [snapshot?.serverTime]);
+
+  useEffect(() => {
+    if (!snapshot?.room.pickDeadline || snapshot.room.status !== "live") {
+      setSecondsRemaining(snapshot?.room.clockSeconds || clockSeconds);
+      return;
+    }
+    const overall = snapshot.room.currentOverall;
+    const tick = () => {
+      const remaining = Math.max(0, Math.ceil((Date.parse(snapshot.room.pickDeadline!) - (Date.now() + serverOffsetRef.current)) / 1000));
+      setSecondsRemaining(remaining);
+      if (remaining > 0 || timeoutOverallRef.current === overall) return;
+      timeoutOverallRef.current = overall;
+      void requestJson(`/api/live-draft/rooms/${snapshot.room.code}/timeout`, {method: "POST", body: JSON.stringify({expectedOverall: overall})})
+        .then(async (result) => { if (result.snapshot) setSnapshot(result.snapshot); await announceChange(); })
+        .catch(() => { timeoutOverallRef.current = 0; void loadRoom(snapshot.room.code, true); });
+    };
+    tick();
+    const interval = window.setInterval(tick, 250);
+    return () => window.clearInterval(interval);
+  }, [clockSeconds, loadRoom, snapshot?.room.clockSeconds, snapshot?.room.code, snapshot?.room.currentOverall, snapshot?.room.pickDeadline, snapshot?.room.status]);
+
+  useEffect(() => {
+    if (!snapshot || snapshot.room.status !== "live" || !currentSeat || currentSeat.claimed || automatedOverallRef.current === snapshot.room.currentOverall) return;
+    const overall = snapshot.room.currentOverall;
+    automatedOverallRef.current = overall;
+    const timer = window.setTimeout(() => {
+      void requestJson(`/api/live-draft/rooms/${snapshot.room.code}/ai-pick`, {method: "POST", body: "{}"})
+        .then(async (result) => { if (result.snapshot) setSnapshot(result.snapshot); await announceChange(); })
+        .catch(() => { automatedOverallRef.current = 0; void loadRoom(snapshot.room.code, true); });
+    }, 650);
+    return () => window.clearTimeout(timer);
+  }, [currentSeat, loadRoom, snapshot]);
+
   if (!snapshot) return <section className="liveDraftLaunch">
-    <div className="liveLaunchIntro"><span className="liveTag">New multiplayer mode</span><h2>One board. Ten managers. Every device in sync.</h2><p>Create the official room as commissioner or open an invite code from another manager.</p><div className="liveFeatureStrip"><span>10 live seats</span><span>Private team PINs</span><span>Reconnect-safe</span><span>Bot fill-ins</span></div></div>
+    <div className="liveLaunchIntro"><span className="liveTag">New multiplayer mode</span><h2>One board. Ten managers. Every device in sync.</h2><p>Create the official room as commissioner or open an invite code from another manager.</p><div className="liveFeatureStrip"><span>10 live seats</span><span>Private team PINs</span><span>Custom pick clock</span><span>Automatic AI teams</span></div></div>
     <div className="liveLaunchForms">
-      <form onSubmit={createRoom}><span>Commissioner</span><h3>Create a live room</h3><label>Your name<input required value={hostName} onChange={(event) => setHostName(event.target.value)} placeholder="Aaron" /></label><label>Room name<input value={roomName} onChange={(event) => setRoomName(event.target.value)} /></label><button disabled={busy}>Create room</button></form>
+      <form onSubmit={createRoom}><span>Commissioner</span><h3>Create a live room</h3><label>Your name<input required value={hostName} onChange={(event) => setHostName(event.target.value)} placeholder="Aaron" /></label><label>Room name<input value={roomName} onChange={(event) => setRoomName(event.target.value)} /></label><fieldset className="clockSetup"><legend>Seconds per pick</legend><div>{[10,30,60].map((value) => <button type="button" key={value} className={clockSeconds === value ? "active" : ""} onClick={() => setClockSeconds(value)}>{value === 60 ? "1 min" : `${value}s`}</button>)}<label>Custom<input aria-label="Custom seconds per pick" required type="number" min="1" max="3600" value={clockSeconds} onChange={(event) => setClockSeconds(Math.max(1, Math.min(3600, Number(event.target.value) || 1)))} /><span>sec</span></label></div></fieldset><button disabled={busy}>Create room</button></form>
       <form onSubmit={openRoom}><span>Manager</span><h3>Join an existing room</h3><label>Six-character invite code<input required maxLength={6} value={roomCodeInput} onChange={(event) => setRoomCodeInput(event.target.value.toUpperCase())} placeholder="OKFL26" /></label><button disabled={busy || loading}>Open room</button></form>
     </div><p className="liveMessage" role="status">{message}</p>
   </section>;
@@ -179,7 +221,7 @@ export function LiveDraftClient({initialCode}: {initialCode: string}) {
   const myRoster = snapshot.picks.filter((pick) => pick.franchiseId === credentials.franchiseId);
 
   return <div className="draftRoomV3 liveDraftRoom">
-    <section className="liveRoomTopbar"><div><span className="eyebrow">OKFL Live Draft</span><h2>{snapshot.room.name}</h2><p>{message}</p></div><div className="roomCode"><span>Invite code</span><b>{snapshot.room.code}</b><button onClick={() => navigator.clipboard.writeText(`${window.location.origin}/live-draft?room=${snapshot.room.code}`)}>Copy link</button></div><div className="livePresence"><b>{onlineFranchises.size}</b><span>managers online</span></div></section>
+    <section className="liveRoomTopbar"><div><span className="eyebrow">OKFL Live Draft · {snapshot.room.clockSeconds}s clock</span><h2>{snapshot.room.name}</h2><p>{message}</p></div><div className="roomCode"><span>Invite code</span><b>{snapshot.room.code}</b><button onClick={() => navigator.clipboard.writeText(`${window.location.origin}/live-draft?room=${snapshot.room.code}`)}>Copy link</button></div><div className="livePresence"><b>{onlineFranchises.size}</b><span>managers online</span></div></section>
 
     <section className="liveSeatLobby"><header><div><span className="eyebrow">Draft lobby</span><h2>{snapshot.seats.filter((seat) => seat.claimed).length}/10 franchises claimed</h2></div>{isHost && <div className="liveHostControls">
       {seatPins.length > 0 && <button onClick={copyPinList} disabled={busy}>Copy team PINs</button>}
@@ -190,18 +232,19 @@ export function LiveDraftClient({initialCode}: {initialCode: string}) {
     </div>}</header><div className="liveSeatGrid">{snapshot.seats.map((seat) => {
       const pin = seatPins.find((row) => row.franchiseId === seat.franchiseId)?.pin;
       const mine = credentials.franchiseId === seat.franchiseId;
-      return <article key={seat.franchiseId} className={`${seat.claimed ? "claimed" : ""} ${mine ? "mine" : ""}`}><i>{seat.managerName.slice(0, 1)}</i><span>Pick {seat.slot}</span><b>{seat.managerName}</b><small>{seat.claimedName || "Open seat"}</small><em>{onlineFranchises.has(seat.franchiseId) ? "Online" : seat.claimed ? "Offline" : pin ? `PIN ${pin}` : "Needs PIN"}</em></article>;
+      const aiControlled = snapshot.room.status !== "lobby" && !seat.claimed;
+      return <article key={seat.franchiseId} className={`${seat.claimed ? "claimed" : ""} ${mine ? "mine" : ""} ${aiControlled ? "ai" : ""}`}><i>{aiControlled ? "AI" : seat.managerName.slice(0, 1)}</i><span>Pick {seat.slot}</span><b>{seat.managerName}</b><small>{seat.claimedName || (aiControlled ? "AI manager" : "Open seat")}</small><em>{onlineFranchises.has(seat.franchiseId) ? "Online" : seat.claimed ? "Offline" : aiControlled ? "AI controlled" : pin ? `PIN ${pin}` : "Needs PIN"}</em></article>;
     })}</div>
-      {!credentials.seatToken && snapshot.room.status !== "complete" && <form className="claimSeatForm" onSubmit={joinRoom}><label>Your name<input required value={joinName} onChange={(event) => setJoinName(event.target.value)} placeholder="Manager name" /></label><label>Franchise<select required value={joinFranchise} onChange={(event) => setJoinFranchise(event.target.value)}><option value="">Choose team</option>{snapshot.seats.map((seat) => <option key={seat.franchiseId} value={seat.franchiseId}>{seat.slot}. {seat.managerName}</option>)}</select></label><label>Team PIN<input required inputMode="numeric" maxLength={4} value={joinPin} onChange={(event) => setJoinPin(event.target.value.replace(/\D/g, ""))} placeholder="0000" /></label><button disabled={busy}>Claim franchise</button></form>}
+      {!credentials.seatToken && snapshot.room.status === "lobby" && <form className="claimSeatForm" onSubmit={joinRoom}><label>Your name<input required value={joinName} onChange={(event) => setJoinName(event.target.value)} placeholder="Manager name" /></label><label>Franchise<select required value={joinFranchise} onChange={(event) => setJoinFranchise(event.target.value)}><option value="">Choose team</option>{snapshot.seats.map((seat) => <option key={seat.franchiseId} value={seat.franchiseId}>{seat.slot}. {seat.managerName}</option>)}</select></label><label>Team PIN<input required inputMode="numeric" maxLength={4} value={joinPin} onChange={(event) => setJoinPin(event.target.value.replace(/\D/g, ""))} placeholder="0000" /></label><button disabled={busy}>Claim franchise</button></form>}
     </section>
 
-    <section className="draftV2BoardPanel liveBoard"><header><div><span className="eyebrow">Room {snapshot.room.code} · {snapshot.room.status}</span><h2>Live draft board</h2></div><div className={`clockStatus ${canPick ? "yourTurn" : ""}`}><span>{canPick ? "Your pick" : currentSeat?.claimedName || currentSeat?.managerName || "Draft complete"}</span><b>{current ? `${current.round}.${current.slot}` : "Final"}</b></div></header>
+    <section className="draftV2BoardPanel liveBoard"><header><div><span className="eyebrow">Room {snapshot.room.code} · {snapshot.room.status}</span><h2>Live draft board</h2></div><div className={`clockStatus liveClock ${canPick ? "yourTurn" : ""} ${secondsRemaining <= 5 ? "urgent" : ""}`}><span>{canPick ? "Your pick" : currentSeat?.claimedName || (currentSeat ? "AI selecting" : "Draft complete")}</span><b>{snapshot.room.status === "live" ? secondsRemaining : "—"}<small>{snapshot.room.status === "live" ? " sec" : current ? `${current.round}.${current.slot}` : "Final"}</small></b></div></header>
       <div className="draftV2BoardScroller"><div className="draftV2ManagerRow"><div className="draftRoundCorner">RD</div>{managers.map((manager) => <div className={manager.franchiseId === credentials.franchiseId ? "controlled" : ""} key={manager.franchiseId}><i>{manager.manager.slice(0, 1)}</i><span>Pick {manager.slot}</span><b>{manager.manager}</b><small>{snapshot.seats.find((seat) => seat.franchiseId === manager.franchiseId)?.claimedName || "Open"}</small></div>)}</div>
       <div className="draftV2Board">{Array.from({length: DRAFT_ROUNDS}, (_, roundIndex) => { const round = roundIndex + 1; return <Fragment key={round}><div className="draftRoundLabel"><span>R</span><b>{round}</b></div>{Array.from({length: 10}, (_, slotIndex) => { const slot = slotIndex + 1; const manager = managers.find((row) => row.slot === slot)!; return <BoardCell key={`${round}-${slot}`} round={round} slot={slot} pick={board.get(pickKey(round, slot))} active={current?.round === round && current?.slot === slot} manager={manager} controlledFranchise={credentials.franchiseId || ""} />; })}</Fragment>; })}</div></div>
     </section>
 
     <div className="liveDraftWorkbench"><section className="livePlayerPool"><header><div><span className="eyebrow">PPR player market</span><h2>{canPick ? "You are on the clock" : "Available players"}</h2></div><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search players" /></header><div className="positionTabs">{["ALL","QB","RB","WR","TE","K","DEF"].map((value) => <button key={value} className={position === value ? "active" : ""} onClick={() => setPosition(value)}>{value}</button>)}</div><div className="livePlayerRows">{available.slice(0, 180).map((player) => <article key={player.name}><span className={`playerPosition ${POSITION_CLASS[player.position] || ""}`}>{player.position}</span><div><b>{player.name}</b><small>{player.team} · ADP {player.marketAdp?.toFixed(1) || player.pprRank}</small></div><strong>#{player.pprRank}</strong><button disabled={!canPick || busy} onClick={() => draftPlayer(player)}>Draft</button></article>)}</div></section>
-      <aside className="liveDraftSide"><section><span className="eyebrow">On the clock</span><h2>{currentSeat?.claimedName || currentSeat?.managerName || "Draft complete"}</h2><p>{snapshot.room.status === "lobby" ? "Waiting for the commissioner to start." : canPick ? "Choose a player from the live market." : currentSeat?.claimed ? "Waiting for this manager's selection." : "This seat is open; the host can make a bot pick."}</p>{isHost && snapshot.room.status === "live" && !currentSeat?.claimed && <button onClick={makeBotPick} disabled={busy}>Make bot pick</button>}</section><section><span className="eyebrow">My roster</span><h3>{managers.find((manager) => manager.franchiseId === credentials.franchiseId)?.manager || "Spectator"}</h3><div className="liveRoster">{myRoster.map((pick) => <div key={pick.overall}><span>{pick.player.position}</span><b>{pick.player.name}</b><small>{pick.keeper ? `Keeper R${pick.keeperCost}` : `${pick.round}.${pick.slot}`}</small></div>)}{!myRoster.length && <p>Claim a franchise to build your roster.</p>}</div></section></aside>
+      <aside className="liveDraftSide"><section><span className="eyebrow">On the clock · {secondsRemaining}s</span><h2>{currentSeat?.claimedName || (currentSeat ? `${currentSeat.managerName} AI` : "Draft complete")}</h2><p>{snapshot.room.status === "lobby" ? "Waiting for the commissioner to start. Unclaimed teams become AI." : canPick ? "Choose a player before the clock expires." : currentSeat?.claimed ? "Waiting for this manager's selection. AI takes over at zero." : "AI is making this franchise's selection."}</p>{isHost && snapshot.room.status === "live" && !currentSeat?.claimed && <button onClick={makeBotPick} disabled={busy}>Pick now</button>}</section><section><span className="eyebrow">My roster</span><h3>{managers.find((manager) => manager.franchiseId === credentials.franchiseId)?.manager || "Spectator"}</h3><div className="liveRoster">{myRoster.map((pick) => <div key={pick.overall}><span>{pick.player.position}</span><b>{pick.player.name}</b><small>{pick.keeper ? `Keeper R${pick.keeperCost}` : `${pick.round}.${pick.slot}`}</small></div>)}{!myRoster.length && <p>Claim a franchise to build your roster.</p>}</div></section></aside>
     </div>
   </div>;
 }

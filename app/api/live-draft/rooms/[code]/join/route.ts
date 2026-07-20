@@ -13,7 +13,7 @@ export async function POST(request: Request, context: {params: Promise<{code: st
     const supabase = createAdminSupabase();
     const {data: room} = await supabase.from("live_draft_rooms").select("id,status").eq("code", normalized).maybeSingle();
     if (!room) return NextResponse.json({error: "Draft room not found."}, {status: 404});
-    if (room.status === "complete") return NextResponse.json({error: "This draft is complete."}, {status: 409});
+    if (room.status !== "lobby") return NextResponse.json({error: "Franchises lock when the draft starts. This seat is now AI-controlled."}, {status: 409});
     const {data: seat} = await supabase.from("live_draft_seats").select("id,pin_hash").eq("room_id", room.id).eq("franchise_id", franchiseId).maybeSingle();
     if (!seat || seat.pin_hash !== pinHash) return NextResponse.json({error: "That team PIN is incorrect."}, {status: 403});
     const seatToken = createDraftSecret();
@@ -26,4 +26,3 @@ export async function POST(request: Request, context: {params: Promise<{code: st
     return NextResponse.json({error: error instanceof Error ? error.message : "Could not claim this franchise."}, {status: 500});
   }
 }
-

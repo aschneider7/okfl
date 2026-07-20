@@ -10,6 +10,8 @@ export async function POST(request: Request, context: {params: Promise<{code: st
     const {code} = await context.params;
     const normalized = code.trim().toUpperCase();
     const body = await request.json();
+    const expectedOverall = Number(body.expectedOverall);
+    if (!Number.isInteger(expectedOverall)) return NextResponse.json({error: "The current pick number is required."}, {status: 400});
     const player = body.player || {};
     const name = String(player.name || "").trim();
     const position = String(player.position || "").toUpperCase();
@@ -23,6 +25,7 @@ export async function POST(request: Request, context: {params: Promise<{code: st
     const supabase = createAdminSupabase();
     const {error} = await supabase.rpc("make_live_draft_pick", {
       p_room_code: normalized, p_actor_token_hash: hashDraftSecret(String(body.actorToken || "")), p_player: safePlayer,
+      p_expected_overall: expectedOverall,
     });
     if (error) return NextResponse.json({error: error.message}, {status: 409});
     return NextResponse.json({snapshot: await getLiveDraftSnapshot(normalized)});
@@ -30,4 +33,3 @@ export async function POST(request: Request, context: {params: Promise<{code: st
     return NextResponse.json({error: error instanceof Error ? error.message : "Could not submit the pick."}, {status: 500});
   }
 }
-

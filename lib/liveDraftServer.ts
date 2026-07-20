@@ -23,7 +23,7 @@ export function createSeatPin() {
 export async function getLiveDraftSnapshot(code: string): Promise<LiveDraftSnapshot | null> {
   const supabase = createAdminSupabase();
   const normalized = code.trim().toUpperCase();
-  const {data: room, error: roomError} = await supabase.from("live_draft_rooms").select("id,code,name,status,current_overall,host_name,created_at").eq("code", normalized).maybeSingle();
+  const {data: room, error: roomError} = await supabase.from("live_draft_rooms").select("id,code,name,status,current_overall,host_name,settings,pick_deadline,created_at").eq("code", normalized).maybeSingle();
   if (roomError) throw roomError;
   if (!room) return null;
   const [{data: seats, error: seatsError}, {data: picks, error: picksError}] = await Promise.all([
@@ -33,8 +33,10 @@ export async function getLiveDraftSnapshot(code: string): Promise<LiveDraftSnaps
   if (seatsError) throw seatsError;
   if (picksError) throw picksError;
   return {
+    serverTime: new Date().toISOString(),
     room: {
       id: room.id, code: room.code, name: room.name, status: room.status, currentOverall: room.current_overall,
+      clockSeconds: Math.max(1, Number(room.settings?.clockSeconds) || 30), pickDeadline: room.pick_deadline,
       hostName: room.host_name, createdAt: room.created_at,
     },
     seats: (seats || []).map((seat): LiveDraftSeat => ({
@@ -48,4 +50,3 @@ export async function getLiveDraftSnapshot(code: string): Promise<LiveDraftSnaps
     })),
   };
 }
-

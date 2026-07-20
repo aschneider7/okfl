@@ -1,5 +1,5 @@
--- OKFL OS v5.0 — persistent multiplayer draft rooms
--- Run after 001_okfl_schema.sql and 002_commissioner_repairs.sql.
+-- OKFL OS v5.1 — persistent multiplayer draft rooms and automatic pick clock
+-- Safe to re-run after 001_okfl_schema.sql and 002_commissioner_repairs.sql.
 
 create table if not exists public.live_draft_rooms (
   id uuid primary key default gen_random_uuid(),
@@ -9,10 +9,17 @@ create table if not exists public.live_draft_rooms (
   current_overall integer not null default 1 check (current_overall between 1 and 171),
   host_name text not null,
   host_token_hash text not null,
-  settings jsonb not null default '{"teams":10,"rounds":17,"scoring":"PPR"}'::jsonb,
+  settings jsonb not null default '{"teams":10,"rounds":17,"scoring":"PPR","clockSeconds":30}'::jsonb,
+  pick_deadline timestamptz,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+-- Adds v5.1 clock support when v5.0 of this migration was already installed.
+alter table public.live_draft_rooms add column if not exists pick_deadline timestamptz;
+update public.live_draft_rooms
+set settings = settings || '{"clockSeconds":30}'::jsonb
+where not (settings ? 'clockSeconds');
 
 create table if not exists public.live_draft_seats (
   id uuid primary key default gen_random_uuid(),
@@ -53,12 +60,13 @@ alter table public.live_draft_rooms enable row level security;
 alter table public.live_draft_seats enable row level security;
 alter table public.live_draft_picks enable row level security;
 
--- Picks are accepted through one locked transaction. The actor may be the
--- current seat or the room host (used for commissioner and bot selections).
+-- Every pick locks its room and verifies the expected selection number. This
+-- prevents two browsers from drafting twice when an AI or timer fires at once.
 create or replace function public.make_live_draft_pick(
   p_room_code text,
   p_actor_token_hash text,
-  p_player jsonb
+  p_player jsonb,
+  p_expected_overall integer
 ) returns jsonb
 language plpgsql
 security definer
@@ -74,6 +82,7 @@ declare
   v_next integer;
   v_key text;
   v_is_host boolean;
+  v_clock_seconds integer;
 begin
   select * into v_room
   from public.live_draft_rooms
@@ -83,6 +92,9 @@ begin
   if not found then raise exception 'Draft room not found'; end if;
   if v_room.status <> 'live' then raise exception 'Draft room is not live'; end if;
   if v_room.current_overall > 170 then raise exception 'Draft is complete'; end if;
+  if p_expected_overall is not null and v_room.current_overall <> p_expected_overall then
+    raise exception 'The clock has already advanced';
+  end if;
 
   v_overall := v_room.current_overall;
   v_round := floor((v_overall - 1) / 10) + 1;
@@ -96,6 +108,9 @@ begin
   if not v_is_host and coalesce(v_seat.seat_token_hash, '') <> p_actor_token_hash then
     raise exception 'This franchise is not on the clock';
   end if;
+  if not v_is_host and v_room.pick_deadline is not null and v_room.pick_deadline <= now() then
+    raise exception 'The pick clock has expired';
+  end if;
 
   v_key := trim(coalesce(p_player->>'key', ''));
   if v_key = '' then raise exception 'Player key is required'; end if;
@@ -107,7 +122,11 @@ begin
     room_id, overall, round, slot, franchise_id, player_key, player, keeper, selected_by
   ) values (
     v_room.id, v_overall, v_round, v_slot, v_seat.franchise_id, v_key, p_player - 'key', false,
-    case when v_is_host then 'host' else coalesce(v_seat.claimed_name, v_seat.manager_name) end
+    case
+      when v_is_host and v_seat.claimed_name is null then 'AI'
+      when v_is_host then 'clock AI'
+      else coalesce(v_seat.claimed_name, v_seat.manager_name)
+    end
   );
 
   v_next := v_overall + 1;
@@ -117,9 +136,11 @@ begin
     v_next := v_next + 1;
   end loop;
 
+  v_clock_seconds := greatest(1, least(3600, coalesce((v_room.settings->>'clockSeconds')::integer, 30)));
   update public.live_draft_rooms
   set current_overall = least(v_next, 171),
       status = case when v_next > 170 then 'complete' else status end,
+      pick_deadline = case when v_next > 170 then null else now() + make_interval(secs => v_clock_seconds) end,
       updated_at = now()
   where id = v_room.id;
 
@@ -127,6 +148,20 @@ begin
 end;
 $$;
 
-revoke all on function public.make_live_draft_pick(text,text,jsonb) from public;
-grant execute on function public.make_live_draft_pick(text,text,jsonb) to service_role;
+-- Compatibility wrapper for any v5.0 client still finishing a request during deployment.
+create or replace function public.make_live_draft_pick(
+  p_room_code text,
+  p_actor_token_hash text,
+  p_player jsonb
+) returns jsonb
+language sql
+security definer
+set search_path = public
+as $$
+  select public.make_live_draft_pick(p_room_code, p_actor_token_hash, p_player, null);
+$$;
 
+revoke all on function public.make_live_draft_pick(text,text,jsonb,integer) from public;
+revoke all on function public.make_live_draft_pick(text,text,jsonb) from public;
+grant execute on function public.make_live_draft_pick(text,text,jsonb,integer) to service_role;
+grant execute on function public.make_live_draft_pick(text,text,jsonb) to service_role;

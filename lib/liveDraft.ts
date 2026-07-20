@@ -8,6 +8,8 @@ export type LiveDraftRoom = {
   name: string;
   status: LiveDraftStatus;
   currentOverall: number;
+  clockSeconds: number;
+  pickDeadline: string | null;
   hostName: string;
   createdAt: string;
 };
@@ -33,6 +35,7 @@ export type LiveDraftPick = {
 };
 
 export type LiveDraftSnapshot = {
+  serverTime: string;
   room: LiveDraftRoom;
   seats: LiveDraftSeat[];
   picks: LiveDraftPick[];
@@ -45,4 +48,3 @@ export type LiveRoomCredentials = {
   franchiseId?: string;
   displayName?: string;
 };
-

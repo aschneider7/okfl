@@ -9,6 +9,7 @@ export async function POST(request: Request) {
     const body = await request.json().catch(() => ({}));
     const hostName = String(body.hostName || "Commissioner").trim().slice(0, 40) || "Commissioner";
     const roomName = String(body.roomName || "2026 OKFL Live Draft").trim().slice(0, 80) || "2026 OKFL Live Draft";
+    const clockSeconds = Math.max(1, Math.min(3600, Math.round(Number(body.clockSeconds) || 30)));
     const hostToken = createDraftSecret();
     const supabase = createAdminSupabase();
     let room: {id: string; code: string} | null = null;
@@ -18,6 +19,7 @@ export async function POST(request: Request) {
       const code = createRoomCode();
       const result = await supabase.from("live_draft_rooms").insert({
         code, name: roomName, host_name: hostName, host_token_hash: hashDraftSecret(hostToken),
+        settings: {teams: 10, rounds: 17, scoring: "PPR", clockSeconds},
       }).select("id,code").single();
       if (!result.error) room = result.data;
       else lastError = result.error;
@@ -52,4 +54,3 @@ export async function POST(request: Request) {
     return NextResponse.json({error: error instanceof Error ? error.message : "Could not create the live draft room."}, {status: 500});
   }
 }
-
