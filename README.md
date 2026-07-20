@@ -5,7 +5,8 @@ The Obama Keeper Fantasy League command center for historical research, franchis
 ## Core experiences
 
 - League-wide search across players, franchises, seasons, trades, drafts, and weekly NFL production
-- Full editorial interface rebuild with an asymmetric information grid, grouped navigation, sharper typography, cleaner controls, and a new bone, ink, cobalt, orange, and acid-lime palette across every route
+- Full editorial interface rebuild with an asymmetric information grid, grouped navigation, sharper typography, cleaner controls, and a new bone, ink, cobalt, teal, and acid-lime palette across every route
+- Readability refinement with roomier system typography, larger interface labels, a teal signal color, and collapsible navigation groups
 - Franchise profiles, comparison tools, standings, records, and historical weekly snapshots
 - Franchise Profiles 3.1 with ten distinct identities, high-contrast profile cards, competitive posture, market behavior, draft philosophy, matchup relationships, and league-wide identity leaders
 - Live 2026 Power Rankings that recalculate after every Sleeper sync, switch from preseason to post-draft and weekly models, and preserve week-to-week movement

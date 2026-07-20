@@ -19,13 +19,19 @@ const mobileLinks = links.filter(([href]) => ["/", "/live-league", "/weekly-reca
 
 export function AppShell({children}: {children: React.ReactNode}) {
   const path = usePathname(); const [open, setOpen] = useState(false); const [navigating,setNavigating]=useState(false);
-  useEffect(()=>{setNavigating(false);setOpen(false)},[path]);
+  const [openGroups,setOpenGroups]=useState<Record<string,boolean>>(()=>({Now:true}));
+  useEffect(()=>{
+    setNavigating(false);setOpen(false);
+    const activeGroup=navGroups.find((group)=>group.links.some(([href])=>path===href||(href!=="/"&&path.startsWith(href))));
+    if(activeGroup)setOpenGroups((current)=>({...current,[activeGroup.label]:true}));
+  },[path]);
   const beginNavigation=(href:string)=>{if(href!==path)setNavigating(true)};
+  const toggleGroup=(label:string)=>setOpenGroups((current)=>({...current,[label]:!current[label]}));
   const current = links.find(([href]) => path === href || (href !== "/" && path.startsWith(href)))?.[1] || "League workspace";
   return <div className="shell">
     <aside className={open ? "sidebar open" : "sidebar"}>
       <Link href="/" className="brand" onClick={()=>beginNavigation("/")}><div className="brandMark"><img src="/okfl-logo.png" alt="" /></div><div className="brandCopy"><small>Obama Keeper Fantasy League</small><b>OKFL OS</b><span>League intelligence</span></div></Link>
-      <nav>{navGroups.map((group)=><section className="navGroup" key={group.label}><span className="navGroupLabel">{group.label}</span>{group.links.map(([href,label,glyph])=>{const active=path===href||(href!=="/"&&path.startsWith(href));return <Link key={href} href={href} onClick={()=>beginNavigation(href)} className={active?"active":""}><i>{glyph}</i><span>{label}</span><em/></Link>})}</section>)}</nav>
+      <nav>{navGroups.map((group)=>{const expanded=Boolean(openGroups[group.label]);const menuId=`nav-${group.label.toLowerCase().replaceAll(" ","-")}`;return <section className="navGroup" key={group.label}><button type="button" className={expanded?"navGroupToggle open":"navGroupToggle"} onClick={()=>toggleGroup(group.label)} aria-expanded={expanded} aria-controls={menuId}><span>{group.label}</span><i aria-hidden="true"/></button><div id={menuId} className={expanded?"navGroupMenu open":"navGroupMenu"} aria-hidden={!expanded}><div>{group.links.map(([href,label,glyph])=>{const active=path===href||(href!=="/"&&path.startsWith(href));return <Link key={href} href={href} onClick={()=>beginNavigation(href)} className={active?"active":""}><i>{glyph}</i><span>{label}</span><em/></Link>})}</div></div></section>})}</nav>
       <div className="sidebarStatus"><span><i /></span><div><b>Archive online</b><small>2021–2025 verified · 2026 live</small></div></div>
     </aside>
     <header className="mobileHeader"><button onClick={() => setOpen(!open)} aria-label="Open navigation" aria-expanded={open}><span /><span /><span /></button><div className="mobileBrand"><img src="/okfl-logo.png" alt=""/><span><b>OKFL OS</b><small>{current}</small></span></div><CommandPalette /></header>
