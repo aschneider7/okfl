@@ -1,4 +1,4 @@
-# OKFL OS 6.0
+# OKFL OS 6.1
 
 The Obama Keeper Fantasy League command center for historical research, franchise intelligence, trade analysis, keeper decisions, live records, and mock drafts.
 
@@ -7,7 +7,7 @@ The Obama Keeper Fantasy League command center for historical research, franchis
 - League-wide search across players, franchises, seasons, trades, drafts, and weekly NFL production
 - Franchise profiles, comparison tools, standings, records, and historical weekly snapshots
 - Franchise Profiles 3.1 with ten distinct identities, high-contrast profile cards, competitive posture, market behavior, draft philosophy, matchup relationships, and league-wide identity leaders
-- 2026 preseason Power Rankings with a transparent six-part model, movement from the 2025 table, team tiers, strengths, and pressure points
+- Live 2026 Power Rankings that recalculate after every Sleeper sync, switch from preseason to post-draft and weekly models, and preserve week-to-week movement
 - Smooth UI system with route transitions, skeleton loading, refined interaction states, stable scrolling, responsive polish, and reduced-motion support
 - Trade Machine 2.0 with current market value, keeper surplus, draft capital, team windows, roster needs, and balancing suggestions
 - Mock Draft Room V4.3 with a full-width, high-legibility board; daily 10-team PPR market data; kickers and defenses; protected offline depth; autosave; and final grades
@@ -16,7 +16,15 @@ The Obama Keeper Fantasy League command center for historical research, franchis
 
 ## Visual system
 
-Version 4.1 introduced the Clubhouse visual system across desktop and mobile. Version 4.2 added a live PPR draft market. Version 4.3 rebuilt the Mock Draft Room. Version 5 added the multiplayer Live Draft Room and deeper franchise profiles. Version 6 introduces the global smoothness system and transparent 2026 Power Rankings.
+Version 4.1 introduced the Clubhouse visual system across desktop and mobile. Version 4.2 added a live PPR draft market. Version 4.3 rebuilt the Mock Draft Room. Version 5 added the multiplayer Live Draft Room and deeper franchise profiles. Version 6 introduces the global smoothness system and Power Rankings; 6.1 connects those rankings to Sleeper.
+
+## Live Power Rankings setup
+
+1. Run `supabase/004_live_power_rankings.sql` in Supabase after the base schema. It is safe to run repeatedly.
+2. Keep `CRON_SECRET` configured in Vercel so the daily `/api/sleeper/sync` cron is authorized.
+3. Redeploy, then run one Sleeper sync from Commissioner to create the first snapshot immediately.
+
+The model uses the historical preseason baseline until Sleeper draft picks exist, switches to drafted-roster and draft-value scoring after the draft, then uses scoring, win rate, three-week form, roster strength, and a smaller preseason prior once games are completed.
 
 ## Live Draft setup
 

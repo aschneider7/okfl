@@ -17,13 +17,14 @@ async function run(request:Request) {
   }
 
   try {
-    const {snapshot,counts,run_id} = await syncSleeper();
+    const {snapshot,counts,run_id,power_rankings} = await syncSleeper();
     return NextResponse.json({
       ok:true,
       run_id,
       synced_at:snapshot.synced_at,
       counts,
-      integrity:snapshot.integrity
+      integrity:snapshot.integrity,
+      power_rankings:{phase:power_rankings.phase,week:power_rankings.week,leader:power_rankings.rankings[0]?.franchise}
     });
   } catch (error) {
     return NextResponse.json({

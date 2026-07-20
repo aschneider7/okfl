@@ -5,6 +5,7 @@ import {useData} from "@/components/DataProvider";
 import {Loading} from "@/components/Page";
 import {SearchHome} from "@/components/SearchHome";
 import {buildPowerRankings} from "@/lib/powerRankings";
+import {PowerRankingsPreview} from "@/components/PowerRankingsPreview";
 
 export default function Home() {
   const {data} = useData();
@@ -21,7 +22,7 @@ export default function Home() {
       <div className="home2FeatureScore"><span>All-time weekly record</span><b>{record ? Number(record.score).toFixed(2) : "—"}</b><strong>{record?.franchise || "—"}</strong><small>{record ? `${record.season} · Week ${record.week} · vs ${record.opponent}` : "No data"}</small></div></section>
     <section id="league-search" className="home2Search"><SearchHome /></section>
     <section className="home2Ticker"><div><span>Format</span><b>2QB Full PPR</b></div><div><span>Franchises</span><b>10</b></div><div><span>Seasons</span><b>5 archived</b></div><div><span>Trades</span><b>{data.trade_analysis.length}</b></div><div><span>Players</span><b>{data.players.length}</b></div></section>
-    <section className="homePowerPreview"><header><div><span className="eyebrow">2026 preseason model</span><h2>Power Rankings</h2></div><Link href="/power-rankings">See all 10 teams →</Link></header><div>{power.map((team)=><Link href={`/franchises/${team.franchiseId}`} key={team.franchiseId}><span>#{team.rank}</span><div><b>{team.franchise}</b><small>{team.tier} · {team.strength.label}</small></div><strong>{team.score}</strong></Link>)}</div></section>
+    <PowerRankingsPreview fallback={power}/>
     <div className="homeBriefingHead"><div><span className="eyebrow">League briefing</span><h2>Everything that matters, at a glance.</h2></div><span>Updated from the verified archive</span></div>
     <section className="home2Grid">
       <article className="home2Panel"><header><div><span className="eyebrow">{season} final table</span><h2>Regular-season leaders</h2></div><Link href="/records">Records →</Link></header><div className="home2Rows">{standings.map((row: any) => <div key={row.franchise_id}><span>{row.rank}</span><b>{row.franchise}</b><small>{row.record}</small><strong>{row.points ? Number(row.points).toFixed(1) : "—"}</strong></div>)}</div></article>

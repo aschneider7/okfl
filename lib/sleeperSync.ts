@@ -1,4 +1,5 @@
 import { createAdminSupabase } from "@/lib/supabaseServer";
+import {saveLivePowerSnapshot} from "@/lib/livePowerStore";
 
 export const SLEEPER_LEAGUE_ID = "1381102523590389760";
 export const OKFL_LEAGUE_ID = "okfl";
@@ -400,9 +401,10 @@ export async function syncSleeper() {
     ]);
 
     const weeks = Array.from({length:18},(_,index)=>index+1);
-    const [transactionWeeks,matchupWeeks] = await Promise.all([
+    const [transactionWeeks,matchupWeeks,draftPickGroups] = await Promise.all([
       Promise.all(weeks.map((week)=>sleeper<any[]>(`/league/${SLEEPER_LEAGUE_ID}/transactions/${week}`).catch(()=>[]))),
-      Promise.all(weeks.map((week)=>sleeper<any[]>(`/league/${SLEEPER_LEAGUE_ID}/matchups/${week}`).catch(()=>[])))
+      Promise.all(weeks.map((week)=>sleeper<any[]>(`/league/${SLEEPER_LEAGUE_ID}/matchups/${week}`).catch(()=>[]))),
+      Promise.all(drafts.map((draft:any)=>sleeper<any[]>(`/draft/${draft.draft_id}/picks`).catch(()=>[])))
     ]);
 
     const savedOverrides=await loadCommissionerOverrides();
@@ -414,6 +416,13 @@ export async function syncSleeper() {
     );
     const { mapped:transactions,mappedTrades } = mapTransactions(transactionWeeks,rosterToFranchise);
     const matchups = mapMatchups(matchupWeeks,rosterToFranchise);
+    const mappedDrafts=drafts.map((draft:any,index:number)=>({
+      ...draft,
+      picks:(draftPickGroups[index]??[]).map((pick:any)=>({
+        ...pick,
+        franchise_id:rosterToFranchise[String(pick.roster_id)]??userToFranchise[String(pick.picked_by)]??null
+      }))
+    }));
 
     const snapshot = {
       version:2,
@@ -426,7 +435,7 @@ export async function syncSleeper() {
       traded_picks:tradedPicks,
       winners_bracket:winnersBracket,
       losers_bracket:losersBracket,
-      drafts,
+      drafts:mappedDrafts,
       transactions,
       trades:mappedTrades,
       matchups,
@@ -438,8 +447,12 @@ export async function syncSleeper() {
       }
     };
 
-    const counts = await saveSnapshot(snapshot,run.id);
-    return { snapshot, counts, run_id:run.id };
+    const savedCounts = await saveSnapshot(snapshot,run.id);
+    const powerRankings=await saveLivePowerSnapshot(snapshot,run.id);
+    const counts={...savedCounts,power_rankings:powerRankings.rankings.length};
+    const {error:finalizeError}=await supabase.from("sync_runs").update({counts}).eq("id",run.id);
+    if(finalizeError)throw finalizeError;
+    return { snapshot, counts, run_id:run.id, power_rankings:powerRankings };
   } catch (error) {
     await supabase.from("sync_runs").update({
       status:"failed",
@@ -525,7 +538,7 @@ export async function readSleeperSnapshot() {
     trades:tradesResult.data ?? [],
     matchups:matchupsResult.data ?? [],
     traded_picks:picksResult.data ?? [],
-    drafts:draftsResult.data ?? [],
+    drafts:(draftsResult.data ?? []).map((row:any)=>({...row.raw,picks:row.raw?.picks??[]})),
     winners_bracket:brackets.filter((row:any)=>row.bracket_type==="winners").map((row:any)=>row.row_data),
     losers_bracket:brackets.filter((row:any)=>row.bracket_type==="losers").map((row:any)=>row.row_data),
     nfl_state:{season:SYNC_SEASON,week:null,season_type:null},
