@@ -1,28 +1,19 @@
-# OKFL OS v2.0.0 — Draft Room 2.0
+# OKFL OS 4.0
 
-## Navigation
-- Added a visible top-level **Mock Draft** tab.
-- Route: `/mock-draft`
+The Obama Keeper Fantasy League command center for historical research, franchise intelligence, trade analysis, keeper decisions, live records, and mock drafts.
 
-## Draft flow
-1. Select any team in the fixed official 2026 draft order.
-2. Press **Start Mock**.
-3. The simulator instantly makes every AI pick before your first selection.
-4. You make your pick.
-5. The simulator immediately makes every pick until your next turn.
-6. Locked projected keeper picks are displayed and skipped automatically.
+## Core experiences
 
-## Rankings
-- Full-PPR rankings are the base.
-- Quarterbacks move up only five picks for OKFL demand.
-- This is not a pure 2QB or superflex ranking board.
-- The model also considers roster need, positional scarcity, keeper upside, age, and manager personality.
+- League-wide search across players, franchises, seasons, trades, drafts, and weekly NFL production
+- Franchise profiles, comparison tools, standings, records, and historical weekly snapshots
+- Trade Machine 2.0 with current market value, keeper surplus, draft capital, team windows, roster needs, and balancing suggestions
+- Draft Room V4 with realistic, balanced, and chaos modes; manager personalities; queue and watchlist tools; autosave; and final grades
+- Commissioner repair and live Sleeper synchronization tools
 
-## Manager personalities
-Each AI franchise has a visible archetype, motto, risk level, QB urgency, keeper focus, and position preferences.
+## Visual system
 
-## Trade analyzer
-- Uses the same full-PPR base.
-- Quarterbacks receive the same slight five-pick adjustment.
-- Keeper eligibility, keeper round, and remaining keeper years are included.
-- Past ownership, championships, and historical OKFL production are excluded.
+Version 4.0 introduces a unified front-office design system across desktop and mobile: midnight navigation, warm data surfaces, cobalt interactions, restrained signal-red accents, and an electric-lime live-state color.
+
+## Validation
+
+Run `npm run validate` for archive, draft inventory, and trade-model checks. Run `npm run build` for the production build and TypeScript validation.
