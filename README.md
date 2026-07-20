@@ -1,10 +1,11 @@
-# OKFL OS 6.4
+# OKFL OS 7.0
 
 The Obama Keeper Fantasy League command center for historical research, franchise intelligence, trade analysis, keeper decisions, live records, and mock drafts.
 
 ## Core experiences
 
 - League-wide search across players, franchises, seasons, trades, drafts, and weekly NFL production
+- Full editorial interface rebuild with an asymmetric information grid, grouped navigation, sharper typography, cleaner controls, and a new bone, ink, cobalt, orange, and acid-lime palette across every route
 - Franchise profiles, comparison tools, standings, records, and historical weekly snapshots
 - Franchise Profiles 3.1 with ten distinct identities, high-contrast profile cards, competitive posture, market behavior, draft philosophy, matchup relationships, and league-wide identity leaders
 - Live 2026 Power Rankings that recalculate after every Sleeper sync, switch from preseason to post-draft and weekly models, and preserve week-to-week movement
@@ -21,7 +22,7 @@ The Obama Keeper Fantasy League command center for historical research, franchis
 
 ## Visual system
 
-Version 4.1 introduced the Clubhouse visual system across desktop and mobile. Version 4.2 added a live PPR draft market. Version 4.3 rebuilt the Mock Draft Room. Version 5 added the multiplayer Live Draft Room and deeper franchise profiles. Version 6 introduces the global smoothness system and Power Rankings; 6.1 connects those rankings to Sleeper, 6.2 adds the live season dashboard and playoff simulator, 6.3 unifies the experience with the new OKFL OS identity, and 6.4 launches the weekly newsroom and season-long awards ballot.
+Version 4.1 introduced the Clubhouse visual system across desktop and mobile. Version 4.2 added a live PPR draft market. Version 4.3 rebuilt the Mock Draft Room. Version 5 added the multiplayer Live Draft Room and deeper franchise profiles. Version 6 introduced the global smoothness system and Power Rankings; 6.1 connected those rankings to Sleeper, 6.2 added the live season dashboard and playoff simulator, 6.3 unified the experience with the OKFL OS identity, and 6.4 launched the weekly newsroom and season-long awards ballot. Version 7 reframes every feature with a new editorial design system while preserving the existing data, draft, simulation, and synchronization architecture.
 
 ## Live Power Rankings setup
 
