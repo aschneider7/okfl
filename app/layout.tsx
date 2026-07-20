@@ -5,12 +5,13 @@ import "./visual-overhaul.css";
 import "./smooth-ui.css";
 import "./live-suite.css";
 import "./qol-polish.css";
+import "./awards-suite.css";
 import {AppShell} from "@/components/AppShell";
 import {DataProvider} from "@/components/DataProvider";
 
 const deploymentHost = process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL;
 const metadataBase = new URL(deploymentHost ? (deploymentHost.startsWith("http") ? deploymentHost : `https://${deploymentHost}`) : "http://localhost:3000");
-const title = "OKFL OS 6.3 · Live League Intelligence";
+const title = "OKFL OS 6.4 · Live League Intelligence";
 const description = "The Obama Keeper Fantasy League command center for live standings, playoff odds, trades, drafts, records, and franchise intelligence.";
 
 export const metadata: Metadata = {

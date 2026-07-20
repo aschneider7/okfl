@@ -22,6 +22,7 @@ export default function Home() {
       <div className="home2FeatureScore"><span>All-time weekly record</span><b>{record ? Number(record.score).toFixed(2) : "—"}</b><strong>{record?.franchise || "—"}</strong><small>{record ? `${record.season} · Week ${record.week} · vs ${record.opponent}` : "No data"}</small></div></section>
     <section id="league-search" className="home2Search"><SearchHome /></section>
     <section className="home2Ticker"><div><span>Format</span><b>2QB Full PPR</b></div><div><span>Franchises</span><b>10</b></div><div><span>Seasons</span><b>5 archived</b></div><div><span>Trades</span><b>{data.trade_analysis.length}</b></div><div><span>Players</span><b>{data.players.length}</b></div></section>
+    <section className="homeLiveTools"><Link href="/weekly-recap"><span>NEW · WEEKLY</span><h2>League Recap</h2><p>Five game stories, weekly superlatives, top players, and the changing season picture.</p><b>Read the latest →</b></Link><Link href="/league-awards"><span>LIVE BALLOT</span><h2>Awards Race</h2><p>MVP, Offensive Player, Quarterback, Waiver Find, Manager, and GM ladders.</p><b>View the rankings →</b></Link></section>
     <PowerRankingsPreview fallback={power}/>
     <div className="homeBriefingHead"><div><span className="eyebrow">League briefing</span><h2>Everything that matters, at a glance.</h2></div><span>Updated from the verified archive</span></div>
     <section className="home2Grid">
