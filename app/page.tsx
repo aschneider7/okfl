@@ -18,7 +18,7 @@ export default function Home() {
   const record = scores[0];
   const power = buildPowerRankings(data).slice(0, 3);
   return <div className="home2">
-    <section className="home2Hero"><div><span className="eyebrow">The official OKFL command center</span><h1>Know the league.<br />Own the next move.</h1><p>Five seasons of league history, every franchise decision, and a live 2026 toolkit—connected in one front-office workspace.</p><div className="home2Actions"><a href="#league-search">Search the archive</a><Link href="/trades">Open Trade Center</Link></div></div>
+    <section className="home2Hero"><div><span className="eyebrow">The official OKFL command center</span><h1>Know the league.<br />Own the next move.</h1><p>Five seasons of league history, every franchise decision, and a live 2026 toolkit—connected in one front-office workspace.</p><div className="home2Actions"><Link href="/live-league">Open Live Dashboard</Link><Link href="/playoff-odds">Run Playoff Odds</Link></div></div>
       <div className="home2FeatureScore"><span>All-time weekly record</span><b>{record ? Number(record.score).toFixed(2) : "—"}</b><strong>{record?.franchise || "—"}</strong><small>{record ? `${record.season} · Week ${record.week} · vs ${record.opponent}` : "No data"}</small></div></section>
     <section id="league-search" className="home2Search"><SearchHome /></section>
     <section className="home2Ticker"><div><span>Format</span><b>2QB Full PPR</b></div><div><span>Franchises</span><b>10</b></div><div><span>Seasons</span><b>5 archived</b></div><div><span>Trades</span><b>{data.trade_analysis.length}</b></div><div><span>Players</span><b>{data.players.length}</b></div></section>
