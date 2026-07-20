@@ -1,4 +1,4 @@
-# OKFL OS 6.2
+# OKFL OS 6.3
 
 The Obama Keeper Fantasy League command center for historical research, franchise intelligence, trade analysis, keeper decisions, live records, and mock drafts.
 
@@ -10,6 +10,7 @@ The Obama Keeper Fantasy League command center for historical research, franchis
 - Live 2026 Power Rankings that recalculate after every Sleeper sync, switch from preseason to post-draft and weekly models, and preserve week-to-week movement
 - Live League Dashboard with synced standings, matchups, weekly awards, power movement, and transaction activity
 - Playoff Odds Simulator with remaining-schedule simulations, six-team seeding, title odds, and temporary what-if strength adjustments
+- Quality-of-life polish with a new football-and-data logo, unified card and control styling, smoother route transitions, navigation progress, refined loading states, and calmer mobile interactions
 - Smooth UI system with route transitions, skeleton loading, refined interaction states, stable scrolling, responsive polish, and reduced-motion support
 - Trade Machine 2.0 with current market value, keeper surplus, draft capital, team windows, roster needs, and balancing suggestions
 - Mock Draft Room V4.3 with a full-width, high-legibility board; daily 10-team PPR market data; kickers and defenses; protected offline depth; autosave; and final grades
@@ -18,7 +19,7 @@ The Obama Keeper Fantasy League command center for historical research, franchis
 
 ## Visual system
 
-Version 4.1 introduced the Clubhouse visual system across desktop and mobile. Version 4.2 added a live PPR draft market. Version 4.3 rebuilt the Mock Draft Room. Version 5 added the multiplayer Live Draft Room and deeper franchise profiles. Version 6 introduces the global smoothness system and Power Rankings; 6.1 connects those rankings to Sleeper, and 6.2 adds the live season dashboard and playoff simulator.
+Version 4.1 introduced the Clubhouse visual system across desktop and mobile. Version 4.2 added a live PPR draft market. Version 4.3 rebuilt the Mock Draft Room. Version 5 added the multiplayer Live Draft Room and deeper franchise profiles. Version 6 introduces the global smoothness system and Power Rankings; 6.1 connects those rankings to Sleeper, 6.2 adds the live season dashboard and playoff simulator, and 6.3 unifies the experience with the new OKFL OS identity and quality-of-life polish.
 
 ## Live Power Rankings setup
 
