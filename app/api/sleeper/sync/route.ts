@@ -8,7 +8,7 @@ export const maxDuration = 60;
 async function allowed(request:Request) {
   const cron = process.env.CRON_SECRET;
   if (cron && request.headers.get("authorization") === `Bearer ${cron}`) return true;
-  return isCommissioner();
+  return isCommissioner(request);
 }
 
 async function run(request:Request) {

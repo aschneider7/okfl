@@ -9,8 +9,8 @@ import {
 
 export const runtime="nodejs";
 
-export async function GET() {
-  if (!(await isCommissioner())) {
+export async function GET(request:Request) {
+  if (!(await isCommissioner(request))) {
     return NextResponse.json({error:"Unauthorized"},{status:401});
   }
   try {
@@ -23,7 +23,7 @@ export async function GET() {
 }
 
 export async function POST(request:Request) {
-  if (!(await isCommissioner())) {
+  if (!(await isCommissioner(request))) {
     return NextResponse.json({error:"Unauthorized"},{status:401});
   }
   try {
@@ -56,7 +56,7 @@ export async function POST(request:Request) {
 }
 
 export async function DELETE(request:Request) {
-  if (!(await isCommissioner())) {
+  if (!(await isCommissioner(request))) {
     return NextResponse.json({error:"Unauthorized"},{status:401});
   }
   try {

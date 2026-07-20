@@ -1,4 +1,4 @@
-# OKFL OS 7.0
+# OKFL OS 7.1
 
 The Obama Keeper Fantasy League command center for historical research, franchise intelligence, trade analysis, keeper decisions, live records, and mock drafts.
 
@@ -7,6 +7,8 @@ The Obama Keeper Fantasy League command center for historical research, franchis
 - League-wide search across players, franchises, seasons, trades, drafts, and weekly NFL production
 - Full editorial interface rebuild with an asymmetric information grid, grouped navigation, sharper typography, cleaner controls, and a new bone, ink, cobalt, teal, and acid-lime palette across every route
 - Readability refinement with roomier system typography, larger interface labels, a teal signal color, and collapsible navigation groups
+- Explicit contrast protection for Franchise and Commissioner feature panels so text remains readable over their intended dark backgrounds
+- Invite-only franchise accounts for all ten teams, mandatory first-login password changes, persistent manager sessions, and Aaron-only Commissioner authorization
 - Franchise profiles, comparison tools, standings, records, and historical weekly snapshots
 - Franchise Profiles 3.1 with ten distinct identities, high-contrast profile cards, competitive posture, market behavior, draft philosophy, matchup relationships, and league-wide identity leaders
 - Live 2026 Power Rankings that recalculate after every Sleeper sync, switch from preseason to post-draft and weekly models, and preserve week-to-week movement
@@ -24,6 +26,16 @@ The Obama Keeper Fantasy League command center for historical research, franchis
 ## Visual system
 
 Version 4.1 introduced the Clubhouse visual system across desktop and mobile. Version 4.2 added a live PPR draft market. Version 4.3 rebuilt the Mock Draft Room. Version 5 added the multiplayer Live Draft Room and deeper franchise profiles. Version 6 introduced the global smoothness system and Power Rankings; 6.1 connected those rankings to Sleeper, 6.2 added the live season dashboard and playoff simulator, 6.3 unified the experience with the OKFL OS identity, and 6.4 launched the weekly newsroom and season-long awards ballot. Version 7 reframes every feature with a new editorial design system while preserving the existing data, draft, simulation, and synchronization architecture.
+
+## Franchise account setup
+
+1. Run `supabase/005_franchise_accounts.sql` in the existing Supabase SQL Editor after the base schema.
+2. Keep `SUPABASE_URL`, `SUPABASE_SECRET_KEY`, `NEXT_PUBLIC_SUPABASE_URL`, and `NEXT_PUBLIC_SUPABASE_ANON_KEY` configured locally and in Vercel.
+3. Run `npm run setup:accounts`. To use a prepared credentials JSON file, append its path after `--`.
+4. Save the generated `outputs/OKFL_Initial_Account_Credentials.txt` and distribute each entry privately.
+5. Redeploy. Each manager signs in at `/login` and must replace the temporary password immediately.
+
+The ten invite-only usernames are `aaron`, `elie`, `sammy`, `isaac`, `tzvi`, `usher`, `josh-teddy`, `haimy`, `maurice`, and `sean`. Aaron is the only Commissioner role. The former shared `COMMISSIONER_PASSWORD` is no longer used.
 
 ## Live Power Rankings setup
 

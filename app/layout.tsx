@@ -9,10 +9,11 @@ import "./awards-suite.css";
 import "./editorial-v7.css";
 import {AppShell} from "@/components/AppShell";
 import {DataProvider} from "@/components/DataProvider";
+import {AuthProvider} from "@/components/AuthProvider";
 
 const deploymentHost = process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL;
 const metadataBase = new URL(deploymentHost ? (deploymentHost.startsWith("http") ? deploymentHost : `https://${deploymentHost}`) : "http://localhost:3000");
-const title = "OKFL OS 7.0.1 · Editorial League Intelligence";
+const title = "OKFL OS 7.1 · League Accounts";
 const description = "The Obama Keeper Fantasy League, reframed through live standings, playoff odds, trades, drafts, records, and franchise intelligence.";
 
 export const metadata: Metadata = {
@@ -23,5 +24,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
-  return <html lang="en"><body><DataProvider><AppShell>{children}</AppShell></DataProvider></body></html>;
+  return <html lang="en"><body><AuthProvider><DataProvider><AppShell>{children}</AppShell></DataProvider></AuthProvider></body></html>;
 }

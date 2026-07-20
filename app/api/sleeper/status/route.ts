@@ -4,8 +4,8 @@ import { getSyncHistory, readSleeperSnapshot } from "@/lib/sleeperSync";
 
 export const runtime = "nodejs";
 
-export async function GET() {
-  if (!(await isCommissioner())) {
+export async function GET(request:Request) {
+  if (!(await isCommissioner(request))) {
     return NextResponse.json({error:"Unauthorized"},{status:401});
   }
 

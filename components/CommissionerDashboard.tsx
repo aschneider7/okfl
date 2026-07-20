@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import {useAuth} from "@/components/AuthProvider";
 
 type Franchise={id:string;name:string;manager:string};
 
@@ -15,12 +16,13 @@ export function CommissionerDashboard() {
   const [selections,setSelections]=useState<Record<string,string>>({});
   const [notes,setNotes]=useState<Record<string,string>>({});
   const router=useRouter();
+  const {authFetch,signOut}=useAuth();
 
   async function load() {
     setLoading(true);
     const [statusResponse,repairResponse]=await Promise.all([
-      fetch("/api/sleeper/status",{cache:"no-store"}),
-      fetch("/api/commissioner/repairs",{cache:"no-store"}),
+      authFetch("/api/sleeper/status",{cache:"no-store"}),
+      authFetch("/api/commissioner/repairs",{cache:"no-store"}),
     ]);
     const [statusBody,repairBody]=await Promise.all([
       statusResponse.json(),
@@ -36,7 +38,7 @@ export function CommissionerDashboard() {
   async function sync() {
     setSyncing(true);
     setMessage("");
-    const response=await fetch("/api/sleeper/sync",{method:"POST"});
+    const response=await authFetch("/api/sleeper/sync",{method:"POST"});
     const body=await response.json();
     setSyncing(false);
     setMessage(response.ok?`Sync completed at ${new Date(body.synced_at).toLocaleString()}`:body.error||"Sync failed");
@@ -48,7 +50,7 @@ export function CommissionerDashboard() {
     const franchiseId=selections[key];
     if(!franchiseId){setMessage("Choose a franchise first.");return}
     setSavingKey(key);
-    const response=await fetch("/api/commissioner/repairs",{
+    const response=await authFetch("/api/commissioner/repairs",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({
@@ -72,7 +74,7 @@ export function CommissionerDashboard() {
     const franchiseId=selections[key];
     if(!franchiseId){setMessage("Choose a franchise first.");return}
     setSavingKey(key);
-    const response=await fetch("/api/commissioner/repairs",{
+    const response=await authFetch("/api/commissioner/repairs",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({
@@ -89,7 +91,8 @@ export function CommissionerDashboard() {
   }
 
   async function logout() {
-    await fetch("/api/commissioner/logout",{method:"POST"});
+    await signOut();
+    router.replace("/");
     router.refresh();
   }
 
