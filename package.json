@@ -1,12 +1,12 @@
 {
   "name": "okfl-os",
-  "version": "4.3.2",
+  "version": "5.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "validate": "node scripts/validate-data.mjs && node scripts/validate-draft.mjs && node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/validate-draft-rankings.mts && node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/validate-trade.mts"
+    "validate": "node scripts/validate-data.mjs && node scripts/validate-draft.mjs && node scripts/validate-live-draft.mjs && node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/validate-draft-rankings.mts && node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/validate-trade.mts"
   },
   "dependencies": {
     "next": "16.2.10",
