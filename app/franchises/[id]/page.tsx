@@ -15,7 +15,7 @@ function View(){
   const profile=buildFranchiseProfile(data,String(params.id).toUpperCase());
   if(!profile)return <div className="card">Franchise not found.</div>;
 
-  const {franchise,metric,tags,dna,signature,strongest,weakest,records,summary}=profile;
+  const {franchise,metric,tags,dna,signature,strongest,weakest,records,summary,lenses,relationships}=profile;
   const regular=data.regular_standings.filter((row:any)=>row.franchise_id===franchise.id).sort((a:any,b:any)=>a.season-b.season);
   const draftGrades=data.draft_grades.filter((row:any)=>row.franchise_id===franchise.id).sort((a:any,b:any)=>a.season-b.season);
   const trades=data.trade_analysis.filter((trade:any)=>trade.sides.some((side:any)=>side.franchise_id===franchise.id)).sort((a:any,b:any)=>b.season-a.season||Number(b.week||0)-Number(a.week||0));
@@ -47,11 +47,15 @@ function View(){
       <article className="card dnaPanel"><span className="eyebrow">Franchise DNA</span><h2>Behavioral profile</h2>{dna.map((row)=><div className="dnaRow" key={row.label}><div><b>{row.label}</b><small>{row.detail}</small></div><i><span style={{width:`${row.value}%`}}/></i><strong>{row.value}</strong></div>)}</article>
     </div>
 
+    <section className="card scoutingLenses"><div className="sectionHeading"><div><span className="eyebrow">Four-part scouting model</span><h2>How this front office operates</h2></div></div><div>{lenses.map((lens)=><article className={`tone-${lens.tone}`} key={lens.label}><span>{lens.label}</span><b>{lens.value}</b><p>{lens.detail}</p></article>)}</div></section>
+
     <section className="insightCards">
       <article className="card"><span>Strongest trait</span><b>{strongest.label}</b><p>{strongest.detail}</p></article>
       <article className="card"><span>Least pronounced</span><b>{weakest.label}</b><p>{weakest.detail}</p></article>
       <article className="card"><span>Best weekly score</span><b>{records.bestGame?Number(records.bestGame.score).toFixed(2):"—"}</b><p>{records.bestGame?`${records.bestGame.season} Week ${records.bestGame.week} vs ${records.bestGame.opponent}`:"No game data"}</p></article>
       <article className="card"><span>Biggest win</span><b>{records.biggestWin?`+${Number(records.biggestWin.margin).toFixed(2)}`:"—"}</b><p>{records.biggestWin?`${records.biggestWin.season} Week ${records.biggestWin.week} vs ${records.biggestWin.opponent}`:"No game data"}</p></article>
+      <article className="card"><span>Toughest matchup</span><b>{relationships.nemesis?.name||"—"}</b><p>{relationships.nemesis?`${relationships.nemesis.wins}-${relationships.nemesis.losses}${relationships.nemesis.ties?`-${relationships.nemesis.ties}`:""} across ${relationships.nemesis.games} meetings`:"No matchup data"}</p></article>
+      <article className="card"><span>Favorite matchup</span><b>{relationships.favorite?.name||"—"}</b><p>{relationships.favorite?`${relationships.favorite.wins}-${relationships.favorite.losses}${relationships.favorite.ties?`-${relationships.favorite.ties}`:""} across ${relationships.favorite.games} meetings`:"No matchup data"}</p></article>
     </section>
 
     <section className="card">

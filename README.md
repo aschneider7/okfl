@@ -1,4 +1,4 @@
-# OKFL OS 5.1
+# OKFL OS 5.2
 
 The Obama Keeper Fantasy League command center for historical research, franchise intelligence, trade analysis, keeper decisions, live records, and mock drafts.
 
@@ -6,6 +6,7 @@ The Obama Keeper Fantasy League command center for historical research, franchis
 
 - League-wide search across players, franchises, seasons, trades, drafts, and weekly NFL production
 - Franchise profiles, comparison tools, standings, records, and historical weekly snapshots
+- Franchise Profiles 3.0 with ten distinct data-driven identities, competitive posture, market behavior, draft philosophy, game-day temperament, and matchup relationships
 - Trade Machine 2.0 with current market value, keeper surplus, draft capital, team windows, roster needs, and balancing suggestions
 - Mock Draft Room V4.3 with a full-width, high-legibility board; daily 10-team PPR market data; kickers and defenses; protected offline depth; autosave; and final grades
 - Live Draft Room with a six-character invite code, ten PIN-protected franchise seats, synchronized picks, reconnect-safe storage, online presence, commissioner controls, automatic AI franchises, and a server-backed custom pick clock
@@ -13,7 +14,7 @@ The Obama Keeper Fantasy League command center for historical research, franchis
 
 ## Visual system
 
-Version 4.1 introduced the Clubhouse visual system across desktop and mobile. Version 4.2 added a live, attributed PPR draft market. Version 4.3 rebuilt the Mock Draft Room as a focused night-mode workspace. Version 5.0 added the separate multiplayer Live Draft Room. Version 5.1 adds automatic AI teams and 10-second, 30-second, 60-second, or custom pick clocks with AI timeout selections.
+Version 4.1 introduced the Clubhouse visual system across desktop and mobile. Version 4.2 added a live, attributed PPR draft market. Version 4.3 rebuilt the Mock Draft Room as a focused night-mode workspace. Version 5.0 added the separate multiplayer Live Draft Room. Version 5.1 added automatic AI teams and custom pick clocks. Version 5.2 rebuilds franchise profiling around league-relative behavior instead of raw position share.
 
 ## Live Draft setup
 

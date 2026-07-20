@@ -13,20 +13,21 @@ function View(){
 
   return <Page title="Franchise Scouting Reports" subtitle="Distinct identities built from actual league behavior—not recycled labels.">
     <div className="profileIntro card">
-      <div><span className="eyebrow">Franchise Profiles 2.0</span><h2>Every front office now has its own fingerprint.</h2></div>
-      <p>Badges are ranked against the rest of the league using trade volume, keeper usage, draft tendencies, weekly scoring, final finishes and historical success.</p>
+      <div><span className="eyebrow">Franchise Profiles 3.0</span><h2>Every front office now has its own fingerprint.</h2></div>
+      <p>Primary identities and scouting lenses compare each team against the league baseline across trades, keepers, positional investment, weekly volatility, final finishes and historical success.</p>
     </div>
     <div className="franchiseGrid profileGrid">
       {data.franchises.map((franchise:any)=>{
         const profile=buildFranchiseProfile(data,franchise.id);
         if(!profile)return null;
-        const {metric,tags,dna,signature}=profile;
+        const {metric,tags,dna,signature,lenses}=profile;
         return <Link href={`/franchises/${franchise.id}`} className="franchiseCard profileCard" key={franchise.id}>
           <header className="franchiseCardHeader">
             <div><span className="franchiseId">{franchise.id}</span><h2>{franchise.name}</h2><p>{franchise.current_manager}<span>•</span> Founded 2021</p></div>
             <div className="signatureMark"><span>{signature.icon}</span><small>Signature</small></div>
           </header>
           <div className="signatureTitle"><b>{signature.label}</b><p>{signature.detail}</p></div>
+          <div className="profileLensStrip">{lenses.slice(0,2).map((lens)=><div className={`tone-${lens.tone}`} key={lens.label}><small>{lens.label}</small><b>{lens.value}</b></div>)}</div>
           <section className="recordPanel">
             <div className="primaryRecord"><b>{metric.wins}-{metric.losses}{metric.ties?`-${metric.ties}`:""}</b><small>All-time record</small></div>
             <div className="winRate"><b>{Number(metric.win_pct).toFixed(1)}%</b><small>Win percentage</small></div>

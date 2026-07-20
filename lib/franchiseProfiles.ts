@@ -15,6 +15,13 @@ export type DnaDimension = {
   detail: string;
 };
 
+export type ProfileLens = {
+  label: string;
+  value: string;
+  detail: string;
+  tone: ProfileTag["tone"];
+};
+
 function percentile(values:number[], value:number, inverse=false) {
   if (!values.length) return 50;
   const sorted=[...values].sort((a,b)=>a-b);
@@ -40,6 +47,28 @@ function positionShare(metric:any, position:string) {
   const counts=metric.draft_positions??{};
   const total=Object.values(counts).reduce((sum:number,value:any)=>sum+Number(value||0),0);
   return total?Number(counts[position]||0)/total:0;
+}
+
+function positionRank(data:AnyData, metric:any, position:string) {
+  return percentile(data.franchise_metrics.map((row:any)=>positionShare(row,position)),positionShare(metric,position));
+}
+
+function relationshipProfile(data:AnyData, games:any[]) {
+  const opponents=new Map<string,{id:string;name:string;wins:number;losses:number;ties:number;games:number;pointsFor:number;pointsAgainst:number}>();
+  games.forEach((game:any)=>{
+    const id=String(game.opponent_id||game.opponent||"unknown");
+    const row=opponents.get(id)??{id,name:String(game.opponent||data.franchises.find((team:any)=>team.id===id)?.name||"Unknown"),wins:0,losses:0,ties:0,games:0,pointsFor:0,pointsAgainst:0};
+    row.games+=1; row.pointsFor+=Number(game.score||0); row.pointsAgainst+=Number(game.opp_score||0);
+    if(game.result==="W")row.wins+=1; else if(game.result==="L")row.losses+=1; else row.ties+=1;
+    opponents.set(id,row);
+  });
+  const rows=[...opponents.values()].map((row)=>({...row,winPct:(row.wins+row.ties*.5)/Math.max(1,row.games)}));
+  const qualified=rows.filter((row)=>row.games>=3);
+  return {
+    nemesis:qualified.slice().sort((a,b)=>a.winPct-b.winPct||b.games-a.games)[0]??null,
+    favorite:qualified.slice().sort((a,b)=>b.winPct-a.winPct||b.games-a.games)[0]??null,
+    mostPlayed:rows.slice().sort((a,b)=>b.games-a.games)[0]??null,
+  };
 }
 
 export function buildFranchiseProfile(data:AnyData, franchiseId:string) {
@@ -76,6 +105,7 @@ export function buildFranchiseProfile(data:AnyData, franchiseId:string) {
   const rbShare=positionShare(metric,"RB");
   const qbShare=positionShare(metric,"QB");
   const teShare=positionShare(metric,"TE");
+  const positionRanks={WR:positionRank(data,metric,"WR"),RB:positionRank(data,metric,"RB"),QB:positionRank(data,metric,"QB"),TE:positionRank(data,metric,"TE")};
 
   const tags:ProfileTag[]=[];
 
@@ -107,13 +137,13 @@ export function buildFranchiseProfile(data:AnyData, franchiseId:string) {
   else if(pressureRank<=25) add({label:"Same-Day Delivery",icon:"📦",detail:"A more predictable weekly scoring profile than most of the league.",tone:"slate",score:100-pressureRank});
 
   const positionCandidates=[
-    {share:wrShare,label:"Air-Raid Personnel Office",icon:"✈️",detail:"Draft capital leans heavily toward wide receivers."},
-    {share:rbShare,label:"Backfield Industrial Complex",icon:"🏭",detail:"Draft strategy repeatedly prioritizes running backs."},
-    {share:qbShare,label:"Quarterback Capitalist",icon:"💼",detail:"Invests more draft capital in quarterbacks than most franchises."},
-    {share:teShare,label:"Tight End Department",icon:"🧰",detail:"Shows an unusual commitment to the tight end position."},
-  ].sort((a,b)=>b.share-a.share);
-  if(positionCandidates[0].share>=.25) {
-    add({...positionCandidates[0],tone:"blue",score:65+positionCandidates[0].share*100} as ProfileTag);
+    {rank:positionRanks.WR,share:wrShare,label:"Receiver Collector",icon:"✈️",detail:"Invests in wide receivers at one of the league's highest relative rates."},
+    {rank:positionRanks.RB,share:rbShare,label:"Backfield Industrial Complex",icon:"🏭",detail:"Prioritizes running backs more aggressively than most OKFL franchises."},
+    {rank:positionRanks.QB,share:qbShare,label:"Quarterback Capitalist",icon:"💼",detail:"Invests more draft capital in quarterbacks than the league baseline."},
+    {rank:positionRanks.TE,share:teShare,label:"Tight End Department",icon:"🧰",detail:"Shows an unusual commitment to the tight end position."},
+  ].sort((a,b)=>b.rank-a.rank||b.share-a.share);
+  if(positionCandidates[0].rank>=80) {
+    add({...positionCandidates[0],tone:"blue",score:positionCandidates[0].rank} as ProfileTag);
   }
 
   if(legacyRank>=90&&!tags.some((tag)=>tag.label==="Banner Factory")) add({label:"Archive Heavyweight",icon:"📚",detail:"Ranks near the top of the league's total legacy model.",tone:"gold",score:legacyRank});
@@ -121,6 +151,30 @@ export function buildFranchiseProfile(data:AnyData, franchiseId:string) {
   if(metric.best_finish<=2&&metric.worst_finish<=6) add({label:"Always in the Room",icon:"🚪",detail:"Never drifts far from meaningful contention.",tone:"blue",score:80});
 
   const uniqueTags=[...new Map(tags.sort((a,b)=>b.score-a.score).map((tag)=>[tag.label,tag])).values()].slice(0,5);
+
+  const archetypeCandidates:ProfileTag[]=[
+    {label:"Dynasty Compounder",icon:"🔐",detail:"Keeper volume and late-round discovery drive a patient multi-year build.",tone:"green",score:keeperRank*.55+lateRank*.45},
+    {label:"Deal-Flow Operator",icon:"🤝",detail:"Uses the trade market as an active extension of the draft room.",tone:"red",score:tradeRank*.65+lateRank*.2+keeperRank*.15},
+    {label:"Championship Machine",icon:"🏆",detail:"Titles, finish quality and total legacy define the league's proven closer.",tone:"gold",score:Math.min(100,Number(metric.championships)*30+legacyRank*.45+finishRank*.2)},
+    {label:"Playoff Specialist",icon:"🎟️",detail:"The final standings repeatedly outperform the ordinary week-to-week profile.",tone:"purple",score:finishRank*.55+legacyRank*.25+Math.min(100,Number(metric.runner_ups)*30)*.2},
+    {label:"Weekly Juggernaut",icon:"📈",detail:"High-end scoring and win rate create constant regular-season pressure.",tone:"blue",score:scoringRank*.55+winRank*.45},
+    {label:"Variance Gambler",icon:"🎢",detail:"Embraces a wider range of weekly outcomes in pursuit of ceiling.",tone:"red",score:pressureRank*.7+tradeRank*.3},
+    {label:"Continuity Builder",icon:"🧱",detail:"Prefers roster continuity and repeatable outcomes over constant turnover.",tone:"slate",score:(100-tradeRank)*.55+stabilityRank*.45},
+    {label:"Draft Excavator",icon:"⛏️",detail:"Creates surplus value after the obvious names have left the board.",tone:"gold",score:lateRank*.75+keeperRank*.25},
+  ];
+  if(Number(metric.championships)===0&&winRank>=80) archetypeCandidates.push({label:"Regular-Season Machine",icon:"⚙️",detail:"Elite weekly consistency has made this franchise a perennial regular-season threat.",tone:"blue",score:96});
+  if(positionCandidates[0].rank>=90) archetypeCandidates.push({...positionCandidates[0],tone:"blue",score:95} as ProfileTag);
+  const signature=archetypeCandidates.sort((a,b)=>b.score-a.score)[0];
+
+  const recentFinishes=finishes.slice(-2);
+  const recentAverage=recentFinishes.length?recentFinishes.reduce((sum:number,value:number)=>sum+value,0)/recentFinishes.length:Number(metric.average_finish);
+  const posture=recentAverage<=3.5?{value:"All-in contender",detail:`The last two final finishes average ${recentAverage.toFixed(1)}.`,tone:"gold" as const}:recentAverage<=5.5?{value:"In the hunt",detail:`Recent finishes keep this franchise inside the competitive middle.`,tone:"green" as const}:recentAverage<=7.5?{value:"Reloading",detail:`Recent results point to a roster looking for its next core.`,tone:"purple" as const}:{value:"Rebuild pressure",detail:`Recent finishes create urgency to find a new foundation.`,tone:"red" as const};
+  const lenses:ProfileLens[]=[
+    {label:"Competitive posture",...posture},
+    {label:"Market behavior",value:tradeRank>=75?"Aggressive dealer":tradeRank<=25?"Patient holder":"Selective trader",detail:`Trade activity ranks in the ${tradeRank}th percentile.`,tone:tradeRank>=75?"red":tradeRank<=25?"slate":"blue"},
+    {label:"Draft philosophy",value:lateRank>=75?"Value miner":keeperRank>=75?"Keeper planner":positionCandidates[0].rank>=80?positionCandidates[0].label:"Balanced allocator",detail:lateRank>=75?"Late-round hits are a defining source of value.":`The strongest relative position tendency is ${positionCandidates[0].label.toLowerCase()}.`,tone:lateRank>=75?"gold":keeperRank>=75?"green":"blue"},
+    {label:"Game-day temperament",value:pressureRank>=75?"Boom-or-bust":pressureRank<=25?"High floor":"Measured variance",detail:`Weekly scoring volatility ranks in the ${pressureRank}th percentile.`,tone:pressureRank>=75?"red":pressureRank<=25?"slate":"purple"},
+  ];
 
   const dna:DnaDimension[]=[
     {label:"Trading pulse",value:tradeRank,detail:`${metric.trade_count} completed trade participations`},
@@ -133,14 +187,6 @@ export function buildFranchiseProfile(data:AnyData, franchiseId:string) {
     {label:"Weekly volatility",value:pressureRank,detail:"Spread of weekly point totals"},
   ];
 
-  const signature=uniqueTags[0]??{
-    label:"Balanced Front Office",
-    icon:"⚖️",
-    detail:"No single behavior overwhelms the rest of the franchise profile.",
-    tone:"slate" as const,
-    score:50,
-  };
-
   const strongest=dna.slice().sort((a,b)=>b.value-a.value)[0];
   const weakest=dna.slice().sort((a,b)=>a.value-b.value)[0];
 
@@ -148,12 +194,14 @@ export function buildFranchiseProfile(data:AnyData, franchiseId:string) {
     franchise,
     metric,
     tags:uniqueTags,
+    lenses,
     dna,
     signature,
     strongest,
     weakest,
     finishVariance,
     scoreVariance,
+    relationships:relationshipProfile(data,games),
     summary:`${franchise.name} is best described as ${signature.label.toLowerCase()}. Its clearest data edge is ${strongest.label.toLowerCase()}, while ${weakest.label.toLowerCase()} is the least pronounced part of the profile.`,
     records:{
       bestGame:games.slice().sort((a:any,b:any)=>Number(b.score)-Number(a.score))[0]??null,
