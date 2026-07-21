@@ -16,8 +16,9 @@ export function createRoomCode() {
   return Array.from({length: 6}, () => CODE_ALPHABET[randomInt(0, CODE_ALPHABET.length)]).join("");
 }
 
+/** @deprecated Kept only so archived v7.1 source packages still type-check. */
 export function createSeatPin() {
-  return String(randomInt(1000, 10_000));
+  return String(randomInt(1000,10_000));
 }
 
 export async function getLiveDraftSnapshot(code: string): Promise<LiveDraftSnapshot | null> {
@@ -27,7 +28,7 @@ export async function getLiveDraftSnapshot(code: string): Promise<LiveDraftSnaps
   if (roomError) throw roomError;
   if (!room) return null;
   const [{data: seats, error: seatsError}, {data: picks, error: picksError}] = await Promise.all([
-    supabase.from("live_draft_seats").select("franchise_id,slot,manager_name,claimed_name").eq("room_id", room.id).order("slot"),
+    supabase.from("live_draft_seats").select("franchise_id,slot,manager_name,claimed_name,claimed_user_id").eq("room_id", room.id).order("slot"),
     supabase.from("live_draft_picks").select("overall,round,slot,franchise_id,player,keeper,keeper_cost,selected_by,created_at").eq("room_id", room.id).order("overall"),
   ]);
   if (seatsError) throw seatsError;

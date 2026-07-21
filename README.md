@@ -1,4 +1,4 @@
-# OKFL OS 7.1
+# OKFL OS 7.2
 
 The Obama Keeper Fantasy League command center for historical research, franchise intelligence, trade analysis, keeper decisions, live records, and mock drafts.
 
@@ -20,12 +20,13 @@ The Obama Keeper Fantasy League command center for historical research, franchis
 - Smooth UI system with route transitions, skeleton loading, refined interaction states, stable scrolling, responsive polish, and reduced-motion support
 - Trade Machine 2.0 with current market value, keeper surplus, draft capital, team windows, roster needs, and balancing suggestions
 - Mock Draft Room V4.3 with a full-width, high-legibility board; daily 10-team PPR market data; kickers and defenses; protected offline depth; autosave; and final grades
-- Live Draft Room with a six-character invite code, ten PIN-protected franchise seats, synchronized picks, reconnect-safe storage, online presence, commissioner controls, automatic AI franchises, and a server-backed custom pick clock
+- Official Keeper Operations with authenticated three-player submissions, deadline controls, revision tracking, commissioner validation, and a final locked board
+- Authenticated Live Draft Room with automatic franchise seat claiming, synchronized picks, reconnect-safe storage, online presence, commissioner-only controls, automatic AI franchises, and a server-backed custom pick clock
 - Commissioner repair and live Sleeper synchronization tools
 
 ## Visual system
 
-Version 4.1 introduced the Clubhouse visual system across desktop and mobile. Version 4.2 added a live PPR draft market. Version 4.3 rebuilt the Mock Draft Room. Version 5 added the multiplayer Live Draft Room and deeper franchise profiles. Version 6 introduced the global smoothness system and Power Rankings; 6.1 connected those rankings to Sleeper, 6.2 added the live season dashboard and playoff simulator, 6.3 unified the experience with the OKFL OS identity, and 6.4 launched the weekly newsroom and season-long awards ballot. Version 7 reframes every feature with a new editorial design system while preserving the existing data, draft, simulation, and synchronization architecture.
+Version 4.1 introduced the Clubhouse visual system across desktop and mobile. Version 4.2 added a live PPR draft market. Version 4.3 rebuilt the Mock Draft Room. Version 5 added the multiplayer Live Draft Room and deeper franchise profiles. Version 6 introduced the global smoothness system and Power Rankings; 6.1 connected those rankings to Sleeper, 6.2 added the live season dashboard and playoff simulator, 6.3 unified the experience with the OKFL OS identity, and 6.4 launched the weekly newsroom and season-long awards ballot. Version 7 reframes every feature with a new editorial design system while preserving the existing data, draft, simulation, and synchronization architecture. Version 7.2 adds official account-bound keeper operations and authenticated live-draft seats.
 
 ## Franchise account setup
 
@@ -36,6 +37,8 @@ Version 4.1 introduced the Clubhouse visual system across desktop and mobile. Ve
 5. Redeploy. Each manager signs in at `/login` and must replace the temporary password immediately.
 
 The ten invite-only usernames are `aaron`, `elie`, `sammy`, `isaac`, `tzvi`, `usher`, `josh-teddy`, `haimy`, `maurice`, and `sean`. Aaron is the only Commissioner role. The former shared `COMMISSIONER_PASSWORD` is no longer used.
+
+Never place a real Supabase secret in `.env.example` or any tracked file. Local secrets belong only in `.env.local`, while hosted secrets belong in Vercel environment variables.
 
 ## Live Power Rankings setup
 
@@ -48,9 +51,11 @@ The model uses the historical preseason baseline until Sleeper draft picks exist
 ## Live Draft setup
 
 1. Run `supabase/003_live_draft_rooms.sql` in the existing Supabase project after migrations 001 and 002. It is safe to run again when upgrading from 5.0.
-2. Keep `SUPABASE_URL` and `SUPABASE_SECRET_KEY` configured for server routes.
-3. Add `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` for instant presence and broadcast refreshes. The room also polls as a fallback when Realtime is unavailable.
-4. Redeploy, then open `/live-draft`. The commissioner creates a room and shares its invite link plus each franchise's private four-digit PIN.
+2. Run `supabase/006_official_keepers_and_auth_draft.sql` after migrations 003 and 005. This adds official keeper submissions and account-bound seats while leaving existing rooms compatible.
+3. Keep `SUPABASE_URL` and `SUPABASE_SECRET_KEY` configured for server routes.
+4. Add `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` for instant presence and broadcast refreshes. The room also polls as a fallback when Realtime is unavailable.
+5. Redeploy. Aaron sets the keeper deadline in Commissioner OS, all ten managers submit at `/keepers`, and Aaron locks the final board.
+6. Open `/live-draft`. Aaron creates the official room and shares its invite link; signed-in managers automatically claim their own franchise without team PINs.
 
 ## Validation
 

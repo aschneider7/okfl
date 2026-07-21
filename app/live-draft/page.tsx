@@ -6,8 +6,7 @@ import "./live-draft.css";
 export default async function LiveDraftPage({searchParams}: {searchParams: Promise<{room?: string}>}) {
   const {room} = await searchParams;
   return <Page title="OKFL Live Draft Room"
-    subtitle="Create a room, share team PINs, and draft together live from up to ten devices.">
+    subtitle="Lock official keepers, open one room, and let every signed-in manager claim the correct franchise automatically.">
     <LiveDraftClient initialCode={String(room || "").toUpperCase()} />
   </Page>;
 }
-

@@ -1,9 +1,11 @@
 import {NextResponse} from "next/server";
 import {getLiveDraftSnapshot, hashDraftSecret} from "@/lib/liveDraftServer";
 import {createAdminSupabase} from "@/lib/supabaseServer";
+import {isCommissioner} from "@/lib/commissionerAuth";
 
 export async function POST(request: Request, context: {params: Promise<{code: string}>}) {
   try {
+    if(!await isCommissioner(request))return NextResponse.json({error:"Commissioner account required."},{status:403});
     const {code} = await context.params;
     const normalized = code.trim().toUpperCase();
     const body = await request.json();

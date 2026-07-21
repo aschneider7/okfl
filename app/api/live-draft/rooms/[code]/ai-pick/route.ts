@@ -4,9 +4,12 @@ import {overallToRoundSlot} from "@/lib/draftSimulator";
 import {chooseLiveDraftAiPlayer} from "@/lib/liveDraftAi";
 import {getLiveDraftSnapshot} from "@/lib/liveDraftServer";
 import {createAdminSupabase} from "@/lib/supabaseServer";
+import {getAccountFromRequest} from "@/lib/accountServer";
 
-export async function POST(_request: Request, context: {params: Promise<{code: string}>}) {
+export async function POST(request: Request, context: {params: Promise<{code: string}>}) {
   try {
+    const account=await getAccountFromRequest(request);
+    if(!account||account.mustChangePassword)return NextResponse.json({error:"League account required."},{status:401});
     const {code} = await context.params;
     const normalized = code.trim().toUpperCase();
     const supabase = createAdminSupabase();

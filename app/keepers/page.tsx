@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Page, Loading } from "@/components/Page";
 import { useData } from "@/components/DataProvider";
+import {KeeperSubmissionPanel} from "@/components/KeeperSubmissionPanel";
 
 type SortKey = "season" | "franchise" | "player" | "cost" | "keeper_year" | "status";
 type Direction = "asc" | "desc";
@@ -74,6 +75,7 @@ function View() {
       title="Keeper Center"
       subtitle="Explore every keeper decision by season, franchise, cost, and keeper year."
     >
+      <KeeperSubmissionPanel />
       <section className="keepersHero">
         <div>
           <span className="eyebrow">Roster continuity archive</span>

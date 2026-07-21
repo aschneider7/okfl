@@ -7,13 +7,14 @@ import "./live-suite.css";
 import "./qol-polish.css";
 import "./awards-suite.css";
 import "./editorial-v7.css";
+import "./keeper-submission.css";
 import {AppShell} from "@/components/AppShell";
 import {DataProvider} from "@/components/DataProvider";
 import {AuthProvider} from "@/components/AuthProvider";
 
 const deploymentHost = process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL;
 const metadataBase = new URL(deploymentHost ? (deploymentHost.startsWith("http") ? deploymentHost : `https://${deploymentHost}`) : "http://localhost:3000");
-const title = "OKFL OS 7.1 · League Accounts";
+const title = "OKFL OS 7.2 · Official Keeper Operations";
 const description = "The Obama Keeper Fantasy League, reframed through live standings, playoff odds, trades, drafts, records, and franchise intelligence.";
 
 export const metadata: Metadata = {

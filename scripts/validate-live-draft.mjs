@@ -20,7 +20,11 @@ for (const contract of requiredContracts) {
 }
 
 const roomRoute = readFileSync(new URL("../app/api/live-draft/rooms/route.ts", import.meta.url), "utf8");
-assert.ok(roomRoute.includes("projectedKeepers"), "Live rooms must preload official keepers.");
-assert.ok(roomRoute.includes("createSeatPin"), "Live rooms must provision private team PINs.");
+const authMigration = readFileSync(new URL("../supabase/006_official_keepers_and_auth_draft.sql", import.meta.url), "utf8");
+const joinRoute = readFileSync(new URL("../app/api/live-draft/rooms/[code]/join/route.ts", import.meta.url), "utf8");
+assert.ok(roomRoute.includes("getLockedKeeperBoard"), "Live rooms must preload the locked official keeper board.");
+assert.ok(roomRoute.includes("role!==\"commissioner\""), "Only the commissioner may create official rooms.");
+assert.ok(authMigration.includes("claimed_user_id"), "Live seats must be bound to authenticated users.");
+assert.ok(joinRoute.includes("account.franchiseId")&&!joinRoute.includes("body.pin"), "Seat claims must use the signed-in franchise without PINs.");
 
-console.log("Live Draft schema and room contracts validated.");
+console.log("Authenticated Live Draft schema and room contracts validated.");

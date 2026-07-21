@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {useAuth} from "@/components/AuthProvider";
+import {KeeperCommissionerPanel} from "@/components/KeeperCommissionerPanel";
 
 type Franchise={id:string;name:string;manager:string};
 
@@ -164,6 +165,8 @@ export function CommissionerDashboard() {
           </div>
         </article>
       </div>
+
+      <KeeperCommissionerPanel />
 
       {loading?(
         <div className="loading">Loading commissioner data…</div>
