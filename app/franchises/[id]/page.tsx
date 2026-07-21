@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import {useParams} from "next/navigation";
-import Providers from "../../providers";
 import {Loading} from "@/components/Page";
 import {useData} from "@/components/DataProvider";
 import {fmt} from "@/lib/data";
@@ -72,4 +71,4 @@ function View(){
   </div>
 }
 
-export default function FranchiseDetail(){return <Providers><View/></Providers>}
+export default function FranchiseDetail(){return <View/>}

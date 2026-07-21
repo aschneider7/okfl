@@ -7,3 +7,5 @@ pnpm-lock.yaml
 !.env.example
 npm-debug.log*
 /outputs/
+/OKFL_OS_*/
+/*.zip

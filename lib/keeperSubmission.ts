@@ -11,9 +11,12 @@ export type KeeperChoice = {
 };
 
 export type KeeperIssue = {
-  code: "count"|"player"|"position"|"round"|"duplicate-player"|"duplicate-round";
+  code: "count"|"player"|"position"|"round"|"duplicate-player"|"duplicate-round"|"uncertified";
   message: string;
 };
+
+export type KeeperEligibility={franchise_id:string;player:string;player_key:string;position:string;round:number;roster_verified:boolean;cost_verified:boolean;pick_verified:boolean;eligible:boolean;note?:string|null};
+export const keeperPlayerKey=(value:string)=>String(value||"").toLowerCase().replace(/[^a-z0-9]+/g,"");
 
 export function normalizeKeeperChoices(value: unknown): KeeperChoice[] {
   if(!Array.isArray(value)) return [];
@@ -53,6 +56,13 @@ export function crossTeamKeeperIssues(rows:{franchise_id:string;choices:unknown}
     franchises.forEach((franchiseId)=>issues.set(franchiseId,[...(issues.get(franchiseId)||[]),{code:"duplicate-player",message:`${player} is also submitted by another franchise.`}]));
   }
   return issues;
+}
+
+export function certifiedKeeperIssues(franchiseId:string,choices:KeeperChoice[],eligibility:KeeperEligibility[]){
+  return choices.filter((choice)=>choice.player).flatMap((choice):KeeperIssue[]=>{
+    const certified=eligibility.find((row)=>row.franchise_id===franchiseId&&row.player_key===keeperPlayerKey(choice.player)&&row.position===choice.position&&Number(row.round)===choice.round&&row.eligible&&row.roster_verified&&row.cost_verified&&row.pick_verified);
+    return certified?[]:[{code:"uncertified",message:`${choice.player} is not certified for this franchise at Round ${choice.round}.`}];
+  });
 }
 
 export async function getLockedKeeperBoard(season=KEEPER_SEASON):Promise<(KeeperChoice&{franchiseId:string})[]|null>{

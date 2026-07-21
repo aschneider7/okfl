@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import {useEffect,useState} from "react";
-import Providers from "../providers";
 import {Loading,Page} from "@/components/Page";
 import {useData} from "@/components/DataProvider";
 import {buildPowerRankings} from "@/lib/powerRankings";
@@ -29,4 +28,4 @@ function View(){
     </div>
   </Page>;
 }
-export default function PowerRankings(){return <Providers><View/></Providers>}
+export default function PowerRankings(){return <View/>}

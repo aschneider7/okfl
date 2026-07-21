@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Providers from "../providers";
 import {Page,Loading} from "@/components/Page";
 import {useData} from "@/components/DataProvider";
 import {fmt} from "@/lib/data";
@@ -60,4 +59,4 @@ function View(){
   </Page>
 }
 
-export default function Franchises(){return <Providers><View/></Providers>}
+export default function Franchises(){return <View/>}

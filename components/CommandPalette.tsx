@@ -7,7 +7,7 @@ import { suggestions, SearchResult } from "@/lib/searchEngine";
 import { parseLiveNflQuery } from "@/lib/liveNflQuery";
 
 export function CommandPalette() {
-  const { data } = useData();
+  const { data,loadData } = useData({lazy:true});
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -29,8 +29,8 @@ export function CommandPalette() {
   }, []);
 
   useEffect(() => {
-    if (open) window.setTimeout(() => inputRef.current?.focus(), 20);
-  }, [open]);
+    if (open){void loadData();window.setTimeout(() => inputRef.current?.focus(), 20)}
+  }, [open,loadData]);
   useEffect(() => setActive(0), [query]);
 
   const baseRows = useMemo(() => (data ? suggestions(data, query, 20) : []), [data, query]);
