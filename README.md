@@ -1,4 +1,4 @@
-# OKFL OS 7.5
+# OKFL OS 8.0
 
 The Obama Keeper Fantasy League command center for historical research, franchise intelligence, trade analysis, keeper decisions, live records, and mock drafts.
 
@@ -26,10 +26,14 @@ The Obama Keeper Fantasy League command center for historical research, franchis
 - Authenticated Live Draft Room with automatic franchise seat claiming, synchronized picks, reconnect-safe storage, online presence, commissioner-only controls, automatic AI franchises, and a server-backed custom pick clock
 - My Franchise command center with live roster and matchup data, personalized playoff odds, keeper recommendations, trade needs, power and awards movement, editable branding, career records, rivalries, achievements, private inbox, and personal activity history
 - Commissioner repair and live Sleeper synchronization tools
+- Playoff Clinching Paths with conservative mathematical status, projected cut lines, and upcoming swing games
+- Luck Index with schedule-neutral expected wins, all-play records, schedule difficulty, and close-game performance
+- Player Ownership Genealogy with searchable franchise timelines for every tracked player
+- Waiver Wire Hall of Fame with all-time manager leaderboards and historically scored acquisitions
 
 ## Visual system
 
-Version 4.1 introduced the Clubhouse visual system across desktop and mobile. Version 4.2 added a live PPR draft market. Version 4.3 rebuilt the Mock Draft Room. Version 5 added the multiplayer Live Draft Room and deeper franchise profiles. Version 6 introduced the global smoothness system and Power Rankings; 6.1 connected those rankings to Sleeper, 6.2 added the live season dashboard and playoff simulator, 6.3 unified the experience with the OKFL OS identity, and 6.4 launched the weekly newsroom and season-long awards ballot. Version 7 reframes every feature with a new editorial design system while preserving the existing data, draft, simulation, and synchronization architecture. Version 7.2 adds official account-bound keeper operations and authenticated live-draft seats. Version 7.3 gives every manager a persistent, personalized franchise command center. Version 7.3.1 recalibrates playoff odds, completes partial Sleeper schedules, and prevents live scoring from being mistaken for a finished week. Version 7.4 hardens keeper integrity, makes board updates atomic, removes duplicate release trees, and defers the multi-megabyte archive until a route or search actually needs it. Version 7.4.1 repairs commissioner keeper diagnostics and adds a clear recovery state when required Supabase migrations are missing. Version 7.5 hardens the repository with a public npm lockfile, automatic GitHub validation, and removal of confirmed dead assets.
+Version 4.1 introduced the Clubhouse visual system across desktop and mobile. Version 4.2 added a live PPR draft market. Version 4.3 rebuilt the Mock Draft Room. Version 5 added the multiplayer Live Draft Room and deeper franchise profiles. Version 6 introduced the global smoothness system and Power Rankings; 6.1 connected those rankings to Sleeper, 6.2 added the live season dashboard and playoff simulator, 6.3 unified the experience with the OKFL OS identity, and 6.4 launched the weekly newsroom and season-long awards ballot. Version 7 reframes every feature with a new editorial design system while preserving the existing data, draft, simulation, and synchronization architecture. Version 7.2 adds official account-bound keeper operations and authenticated live-draft seats. Version 7.3 gives every manager a persistent, personalized franchise command center. Version 7.3.1 recalibrates playoff odds, completes partial Sleeper schedules, and prevents live scoring from being mistaken for a finished week. Version 7.4 hardens keeper integrity, makes board updates atomic, removes duplicate release trees, and defers the multi-megabyte archive until a route or search actually needs it. Version 7.4.1 repairs commissioner keeper diagnostics and adds a clear recovery state when required Supabase migrations are missing. Version 7.5 hardens the repository with a public npm lockfile, automatic GitHub validation, and removal of confirmed dead assets. Version 8 adds a League Lab for clinching scenarios, schedule luck, player ownership history, and waiver-wire legacy.
 
 ## My Franchise setup
 
