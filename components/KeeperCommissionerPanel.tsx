@@ -4,15 +4,25 @@ import {useEffect,useState} from "react";
 import {useAuth} from "@/components/AuthProvider";
 
 export function KeeperCommissionerPanel(){
-  const {authFetch}=useAuth();const [data,setData]=useState<any>(null);const [deadline,setDeadline]=useState("");const [busy,setBusy]=useState(false);const [message,setMessage]=useState("");
-  async function load(){const response=await authFetch("/api/commissioner/keepers",{cache:"no-store"});const body=await response.json();if(!response.ok){setMessage(body.error||"Could not load keeper board.");return}setData(body);if(body.window?.deadline){const date=new Date(body.window.deadline);setDeadline(new Date(date.getTime()-date.getTimezoneOffset()*60000).toISOString().slice(0,16))}}
+  const {authFetch}=useAuth();const [data,setData]=useState<any>(null);const [deadline,setDeadline]=useState("");const [busy,setBusy]=useState(false);const [loading,setLoading]=useState(true);const [message,setMessage]=useState("");
+  async function load(){
+    setLoading(true);setMessage("");
+    try{
+      const response=await authFetch("/api/commissioner/keepers",{cache:"no-store"});
+      const text=await response.text();let body:any={};
+      try{body=text?JSON.parse(text):{}}catch{body={error:text}}
+      if(!response.ok){setData(null);setMessage(body.error||`Could not load keeper board (${response.status}).`);return}
+      setData(body);if(body.window?.deadline){const date=new Date(body.window.deadline);setDeadline(new Date(date.getTime()-date.getTimezoneOffset()*60000).toISOString().slice(0,16))}
+    }catch(error){setData(null);setMessage(error instanceof Error?error.message:"Could not reach the keeper service.")}
+    finally{setLoading(false)}
+  }
   useEffect(()=>{void load()},[]);
   async function act(action:"deadline"|"lock"|"unlock"){
     setBusy(true);setMessage(action==="lock"?"Validating all ten franchises…":"Updating keeper controls…");
     try{const response=await authFetch("/api/commissioner/keepers",{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({action,deadline:action==="deadline"&&deadline?new Date(deadline).toISOString():null})});const body=await response.json();if(!response.ok){setMessage(body.error||"Keeper control update failed.");return}setData(body);setMessage(action==="lock"?"Final keeper board locked and ready for the live draft.":action==="unlock"?"Keeper board reopened.":"Keeper deadline updated.")}
     catch{setMessage("Keeper control update failed.")}finally{setBusy(false)}
   }
-  if(!data)return <section className="commissionerKeeper card"><div className="keeperSubmitLoading">Loading official keeper control room…</div>{message&&<p>{message}</p>}</section>;
+  if(!data)return <section className={`commissionerKeeper keeperControlUnavailable ${message?"hasError":""}`}><span className="eyebrow">Official keeper control room</span><h2>{loading?"Loading submission board…":"Keeper board needs attention"}</h2>{message&&<p role="alert">{message}</p>}{!loading&&<div className="keeperRecovery"><span>Database repair</span><p>Run the migration named above in Supabase. You can safely run migrations 006 and 008 again.</p><button type="button" onClick={()=>void load()}>Retry keeper board</button></div>}</section>;
   const locked=data.window.status==="locked";
   return <section className="commissionerKeeper"><header><div><span className="eyebrow">Official keeper control room</span><h2>2026 submission board</h2><p>Track every franchise, review cost conflicts, and lock the exact board used by the live draft.</p></div><span className={`keeperState ${locked?"locked":"open"}`}>{locked?"Final board locked":"Submissions open"}</span></header>
     <div className="keeperControlStats"><article><b>{data.summary.submitted.length}</b><span>Submitted teams</span></article><article><b>{data.summary.missing.length}</b><span>Missing teams</span></article><article className={data.summary.invalid.length?"warning":""}><b>{data.summary.invalid.length}</b><span>Invalid costs</span></article><article className={data.summary.changed.length?"changed":""}><b>{data.summary.changed.length}</b><span>Changed after submit</span></article></div>

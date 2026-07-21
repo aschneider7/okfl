@@ -1,6 +1,7 @@
 import {NextResponse} from "next/server";
 import {getAccountFromRequest} from "@/lib/accountServer";
 import {certifiedKeeperIssues,crossTeamKeeperIssues,KEEPER_SEASON,normalizeKeeperChoices,validateKeeperChoices} from "@/lib/keeperSubmission";
+import {keeperServerError} from "@/lib/serverError";
 import {createAdminSupabase} from "@/lib/supabaseServer";
 
 async function commissioner(request:Request){
@@ -37,7 +38,7 @@ async function dashboard(){
 
 export async function GET(request:Request){
   try{if(!await commissioner(request))return NextResponse.json({error:"Commissioner access required."},{status:403});return NextResponse.json(await dashboard())}
-  catch(error){return NextResponse.json({error:error instanceof Error?error.message:"Could not load keeper control room."},{status:500})}
+  catch(error){return NextResponse.json({error:keeperServerError(error,"Could not load keeper control room.")},{status:500})}
 }
 
 export async function PATCH(request:Request){
@@ -57,5 +58,5 @@ export async function PATCH(request:Request){
       const {error}=await supabase.rpc("set_official_keeper_lock",{p_actor_user_id:account.userId,p_action:"unlock"});if(error)throw error;
     }else return NextResponse.json({error:"Unknown keeper control action."},{status:400});
     return NextResponse.json(await dashboard());
-  }catch(error){return NextResponse.json({error:error instanceof Error?error.message:"Could not update keeper control room."},{status:500})}
+  }catch(error){return NextResponse.json({error:keeperServerError(error,"Could not update keeper control room.")},{status:500})}
 }

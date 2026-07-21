@@ -1,6 +1,7 @@
 import {NextResponse} from "next/server";
 import {getAccountFromRequest} from "@/lib/accountServer";
 import {KEEPER_SEASON,normalizeKeeperChoices,validateKeeperChoices} from "@/lib/keeperSubmission";
+import {keeperServerError} from "@/lib/serverError";
 import {createAdminSupabase} from "@/lib/supabaseServer";
 
 async function snapshot(franchiseId:string){
@@ -27,10 +28,7 @@ export async function GET(request:Request){
     const account=await getAccountFromRequest(request);
     const denied=accessError(account);if(denied)return denied;
     return NextResponse.json({...await snapshot(account!.franchiseId),account});
-  }catch(error){
-    const message=error instanceof Error?error.message:"Could not load keeper submission.";
-    return NextResponse.json({error:message.includes("keeper_eligibility")?"Keeper integrity setup is not installed yet. Run migration 008.":message},{status:500});
-  }
+  }catch(error){return NextResponse.json({error:keeperServerError(error,"Could not load keeper submission.")},{status:500})}
 }
 
 export async function PUT(request:Request){
@@ -55,5 +53,5 @@ export async function PUT(request:Request){
     const {error}=await supabase.rpc("save_official_keeper_submission",{p_user_id:account!.userId,p_franchise_id:account!.franchiseId,p_choices:choices,p_action:action});
     if(error)return NextResponse.json({error:error.message},{status:422});
     return NextResponse.json({...await snapshot(account!.franchiseId),account});
-  }catch(error){const message=error instanceof Error?error.message:"Could not save keeper submission.";return NextResponse.json({error:message.includes("keeper_eligibility")?"Keeper integrity setup is not installed yet. Run migration 008.":message},{status:500})}
+  }catch(error){return NextResponse.json({error:keeperServerError(error,"Could not save keeper submission.")},{status:500})}
 }
