@@ -1,0 +1,9 @@
+.next/
+node_modules/
+tsconfig.tsbuildinfo
+pnpm-lock.yaml
+.env
+.env.*
+!.env.example
+npm-debug.log*
+/outputs/

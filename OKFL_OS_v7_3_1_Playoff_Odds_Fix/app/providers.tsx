@@ -1,0 +1,1 @@
+"use client";import {DataProvider} from "@/components/DataProvider";export default function Providers({children}:{children:React.ReactNode}){return <DataProvider>{children}</DataProvider>}
