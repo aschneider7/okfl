@@ -1,4 +1,4 @@
-# OKFL OS 7.2
+# OKFL OS 7.3
 
 The Obama Keeper Fantasy League command center for historical research, franchise intelligence, trade analysis, keeper decisions, live records, and mock drafts.
 
@@ -22,11 +22,19 @@ The Obama Keeper Fantasy League command center for historical research, franchis
 - Mock Draft Room V4.3 with a full-width, high-legibility board; daily 10-team PPR market data; kickers and defenses; protected offline depth; autosave; and final grades
 - Official Keeper Operations with authenticated three-player submissions, deadline controls, revision tracking, commissioner validation, and a final locked board
 - Authenticated Live Draft Room with automatic franchise seat claiming, synchronized picks, reconnect-safe storage, online presence, commissioner-only controls, automatic AI franchises, and a server-backed custom pick clock
+- My Franchise command center with live roster and matchup data, personalized playoff odds, keeper recommendations, trade needs, power and awards movement, editable branding, career records, rivalries, achievements, private inbox, and personal activity history
 - Commissioner repair and live Sleeper synchronization tools
 
 ## Visual system
 
-Version 4.1 introduced the Clubhouse visual system across desktop and mobile. Version 4.2 added a live PPR draft market. Version 4.3 rebuilt the Mock Draft Room. Version 5 added the multiplayer Live Draft Room and deeper franchise profiles. Version 6 introduced the global smoothness system and Power Rankings; 6.1 connected those rankings to Sleeper, 6.2 added the live season dashboard and playoff simulator, 6.3 unified the experience with the OKFL OS identity, and 6.4 launched the weekly newsroom and season-long awards ballot. Version 7 reframes every feature with a new editorial design system while preserving the existing data, draft, simulation, and synchronization architecture. Version 7.2 adds official account-bound keeper operations and authenticated live-draft seats.
+Version 4.1 introduced the Clubhouse visual system across desktop and mobile. Version 4.2 added a live PPR draft market. Version 4.3 rebuilt the Mock Draft Room. Version 5 added the multiplayer Live Draft Room and deeper franchise profiles. Version 6 introduced the global smoothness system and Power Rankings; 6.1 connected those rankings to Sleeper, 6.2 added the live season dashboard and playoff simulator, 6.3 unified the experience with the OKFL OS identity, and 6.4 launched the weekly newsroom and season-long awards ballot. Version 7 reframes every feature with a new editorial design system while preserving the existing data, draft, simulation, and synchronization architecture. Version 7.2 adds official account-bound keeper operations and authenticated live-draft seats. Version 7.3 gives every manager a persistent, personalized franchise command center.
+
+## My Franchise setup
+
+1. Run `supabase/007_manager_franchise_hub.sql` after migrations 005 and 006. It is safe to run repeatedly.
+2. Redeploy and sign in. The account chip and the new **My Franchise** navigation link both open `/account`.
+3. Each manager can edit their avatar URL, team display name, colors, bio, and motto. Live roster, matchup, odds, rankings, awards, keepers, rivalries, career records, and achievements update from existing OKFL and Sleeper data.
+4. The migration creates a private welcome notification for every account. Future trade offers and league polls can be written to `manager_notifications` with `kind` set to `offer` or `poll` and will appear automatically.
 
 ## Franchise account setup
 

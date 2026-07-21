@@ -1,12 +1,12 @@
 {
   "name": "okfl-os",
-  "version": "7.2.0",
+  "version": "7.3.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "validate": "node scripts/validate-data.mjs && node scripts/validate-draft.mjs && node scripts/validate-live-draft.mjs && node scripts/validate-keeper-submissions.mjs && node scripts/validate-auth.mjs && node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/validate-franchise-profiles.mts && node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/validate-power-rankings.mts && node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/validate-live-league.mts && node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/validate-draft-rankings.mts && node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/validate-trade.mts",
+    "validate": "node scripts/validate-data.mjs && node scripts/validate-draft.mjs && node scripts/validate-live-draft.mjs && node scripts/validate-keeper-submissions.mjs && node scripts/validate-manager-hub.mjs && node scripts/validate-auth.mjs && node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/validate-franchise-profiles.mts && node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/validate-power-rankings.mts && node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/validate-live-league.mts && node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/validate-draft-rankings.mts && node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/validate-trade.mts",
     "setup:accounts": "node scripts/bootstrap-franchise-accounts.mjs"
   },
   "dependencies": {
