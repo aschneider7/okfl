@@ -1,4 +1,4 @@
-# OKFL OS 8.0
+# OKFL OS 8.2
 
 The Obama Keeper Fantasy League command center for historical research, franchise intelligence, trade analysis, keeper decisions, live records, and mock drafts.
 
@@ -30,10 +30,32 @@ The Obama Keeper Fantasy League command center for historical research, franchis
 - Luck Index with schedule-neutral expected wins, all-play records, schedule difficulty, and close-game performance
 - Player Ownership Genealogy with searchable franchise timelines for every tracked player
 - Waiver Wire Hall of Fame with all-time manager leaderboards and historically scored acquisitions
+- Commissioner Communications with targeted announcements, authenticated league ballots, delivery history, private phone management, and consent-gated SMS alerts
+- Pocket League PWA with home-screen installation, authenticated per-manager devices, free Firebase push alerts, iPhone guidance, and automatic Commissioner announcement and ballot delivery
+
+## Free app notifications setup
+
+1. Run `supabase/010_pwa_push_notifications.sql` in the Supabase SQL Editor after migrations 005 and 009. It is safe to run repeatedly.
+2. In the [Firebase console](https://console.firebase.google.com/), create a project, add a Web app, then open **Project settings → General** and copy the Web app configuration values into these Vercel variables: `NEXT_PUBLIC_FIREBASE_API_KEY`, `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`, `NEXT_PUBLIC_FIREBASE_PROJECT_ID`, `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`, and `NEXT_PUBLIC_FIREBASE_APP_ID`.
+3. Open **Project settings → Cloud Messaging → Web Push certificates**, generate a key pair, and put the public key in `NEXT_PUBLIC_FIREBASE_VAPID_KEY`.
+4. Open **Project settings → Service accounts**, generate a new private key, and copy only `project_id`, `client_email`, and `private_key` into the server-only Vercel variables `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, and `FIREBASE_PRIVATE_KEY`. Preserve the private key line breaks as `\n`. Never commit this JSON or these server-only values.
+5. Make sure the Firebase Cloud Messaging API and FCM Registration API are enabled for that Firebase project, then redeploy Vercel.
+6. Each manager signs in, opens **My Franchise → App & phone alerts**, installs OKFL OS, and taps **Enable free alerts**. On iPhone, install from Safari with **Share → Add to Home Screen**, open the installed app, and enable alerts there.
+7. Commissioner announcements and ballots now send to the in-site inbox and all enabled devices automatically. Twilio remains optional for managers who also want paid SMS.
+
+The hosted Vercel site already supplies the HTTPS required by browser service workers. Firebase public Web app values and the public VAPID key may be exposed; the Firebase service-account private key must remain server-only in Vercel.
+
+## League communications setup
+
+1. Run `supabase/009_league_communications.sql` in the Supabase SQL Editor after migrations 005 and 007.
+2. Redeploy. Aaron can enter each manager's phone number and record SMS consent in the Commissioner page. Phone numbers remain server-only and are not shown to managers.
+3. In-site announcements and league ballots work immediately without an SMS provider.
+4. To enable text delivery, add `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, and `TWILIO_MESSAGING_SERVICE_SID` to Vercel. Also set `NEXT_PUBLIC_SITE_URL` to the production URL used in text links.
+5. Only mark a manager opted in after explicit permission. Twilio and U.S. carriers require consent and opt-out support; messages include STOP instructions automatically.
 
 ## Visual system
 
-Version 4.1 introduced the Clubhouse visual system across desktop and mobile. Version 4.2 added a live PPR draft market. Version 4.3 rebuilt the Mock Draft Room. Version 5 added the multiplayer Live Draft Room and deeper franchise profiles. Version 6 introduced the global smoothness system and Power Rankings; 6.1 connected those rankings to Sleeper, 6.2 added the live season dashboard and playoff simulator, 6.3 unified the experience with the OKFL OS identity, and 6.4 launched the weekly newsroom and season-long awards ballot. Version 7 reframes every feature with a new editorial design system while preserving the existing data, draft, simulation, and synchronization architecture. Version 7.2 adds official account-bound keeper operations and authenticated live-draft seats. Version 7.3 gives every manager a persistent, personalized franchise command center. Version 7.3.1 recalibrates playoff odds, completes partial Sleeper schedules, and prevents live scoring from being mistaken for a finished week. Version 7.4 hardens keeper integrity, makes board updates atomic, removes duplicate release trees, and defers the multi-megabyte archive until a route or search actually needs it. Version 7.4.1 repairs commissioner keeper diagnostics and adds a clear recovery state when required Supabase migrations are missing. Version 7.5 hardens the repository with a public npm lockfile, automatic GitHub validation, and removal of confirmed dead assets. Version 8 adds a League Lab for clinching scenarios, schedule luck, player ownership history, and waiver-wire legacy.
+Version 4.1 introduced the Clubhouse visual system across desktop and mobile. Version 4.2 added a live PPR draft market. Version 4.3 rebuilt the Mock Draft Room. Version 5 added the multiplayer Live Draft Room and deeper franchise profiles. Version 6 introduced the global smoothness system and Power Rankings; 6.1 connected those rankings to Sleeper, 6.2 added the live season dashboard and playoff simulator, 6.3 unified the experience with the OKFL OS identity, and 6.4 launched the weekly newsroom and season-long awards ballot. Version 7 reframes every feature with a new editorial design system while preserving the existing data, draft, simulation, and synchronization architecture. Version 7.2 adds official account-bound keeper operations and authenticated live-draft seats. Version 7.3 gives every manager a persistent, personalized franchise command center. Version 7.3.1 recalibrates playoff odds, completes partial Sleeper schedules, and prevents live scoring from being mistaken for a finished week. Version 7.4 hardens keeper integrity, makes board updates atomic, removes duplicate release trees, and defers the multi-megabyte archive until a route or search actually needs it. Version 7.4.1 repairs commissioner keeper diagnostics and adds a clear recovery state when required Supabase migrations are missing. Version 7.5 hardens the repository with a public npm lockfile, automatic GitHub validation, and removal of confirmed dead assets. Version 8 adds a League Lab for clinching scenarios, schedule luck, player ownership history, and waiver-wire legacy. Version 8.1 adds Commissioner communications and authenticated ballots. Version 8.2 makes OKFL OS installable and adds free account-bound Firebase push notifications.
 
 ## My Franchise setup
 

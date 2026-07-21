@@ -4,6 +4,7 @@ import Link from "next/link";
 import {useEffect,useMemo,useState} from "react";
 import {useRouter} from "next/navigation";
 import {useAuth} from "@/components/AuthProvider";
+import {NotificationSetup} from "@/components/NotificationSetup";
 
 function pct(value:any){return value==null?"—":`${Number(value).toFixed(1)}%`}
 function movement(value:number){return value>0?`↑ ${value}`:value<0?`↓ ${Math.abs(value)}`:"—"}
@@ -29,6 +30,8 @@ export default function AccountPage(){
 
     {editing&&<section className="mfProfileEditor"><header><div><span className="eyebrow">Manager identity</span><h2>Profile & team branding</h2></div><small>Changes are tied permanently to {account.franchiseId}.</small></header><div className="mfProfileFields"><label><span>Team display name</span><input value={profile.teamDisplayName} maxLength={50} onChange={(event)=>setProfile({...profile,teamDisplayName:event.target.value})}/></label><label><span>Avatar URL</span><input value={profile.avatarUrl} placeholder="https://…" onChange={(event)=>setProfile({...profile,avatarUrl:event.target.value})}/></label><label><span>Primary color</span><input type="color" value={profile.primaryColor} onChange={(event)=>setProfile({...profile,primaryColor:event.target.value})}/></label><label><span>Accent color</span><input type="color" value={profile.accentColor} onChange={(event)=>setProfile({...profile,accentColor:event.target.value})}/></label><label className="wide"><span>Manager bio</span><textarea maxLength={280} value={profile.bio} onChange={(event)=>setProfile({...profile,bio:event.target.value})} placeholder="How do you run your franchise?"/></label><label className="wide"><span>Team motto</span><input maxLength={100} value={profile.motto} onChange={(event)=>setProfile({...profile,motto:event.target.value})} placeholder="The line your rivals should remember."/></label></div><footer><button className="secondaryButton" onClick={()=>{setProfile(dashboard.profile);setEditing(false)}}>Cancel</button><button onClick={saveProfile} disabled={busy}>Save profile</button></footer></section>}
     {message&&<p className="mfMessage" role="status">{message}</p>}
+
+    <NotificationSetup/>
 
     <section className="mfPulse"><article><span>Career record</span><b>{metric.wins||0}–{metric.losses||0}</b><small>{Number(metric.win_pct||0).toFixed(1)}% win rate</small></article><article><span>2026 standing</span><b>{season.standing?`${season.standing.wins}–${season.standing.losses}`:"Preseason"}</b><small>{season.standing?`${season.standing.points.toFixed(1)} points for`:"Waiting for Sleeper"}</small></article><article><span>Playoff probability</span><b>{pct(season.odds?.playoff)}</b><small>{pct(season.odds?.champion)} championship</small></article><article><span>Power ranking</span><b>{season.power?`#${season.power.rank}`:"—"}</b><small>{season.power?`${movement(season.power.movement)} · ${season.power.score} power`:"Sync required"}</small></article><article><span>Inbox</span><b>{dashboard.inbox.unread}</b><small>Unread offers, polls & alerts</small></article></section>
 

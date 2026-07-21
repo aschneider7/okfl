@@ -10,7 +10,7 @@ type NavItem = readonly [href: string, label: string, glyph: string];
 type NavGroup = {label: string; links: readonly NavItem[]};
 
 const navGroups: readonly NavGroup[] = [
-  {label:"Now",links:[["/","Home","01"],["/account","My Franchise","MF"],["/live-league","Live Dashboard","02"],["/weekly-recap","Weekly Recap","03"],["/league-awards","Awards Race","04"],["/playoff-odds","Playoff Odds","05"],["/power-rankings","Power Rankings","06"]]},
+  {label:"Now",links:[["/","Home","01"],["/account","My Franchise","MF"],["/league-votes","League Votes","LV"],["/live-league","Live Dashboard","02"],["/weekly-recap","Weekly Recap","03"],["/league-awards","Awards Race","04"],["/playoff-odds","Playoff Odds","05"],["/power-rankings","Power Rankings","06"]]},
   {label:"League lab",links:[["/clinching-scenarios","Clinching Paths","CP"],["/luck-index","Luck Index","LI"],["/player-ownership","Player Genealogy","PG"],["/waiver-hall","Waiver Hall","WH"]]},
   {label:"Front office",links:[["/franchises","Franchises","07"],["/compare","Compare","08"],["/trades","Trade Center","09"],["/keepers","Keepers","10"]]},
   {label:"Draft",links:[["/mock-draft","Draft Room","11"],["/live-draft","Live Draft","12"],["/drafts","Draft History","13"]]},

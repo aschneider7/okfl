@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {useAuth} from "@/components/AuthProvider";
 import {KeeperCommissionerPanel} from "@/components/KeeperCommissionerPanel";
+import {CommissionerCommunications} from "@/components/CommissionerCommunications";
 
 type Franchise={id:string;name:string;manager:string};
 
@@ -165,6 +166,8 @@ export function CommissionerDashboard() {
           </div>
         </article>
       </div>
+
+      <CommissionerCommunications />
 
       <KeeperCommissionerPanel />
 
