@@ -1,4 +1,4 @@
-# OKFL OS 7.4.1
+# OKFL OS 7.5
 
 The Obama Keeper Fantasy League command center for historical research, franchise intelligence, trade analysis, keeper decisions, live records, and mock drafts.
 
@@ -22,13 +22,14 @@ The Obama Keeper Fantasy League command center for historical research, franchis
 - Mock Draft Room V4.3 with a full-width, high-legibility board; daily 10-team PPR market data; kickers and defenses; protected offline depth; autosave; and final grades
 - Official Keeper Operations with authenticated three-player submissions, a commissioner-certified eligibility ledger, server-enforced roster/cost/pick verification, atomic locking, revision tracking, and a final locked board
 - Stability architecture that lazy-loads the historical archive only where needed and prevents release folders, local secrets, and ZIP packages from being committed
+- Repository hardening with a public npm lockfile, automatic GitHub validation, and removal of retired search and social-preview assets
 - Authenticated Live Draft Room with automatic franchise seat claiming, synchronized picks, reconnect-safe storage, online presence, commissioner-only controls, automatic AI franchises, and a server-backed custom pick clock
 - My Franchise command center with live roster and matchup data, personalized playoff odds, keeper recommendations, trade needs, power and awards movement, editable branding, career records, rivalries, achievements, private inbox, and personal activity history
 - Commissioner repair and live Sleeper synchronization tools
 
 ## Visual system
 
-Version 4.1 introduced the Clubhouse visual system across desktop and mobile. Version 4.2 added a live PPR draft market. Version 4.3 rebuilt the Mock Draft Room. Version 5 added the multiplayer Live Draft Room and deeper franchise profiles. Version 6 introduced the global smoothness system and Power Rankings; 6.1 connected those rankings to Sleeper, 6.2 added the live season dashboard and playoff simulator, 6.3 unified the experience with the OKFL OS identity, and 6.4 launched the weekly newsroom and season-long awards ballot. Version 7 reframes every feature with a new editorial design system while preserving the existing data, draft, simulation, and synchronization architecture. Version 7.2 adds official account-bound keeper operations and authenticated live-draft seats. Version 7.3 gives every manager a persistent, personalized franchise command center. Version 7.3.1 recalibrates playoff odds, completes partial Sleeper schedules, and prevents live scoring from being mistaken for a finished week. Version 7.4 hardens keeper integrity, makes board updates atomic, removes duplicate release trees, and defers the multi-megabyte archive until a route or search actually needs it. Version 7.4.1 repairs commissioner keeper diagnostics and adds a clear recovery state when required Supabase migrations are missing.
+Version 4.1 introduced the Clubhouse visual system across desktop and mobile. Version 4.2 added a live PPR draft market. Version 4.3 rebuilt the Mock Draft Room. Version 5 added the multiplayer Live Draft Room and deeper franchise profiles. Version 6 introduced the global smoothness system and Power Rankings; 6.1 connected those rankings to Sleeper, 6.2 added the live season dashboard and playoff simulator, 6.3 unified the experience with the OKFL OS identity, and 6.4 launched the weekly newsroom and season-long awards ballot. Version 7 reframes every feature with a new editorial design system while preserving the existing data, draft, simulation, and synchronization architecture. Version 7.2 adds official account-bound keeper operations and authenticated live-draft seats. Version 7.3 gives every manager a persistent, personalized franchise command center. Version 7.3.1 recalibrates playoff odds, completes partial Sleeper schedules, and prevents live scoring from being mistaken for a finished week. Version 7.4 hardens keeper integrity, makes board updates atomic, removes duplicate release trees, and defers the multi-megabyte archive until a route or search actually needs it. Version 7.4.1 repairs commissioner keeper diagnostics and adds a clear recovery state when required Supabase migrations are missing. Version 7.5 hardens the repository with a public npm lockfile, automatic GitHub validation, and removal of confirmed dead assets.
 
 ## My Franchise setup
 
