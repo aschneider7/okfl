@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect,useState } from "react";
 import { Page, Loading } from "@/components/Page";
 import { useData } from "@/components/DataProvider";
 
@@ -9,12 +9,18 @@ function View() {
   const [category, setCategory] = useState("all");
   const [query, setQuery] = useState("");
   const [openRule, setOpenRule] = useState<string | null>(null);
+  const [managedRules,setManagedRules]=useState<any[]>([]);
+  const [managedRulebook,setManagedRulebook]=useState(false);
+  const [rulebookVersion,setRulebookVersion]=useState("2026.1");
+
+  useEffect(()=>{let active=true;fetch("/api/league-settings",{cache:"no-store"}).then((response)=>response.json()).then((body)=>{if(!active)return;setManagedRules((body.rules||[]).map((rule:any)=>({id:rule.id,category:rule.category,rule:rule.rule})));setManagedRulebook(Boolean(body.managedRulebook));setRulebookVersion(body.settings?.rulebookVersion||"2026.1")}).catch(()=>{});return()=>{active=false}},[]);
 
   if (!data) return <Loading />;
 
-  const categories = [...new Set(data.rules.map((rule: any) => rule.category))].sort();
+  const rules=managedRulebook?managedRules:data.rules;
+  const categories = [...new Set(rules.map((rule: any) => String(rule.category)))].sort();
   const term = query.toLowerCase().trim();
-  const filtered = data.rules.filter((rule: any) => {
+  const filtered = rules.filter((rule: any) => {
     const categoryMatch = category === "all" || rule.category === category;
     const termMatch =
       !term ||
@@ -31,12 +37,12 @@ function View() {
       <section className="rulesHero">
         <div>
           <span className="eyebrow">League constitution</span>
-          <h2>{data.rules.length} official rules</h2>
+          <h2>{rules.length} official rules</h2>
           <p>Search the rulebook, browse by category, and expand individual rules for a cleaner reading experience.</p>
         </div>
         <div className="rulesHeroMarks">
           <div><b>{categories.length}</b><span>Categories</span></div>
-          <div><b>2026</b><span>Active season</span></div>
+          <div><b>v{rulebookVersion}</b><span>Rulebook</span></div>
           <div><b>$100</b><span>League entry</span></div>
         </div>
       </section>
@@ -54,7 +60,7 @@ function View() {
           <span className="eyebrow">Rulebook index</span>
           <h2>Categories</h2>
           {categories.map((name) => {
-            const count = data.rules.filter((rule: any) => rule.category === name).length;
+            const count = rules.filter((rule: any) => rule.category === name).length;
             return <button className={category === name ? "active" : ""} key={name} onClick={() => setCategory(name)}><span>{name}</span><b>{count}</b></button>;
           })}
         </aside>

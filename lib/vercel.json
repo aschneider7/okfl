@@ -1,9 +1,0 @@
-{
-  "framework": "nextjs",
-  "crons": [
-    {
-      "path": "/api/sleeper/sync",
-      "schedule": "0 10 * * *"
-    }
-  ]
-}

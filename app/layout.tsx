@@ -11,6 +11,7 @@ import "./keeper-submission.css";
 import "./my-franchise.css";
 import "./league-intelligence.css";
 import "./communications.css";
+import "./commissioner-settings.css";
 import {AppShell} from "@/components/AppShell";
 import {DataProvider} from "@/components/DataProvider";
 import {AuthProvider} from "@/components/AuthProvider";
@@ -18,7 +19,7 @@ import {PwaBootstrap} from "@/components/PwaBootstrap";
 
 const deploymentHost = process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL;
 const metadataBase = new URL(deploymentHost ? (deploymentHost.startsWith("http") ? deploymentHost : `https://${deploymentHost}`) : "http://localhost:3000");
-const title = "OKFL OS 8.3.1 · Commissioner Control";
+const title = "OKFL OS 8.4 · Commissioner Settings";
 const description = "The Obama Keeper Fantasy League, reframed through live standings, playoff odds, trades, drafts, records, and franchise intelligence.";
 
 export const viewport:Viewport={themeColor:"#171915",width:"device-width",initialScale:1,viewportFit:"cover"};
