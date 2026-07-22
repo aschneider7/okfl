@@ -1,6 +1,14 @@
-# OKFL OS 8.6.4
+# OKFL OS 8.7.0
 
 The Obama Keeper Fantasy League command center for historical research, franchise intelligence, trade analysis, keeper decisions, live records, and mock drafts.
+
+## Version 8.7.0 - Commissioner newsroom and deadline intelligence
+
+- **Commissioner Recap Studio:** Generates a polished weekly article from verified Sleeper results, then lets a Commissioner rewrite, preview, save, publish, or unpublish each edition.
+- **Official public recap:** `/weekly-recap` prefers the published Commissioner edition and clearly labels the automatic preview before publication.
+- **Trade Deadline War Room:** `/trade-war-room` classifies contenders, bubble teams, and sellers; exposes needs, surplus, draft capital, keeper assets, targets, and suggested conversations.
+- **Trade Center handoff:** Suggested War Room deals open as prebuilt scenarios in the existing analyzer.
+- **One database migration:** Run `supabase/014_commissioner_recaps.sql` before using save/publish controls.
 
 ## Version 8.6.4 - Draft room readability
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {useAuth} from "@/components/AuthProvider";
 import {KeeperCommissionerPanel} from "@/components/KeeperCommissionerPanel";
 import {CommissionerCommunications} from "@/components/CommissionerCommunications";
@@ -145,6 +146,7 @@ export function CommissionerDashboard() {
       </div>
 
       <nav className="commissionerNav" aria-label="Commissioner sections">
+        <Link href="/commissioner/recap"><span>00</span>Recap Studio</Link>
         <a href="#league-comms"><span>01</span>Communications</a>
         <a href="#keeper-operations"><span>02</span>Keeper board</a>
         <a href="#league-operations"><span>03</span>League health</a>
