@@ -1,6 +1,16 @@
-# OKFL OS 8.4
+# OKFL OS 8.5
 
 The Obama Keeper Fantasy League command center for historical research, franchise intelligence, trade analysis, keeper decisions, live records, and mock drafts.
+
+## Version 8.5 — League Calendar
+
+- Public month calendar and upcoming agenda with category filters
+- Commissioner controls for publishing, editing, deleting, and announcing official dates
+- Keeper deadlines and open ballot closing times appear automatically from their existing sources
+- One-click `.ics` downloads let managers add events to their device calendars
+- Reminders create an OKFL inbox notification for every manager and use Firebase push on enabled devices
+
+Run `supabase/013_league_calendar.sql` in the Supabase SQL Editor after the existing migrations, then redeploy. It is safe to run repeatedly.
 
 ## Core experiences
 
