@@ -26,7 +26,7 @@ const accounts=[
   {franchiseId:"F05",franchiseName:"Jacob",username:"tzvi",displayName:"Tzvi",role:"manager"},
   {franchiseId:"F06",franchiseName:"Usher",username:"usher",displayName:"Usher",role:"manager"},
   {franchiseId:"F07",franchiseName:"Gorb",username:"josh-teddy",displayName:"Josh + Teddy",role:"manager"},
-  {franchiseId:"F08",franchiseName:"Haimy",username:"haimy",displayName:"Haimy",role:"manager"},
+  {franchiseId:"F08",franchiseName:"Haimy",username:"haimy",displayName:"Haimy",role:"commissioner"},
   {franchiseId:"F09",franchiseName:"Maurice",username:"maurice",displayName:"Maurice",role:"manager"},
   {franchiseId:"F10",franchiseName:"Sean",username:"sean",displayName:"Sean",role:"manager"},
 ];

@@ -8,7 +8,7 @@ The Obama Keeper Fantasy League command center for historical research, franchis
 - Full editorial interface rebuild with an asymmetric information grid, grouped navigation, sharper typography, cleaner controls, and a new bone, ink, cobalt, teal, and acid-lime palette across every route
 - Readability refinement with roomier system typography, larger interface labels, a teal signal color, and collapsible navigation groups
 - Explicit contrast protection for Franchise and Commissioner feature panels so text remains readable over their intended dark backgrounds
-- Invite-only franchise accounts for all ten teams, mandatory first-login password changes, persistent manager sessions, and Aaron-only Commissioner authorization
+- Invite-only franchise accounts for all ten teams, mandatory first-login password changes, persistent manager sessions, and Commissioner authorization for Aaron and Haimy
 - Franchise profiles, comparison tools, standings, records, and historical weekly snapshots
 - Franchise Profiles 3.1 with ten distinct identities, high-contrast profile cards, competitive posture, market behavior, draft philosophy, matchup relationships, and league-wide identity leaders
 - Live 2026 Power Rankings that recalculate after every Sleeper sync, switch from preseason to post-draft and weekly models, and preserve week-to-week movement
@@ -59,7 +59,7 @@ The hosted Vercel site already supplies the HTTPS required by browser service wo
 ## League communications setup
 
 1. Run `supabase/009_league_communications.sql` in the Supabase SQL Editor after migrations 005 and 007.
-2. Redeploy. Aaron can enter each manager's phone number and record SMS consent in the Commissioner page. Phone numbers remain server-only and are not shown to managers.
+2. Redeploy. A Commissioner can enter each manager's phone number and record SMS consent in the Commissioner page. Phone numbers remain server-only and are not shown to managers.
 3. In-site announcements and league ballots work immediately without an SMS provider.
 4. To enable text delivery, add `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, and `TWILIO_MESSAGING_SERVICE_SID` to Vercel. Also set `NEXT_PUBLIC_SITE_URL` to the production URL used in text links.
 5. Only mark a manager opted in after explicit permission. Twilio and U.S. carriers require consent and opt-out support; messages include STOP instructions automatically.
@@ -83,7 +83,9 @@ Version 4.1 introduced the Clubhouse visual system across desktop and mobile. Ve
 4. Save the generated `outputs/OKFL_Initial_Account_Credentials.txt` and distribute each entry privately.
 5. Redeploy. Each manager signs in at `/login` and must replace the temporary password immediately.
 
-The ten invite-only usernames are `aaron`, `elie`, `sammy`, `isaac`, `tzvi`, `usher`, `josh-teddy`, `haimy`, `maurice`, and `sean`. Aaron is the only Commissioner role. The former shared `COMMISSIONER_PASSWORD` is no longer used.
+The ten invite-only usernames are `aaron`, `elie`, `sammy`, `isaac`, `tzvi`, `usher`, `josh-teddy`, `haimy`, `maurice`, and `sean`. Aaron and Haimy have Commissioner roles. The former shared `COMMISSIONER_PASSWORD` is no longer used.
+
+For an existing Supabase project, run `supabase/012_add_haimy_commissioner.sql` once in the SQL Editor. It is safe to run repeatedly. Haimy keeps the same password and gains Commissioner navigation and server permissions after signing out and back in.
 
 Never place a real Supabase secret in `.env.example` or any tracked file. Local secrets belong only in `.env.local`, while hosted secrets belong in Vercel environment variables.
 
@@ -102,8 +104,8 @@ The model uses the historical preseason baseline until Sleeper draft picks exist
 3. Run `supabase/008_keeper_integrity.sql` after migration 006. It installs the certified 2026 eligibility ledger and atomic submission/locking functions.
 4. Keep `SUPABASE_URL` and `SUPABASE_SECRET_KEY` configured for server routes.
 5. Add `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` for instant presence and broadcast refreshes. The room also polls as a fallback when Realtime is unavailable.
-6. Redeploy. Aaron sets the keeper deadline in Commissioner OS, all ten managers submit at `/keepers`, and Aaron locks the final board.
-7. Open `/live-draft`. Aaron creates the official room and shares its invite link; signed-in managers automatically claim their own franchise without team PINs.
+6. Redeploy. A Commissioner sets the keeper deadline in Commissioner OS, all ten managers submit at `/keepers`, and a Commissioner locks the final board.
+7. Open `/live-draft`. A Commissioner creates the official room and shares its invite link; signed-in managers automatically claim their own franchise without team PINs.
 
 ## Validation
 
