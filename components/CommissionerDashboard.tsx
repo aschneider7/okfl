@@ -144,7 +144,14 @@ export function CommissionerDashboard() {
         <button className="secondaryButton" onClick={logout}>Lock dashboard</button>
       </div>
 
-      <div className="commissionerActions">
+      <nav className="commissionerNav" aria-label="Commissioner sections">
+        <a href="#league-comms"><span>01</span>Communications</a>
+        <a href="#keeper-operations"><span>02</span>Keeper board</a>
+        <a href="#league-operations"><span>03</span>League health</a>
+        <a href="#commissioner-records"><span>04</span>Records</a>
+      </nav>
+
+      <div className="commissionerActions commissionerOverview" id="league-operations">
         <article className="card syncCard">
           <div>
             <span className="eyebrow">Sleeper league</span>
@@ -164,12 +171,13 @@ export function CommissionerDashboard() {
           <div className={`statusPill ${!issueCount&&snapshot?"success":""}`}>
             {!snapshot?"No sync data yet":issueCount?"Action required":"Healthy"}
           </div>
+          {snapshot?.synced_at&&<small className="commissionerLastSync">Last synced {new Date(snapshot.synced_at).toLocaleString()}</small>}
         </article>
       </div>
 
-      <CommissionerCommunications />
+      <div id="league-comms"><CommissionerCommunications /></div>
 
-      <KeeperCommissionerPanel />
+      <div id="keeper-operations"><KeeperCommissionerPanel /></div>
 
       {loading?(
         <div className="loading">Loading commissioner data…</div>
@@ -186,146 +194,26 @@ export function CommissionerDashboard() {
         </div>
       ):(
         <>
-          <div className="statGrid commissionerStats">
-            <div className="card stat"><b>{snapshot.users.length}</b><span>League users</span></div>
-            <div className="card stat"><b>{snapshot.rosters.length}</b><span>Rosters</span></div>
-            <div className="card stat"><b>{snapshot.trades.length}</b><span>2026 trades</span></div>
-            <div className="card stat"><b>{snapshot.transactions.length}</b><span>Transactions</span></div>
-            <div className="card stat"><b>{completedMappings.length}</b><span>Saved identity repairs</span></div>
-            <div className="card stat"><b>{snapshot.synced_at?new Date(snapshot.synced_at).toLocaleString():"—"}</b><span>Last sync</span></div>
-          </div>
-
-          {unresolvedUsers.length>0&&(
-            <article className="card repairSection">
-              <div className="repairSectionHead">
-                <div>
-                  <span className="eyebrow">Repair center</span>
-                  <h2>Unresolved Sleeper users</h2>
-                </div>
-                <span className="issueBadge">{unresolvedUsers.length}</span>
+          <details className={`commissionerDrawer ${issueCount?"needsAttention":""}`} open={issueCount>0}>
+            <summary><span><b>League health & identity repair</b><small>{issueCount?`${issueCount} unresolved item${issueCount===1?"":"s"} need attention`:"Everything is resolved · open for diagnostics"}</small></span><em>{issueCount?"Action required":"Healthy"}</em></summary>
+            <div className="commissionerDrawerBody">
+              <div className="statGrid commissionerStats">
+                <div className="card stat"><b>{snapshot.users.length}</b><span>League users</span></div>
+                <div className="card stat"><b>{snapshot.rosters.length}</b><span>Rosters</span></div>
+                <div className="card stat"><b>{snapshot.trades.length}</b><span>2026 trades</span></div>
+                <div className="card stat"><b>{snapshot.transactions.length}</b><span>Transactions</span></div>
+                <div className="card stat"><b>{completedMappings.length}</b><span>Saved repairs</span></div>
               </div>
-              <div className="repairList">
-                {unresolvedUsers.map((user:any)=>{
-                  const key=`user-${user.user_id}`;
-                  return(
-                    <div className="repairRow" key={user.user_id}>
-                      <div className="repairIdentity">
-                        <b>{user.username||user.display_name||"Unknown user"}</b>
-                        <span>Display: {user.display_name||"—"} • Team: {user.team_name||"—"}</span>
-                        <small>Sleeper user ID: {user.user_id}</small>
-                      </div>
-                      <div className="repairControls">
-                        {selector(key)}
-                        <button
-                          onClick={()=>saveUser(user)}
-                          disabled={savingKey===key}
-                        >
-                          {savingKey===key?"Saving…":"Assign & Save"}
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </article>
-          )}
-
-          {unresolvedRosters.length>0&&(
-            <article className="card repairSection">
-              <div className="repairSectionHead">
-                <div>
-                  <span className="eyebrow">Repair center</span>
-                  <h2>Unresolved rosters</h2>
-                </div>
-                <span className="issueBadge">{unresolvedRosters.length}</span>
-              </div>
-              <div className="repairList">
-                {unresolvedRosters.map((roster:any)=>{
-                  const key=`roster-${roster.roster_id}`;
-                  return(
-                    <div className="repairRow" key={roster.roster_id}>
-                      <div className="repairIdentity">
-                        <b>Roster #{roster.roster_id}</b>
-                        <span>Owner ID: {roster.owner_id||"No owner attached"}</span>
-                        <small>Use this only when the user mapping cannot resolve the roster.</small>
-                      </div>
-                      <div className="repairControls">
-                        {selector(key)}
-                        <button
-                          onClick={()=>saveRoster(roster)}
-                          disabled={savingKey===key}
-                        >
-                          {savingKey===key?"Saving…":"Assign Roster"}
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </article>
-          )}
-
-          {!issueCount&&(
-            <article className="card healthyState">
-              <span className="healthyIcon">✓</span>
-              <div>
-                <h2>Identity registry is fully resolved</h2>
-                <p>Future Sleeper syncs will reuse your saved commissioner mappings.</p>
-              </div>
-            </article>
-          )}
-
-          <div className="commissionerGrid">
-            <article className="card">
-              <h2>Saved identity mappings</h2>
-              <div className="integrityRows">
-                {completedMappings.slice(0,10).map((row:any)=>(
-                  <div key={row.id}>
-                    <span>{row.username||row.display_name||row.external_user_id}</span>
-                    <b>{row.franchise_id}</b>
-                  </div>
-                ))}
-                {!completedMappings.length&&<p>No manual mappings saved yet.</p>}
-              </div>
-            </article>
-
-            <article className="card">
-              <h2>Recent sync runs</h2>
-              <div className="integrityRows">
-                {history.slice(0,6).map((run:any)=>(
-                  <div key={run.id}>
-                    <span>{new Date(run.started_at).toLocaleString()}</span>
-                    <b>{run.status}</b>
-                  </div>
-                ))}
-              </div>
-            </article>
-          </div>
-
-          <article className="card">
-            <h2>Commissioner audit log</h2>
-            <div className="tableWrap">
-              <table>
-                <thead>
-                  <tr><th>Time</th><th>Action</th><th>Entity</th><th>Key</th><th>Note</th></tr>
-                </thead>
-                <tbody>
-                  {(repairs?.audit_log??[]).map((row:any)=>(
-                    <tr key={row.id}>
-                      <td>{new Date(row.created_at).toLocaleString()}</td>
-                      <td>{row.action}</td>
-                      <td>{row.entity_type}</td>
-                      <td>{row.entity_key}</td>
-                      <td>{row.note||"—"}</td>
-                    </tr>
-                  ))}
-                  {!(repairs?.audit_log??[]).length&&(
-                    <tr><td colSpan={5}>No repair activity yet.</td></tr>
-                  )}
-                </tbody>
-              </table>
+              {unresolvedUsers.length>0&&<article className="card repairSection"><div className="repairSectionHead"><div><span className="eyebrow">Repair center</span><h2>Unresolved Sleeper users</h2></div><span className="issueBadge">{unresolvedUsers.length}</span></div><div className="repairList">{unresolvedUsers.map((user:any)=>{const key=`user-${user.user_id}`;return <div className="repairRow" key={user.user_id}><div className="repairIdentity"><b>{user.username||user.display_name||"Unknown user"}</b><span>Display: {user.display_name||"—"} • Team: {user.team_name||"—"}</span><small>Sleeper user ID: {user.user_id}</small></div><div className="repairControls">{selector(key)}<button onClick={()=>saveUser(user)} disabled={savingKey===key}>{savingKey===key?"Saving…":"Assign & Save"}</button></div></div>})}</div></article>}
+              {unresolvedRosters.length>0&&<article className="card repairSection"><div className="repairSectionHead"><div><span className="eyebrow">Repair center</span><h2>Unresolved rosters</h2></div><span className="issueBadge">{unresolvedRosters.length}</span></div><div className="repairList">{unresolvedRosters.map((roster:any)=>{const key=`roster-${roster.roster_id}`;return <div className="repairRow" key={roster.roster_id}><div className="repairIdentity"><b>Roster #{roster.roster_id}</b><span>Owner ID: {roster.owner_id||"No owner attached"}</span><small>Use this only when the user mapping cannot resolve the roster.</small></div><div className="repairControls">{selector(key)}<button onClick={()=>saveRoster(roster)} disabled={savingKey===key}>{savingKey===key?"Saving…":"Assign Roster"}</button></div></div>})}</div></article>}
+              {!issueCount&&<article className="card healthyState"><span className="healthyIcon">✓</span><div><h2>Identity registry is fully resolved</h2><p>Future Sleeper syncs will reuse your saved commissioner mappings.</p></div></article>}
             </div>
-          </article>
+          </details>
+
+          <details className="commissionerDrawer" id="commissioner-records">
+            <summary><span><b>System records & audit trail</b><small>Saved mappings, recent sync runs, and Commissioner activity</small></span><em>Archive</em></summary>
+            <div className="commissionerDrawerBody"><div className="commissionerGrid"><article className="card"><h2>Saved identity mappings</h2><div className="integrityRows">{completedMappings.slice(0,10).map((row:any)=><div key={row.id}><span>{row.username||row.display_name||row.external_user_id}</span><b>{row.franchise_id}</b></div>)}{!completedMappings.length&&<p>No manual mappings saved yet.</p>}</div></article><article className="card"><h2>Recent sync runs</h2><div className="integrityRows">{history.slice(0,6).map((run:any)=><div key={run.id}><span>{new Date(run.started_at).toLocaleString()}</span><b>{run.status}</b></div>)}</div></article></div><article className="card"><h2>Commissioner audit log</h2><div className="tableWrap"><table><thead><tr><th>Time</th><th>Action</th><th>Entity</th><th>Key</th><th>Note</th></tr></thead><tbody>{(repairs?.audit_log??[]).map((row:any)=><tr key={row.id}><td>{new Date(row.created_at).toLocaleString()}</td><td>{row.action}</td><td>{row.entity_type}</td><td>{row.entity_key}</td><td>{row.note||"—"}</td></tr>)}{!(repairs?.audit_log??[]).length&&<tr><td colSpan={5}>No repair activity yet.</td></tr>}</tbody></table></div></article></div>
+          </details>
         </>
       )}
     </div>

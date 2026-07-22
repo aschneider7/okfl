@@ -18,7 +18,7 @@ import {PwaBootstrap} from "@/components/PwaBootstrap";
 
 const deploymentHost = process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL;
 const metadataBase = new URL(deploymentHost ? (deploymentHost.startsWith("http") ? deploymentHost : `https://${deploymentHost}`) : "http://localhost:3000");
-const title = "OKFL OS 8.2 · Pocket League";
+const title = "OKFL OS 8.3 · Commissioner Control";
 const description = "The Obama Keeper Fantasy League, reframed through live standings, playoff odds, trades, drafts, records, and franchise intelligence.";
 
 export const viewport:Viewport={themeColor:"#171915",width:"device-width",initialScale:1,viewportFit:"cover"};
