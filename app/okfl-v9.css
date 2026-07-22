@@ -431,6 +431,22 @@ body{
 .routeStage :is(.identityLeaders,.commissionerPage .syncCard,.deadlineWarHero,.warFocus,.bestDraftPick,.primaryRecord,.tradeResultTop,.calendarNext) :is(h1,h2,h3,h4){color:#fff!important}
 .routeStage :is(.identityLeaders,.commissionerPage .syncCard,.deadlineWarHero,.warFocus,.bestDraftPick,.tradeResultTop,.calendarNext) :is(p,small){color:#cbd9dd!important}
 .routeStage :is(.identityLeaders,.commissionerPage .syncCard,.deadlineWarHero,.warFocus,.bestDraftPick) .eyebrow{color:#b9e2db!important}
+.routeStage .intelHero>div:last-child{border:1px solid var(--v9-line)!important;background:rgba(255,255,255,.82)!important;box-shadow:var(--v9-shadow-xs)!important}
+.routeStage .intelHero>div:last-child span{color:var(--v9-muted)!important}
+.routeStage .intelHero>div:last-child b{color:var(--v9-primary)!important}
+.routeStage .intelHero>div:last-child small{color:var(--v9-muted)!important}
+.routeStage .identityLeaders>header{border-bottom:1px solid rgba(255,255,255,.14)!important;background:transparent!important;color:#fff!important}
+.routeStage .identityLeaders>header h2{color:#fff!important}
+.routeStage .identityLeaders>header p{color:#cbd9dd!important}
+.routeStage .identityLeaders>div{background:transparent!important}
+.routeStage .identityLeaders a{color:#fff!important}
+.routeStage .identityLeaders a+a{border-color:rgba(255,255,255,.14)!important}
+.routeStage .identityLeaders a:hover{background:rgba(255,255,255,.07)!important}
+.routeStage .identityLeaders a>span{color:#aebfc5!important}
+.routeStage .identityLeaders a h3{color:#b9e2db!important}
+.routeStage .identityLeaders a>b{color:#fff!important}
+.routeStage .identityLeaders footer small{color:#cbd9dd!important}
+.routeStage .identityLeaders footer strong{background:#dff1ee!important;color:var(--v9-primary-dark)!important}
 .routeStage :is(.resultLink,.settingsQuickGrid a,.accountActions a,.tradeHeaderActions a){color:var(--v9-primary)!important}
 .routeStage .accountIdentity>a{color:#b9e2db!important}
 .routeStage .powerTeamMain>footer a{color:#fff!important}
@@ -444,8 +460,12 @@ body{
   .v9Shell .sidebar{width:min(350px,90vw)!important;display:flex!important;padding:calc(18px + env(safe-area-inset-top)) 14px calc(20px + env(safe-area-inset-bottom))!important;border:0!important;border-right:1px solid rgba(255,255,255,.10)!important;border-radius:0!important;background:linear-gradient(180deg,#0b1220,#111e32)!important;box-shadow:22px 0 70px rgba(2,8,23,.34)!important;transform:translateX(-105%)!important}
   .v9Shell .sidebar.open{transform:none!important}
   .v9Shell .mobileHeader{height:auto!important;min-height:calc(64px + env(safe-area-inset-top))!important;padding:env(safe-area-inset-top) 14px 0!important;border-bottom:1px solid rgba(255,255,255,.10)!important;background:rgba(11,18,32,.96)!important;color:#fff!important}
-  .v9Shell .mobileMenuButton{width:42px!important;height:42px!important;padding:0!important;border:1px solid rgba(255,255,255,.12)!important;border-radius:11px!important;background:rgba(255,255,255,.07)!important}
-  .v9Shell .mobileMenuButton span{background:#fff!important}
+  .v9Shell .mobileHeader .mobileMenuButton{width:42px!important;height:42px!important;min-width:42px!important;min-height:42px!important;margin:0!important;padding:0!important;border:1px solid rgba(255,255,255,.16)!important;border-radius:11px!important;background:rgba(255,255,255,.08)!important;box-shadow:none!important}
+  .v9Shell .mobileHeader .mobileMenuButton:hover{background:rgba(255,255,255,.13)!important;box-shadow:none!important;transform:none!important}
+  .v9Shell .mobileHeader .mobileMenuButton span{width:18px!important;height:1.5px!important;background:#fff!important;transition:opacity .18s var(--v9-ease),transform .18s var(--v9-ease)!important;transform-origin:center!important}
+  .v9Shell .mobileHeader .mobileMenuButton[aria-expanded="true"] span:nth-child(1){transform:translateY(5.5px) rotate(45deg)!important}
+  .v9Shell .mobileHeader .mobileMenuButton[aria-expanded="true"] span:nth-child(2){opacity:0!important}
+  .v9Shell .mobileHeader .mobileMenuButton[aria-expanded="true"] span:nth-child(3){transform:translateY(-5.5px) rotate(-45deg)!important}
   .v9Shell .mobileDock{left:12px!important;right:12px!important;bottom:calc(10px + env(safe-area-inset-bottom))!important;height:62px!important;padding:5px!important;border:1px solid rgba(255,255,255,.11)!important;border-radius:18px!important;background:rgba(11,18,32,.94)!important;color:#94a3b8!important}
   .v9Shell .mobileDock :is(a,button){min-height:0!important;border-radius:12px!important;background:transparent!important;color:inherit!important}
   .v9Shell .mobileDock .active{background:rgba(167,217,209,.16)!important;color:#fff!important}

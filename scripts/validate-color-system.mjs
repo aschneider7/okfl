@@ -45,6 +45,8 @@ const pairs=[
 
 assert.ok(css.includes("--v9-primary:#335765"),"The requested #335765 main color is missing.");
 assert.ok(css.includes("--editorial:var(--v9-primary)"),"Legacy themes must inherit the main color.");
+assert.ok(css.includes(".routeStage .intelHero>div:last-child b{color:var(--v9-primary)!important}"),"Intelligence hero metric text must remain readable on its light card.");
+assert.ok(css.includes(".routeStage .identityLeaders a>b{color:#fff!important}"),"Identity leader names must remain readable on the dark panel.");
 for(const [label,foreground,background,minimum] of pairs){
   const ratio=contrast(foreground,background);
   assert.ok(ratio>=minimum,`${label} is ${ratio.toFixed(2)}:1; expected at least ${minimum}:1.`);
