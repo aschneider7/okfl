@@ -1,6 +1,14 @@
-# OKFL OS 8.5
+# OKFL OS 8.5.1
 
 The Obama Keeper Fantasy League command center for historical research, franchise intelligence, trade analysis, keeper decisions, live records, and mock drafts.
+
+## Version 8.5.1 — Mobile refinement
+
+- Installed iPhone/PWA headers and bottom navigation now respect notch, Dynamic Island, Home Indicator, and landscape safe areas
+- The menu button retains a full 44px tap target below the iOS status region
+- Opening the navigation locks background scrolling and gives the drawer its own safe, momentum-scrolling viewport
+- Mobile forms use zoom-safe 16px controls, larger tap targets, and keyboard-friendly dynamic viewport sizing
+- Tables, filter strips, calendars, search overlays, sticky rails, and narrow-screen layouts receive a final overflow and usability pass
 
 ## Version 8.5 — League Calendar
 
