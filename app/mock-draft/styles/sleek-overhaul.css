@@ -125,8 +125,8 @@
 .draftRoomV3 .draftV2ManagerRow,
 .draftRoomV3 .draftV2Board {
   gap: 3px;
-  grid-template-columns: 32px repeat(10, minmax(108px, 1fr));
-  min-width: 1140px;
+  grid-template-columns: 32px repeat(10, minmax(120px, 1fr));
+  min-width: 1260px;
 }
 .draftRoomV3 .draftV2ManagerRow { background: #090d17; margin-bottom: 3px; }
 .draftRoomV3 .draftV2ManagerRow>div {
@@ -161,7 +161,7 @@
 .draftRoomV3 .draftV2ManagerRow small { color: #7d879c; font-size: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .draftRoomV3 .draftV2ManagerRow .draftRoundCorner { display: grid; min-height: 54px; padding: 0; }
 
-.draftRoomV3 .draftV2Board { grid-auto-rows: 57px; grid-template-rows: repeat(17, 57px); }
+.draftRoomV3 .draftV2Board { grid-auto-rows: 65px; grid-template-rows: repeat(17, 65px); }
 .draftRoundLabel { background: #111624; border-color: #273146; border-radius: 5px; }
 .draftRoundLabel span { color: #737f98; font-size: 6px; }
 .draftRoundLabel b { font-size: 12px; }
@@ -259,12 +259,12 @@
   border-bottom-color: #242d40;
   border-right: 0;
   grid-template-columns: minmax(0, 1fr) 108px;
-  min-height: 55px;
+  min-height: 62px;
 }
 .draftRoomV3 .draftPlayerCard:nth-child(even) { background: #121827 !important; }
 .draftRoomV3 .draftPlayerCard:hover { background: #192135 !important; }
 .draftRoomV3 .draftPlayerCard.selected { background: #1b2438 !important; box-shadow: inset 3px 0 0 var(--draft-accent); }
-.draftRoomV3 .draftPlayerMain { gap: 10px; grid-template-columns: 40px minmax(140px, 1fr) 126px 58px; min-height: 55px; padding: 8px 11px; }
+.draftRoomV3 .draftPlayerMain { gap: 10px; grid-template-columns: 40px minmax(140px, 1fr) 126px 58px; min-height: 62px; padding: 8px 11px; }
 .draftRoomV3 .draftPlayerMain:disabled { cursor: default; opacity: .82; }
 .draftRoomV3 .playerPosition { border-radius: 6px; font-size: 8px; height: 30px; }
 .draftRoomV3 .playerCardIdentity b { font-size: 11px; }
@@ -300,6 +300,21 @@
 .draftRoomV3 .draftV2Recommendations small { font-size: 8px; }
 .draftRoomV3 .draftV2Recommendations strong { color: #a99fff; font-size: 11px; }
 .draftRoomV3 .draftV2Recommendations>button>span { background: #222a3d; border-color: #3a4560; color: #b5adff; }
+
+/* Full names stay readable throughout the board, pool, recommendations, and queue. */
+.draftRoomV3 .draftV2Player b,
+.draftRoomV3 .playerCardIdentity b,
+.draftRoomV3 .draftV2Recommendations>button div b,
+.draftRoomV3 .draftStrategyPanel article button:nth-child(2) b {
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: clip;
+  white-space: normal;
+  line-height: 1.15;
+  max-height: 2.3em;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
 
 .draftRoomV3 .draftV2SelectionBar {
   background: rgba(16, 21, 34, .97);
@@ -339,9 +354,9 @@
   .draftRoomV3 .draftV2BoardPanel>header { padding: 9px 10px; }
   .draftRoomV3 .draftV2BoardScroller { max-height: 404px; padding: 4px; }
   .draftRoomV3 .draftV2ManagerRow,
-  .draftRoomV3 .draftV2Board { grid-template-columns: 30px repeat(10, 108px); min-width: 1140px; }
+  .draftRoomV3 .draftV2Board { grid-template-columns: 30px repeat(10, 116px); min-width: 1190px; }
   .draftRoomV3 .draftV2ManagerRow>div { min-height: 52px; }
-  .draftRoomV3 .draftV2Board { grid-auto-rows: 56px; grid-template-rows: repeat(17, 56px); }
+  .draftRoomV3 .draftV2Board { grid-auto-rows: 63px; grid-template-rows: repeat(17, 63px); }
   .draftRoomV3 .draftV2Player b { font-size: 10px; }
 
   .draftRoomV3 .draftV2Workbench { display: flex; flex-direction: column; }

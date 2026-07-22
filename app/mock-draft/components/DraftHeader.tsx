@@ -1,4 +1,4 @@
-import {OKFL_QB_PREMIUM_PICKS} from "@/lib/draftSimulator";
+import {OKFL_QB_HISTORY_LABEL} from "@/lib/draftSimulator";
 import {useDraft} from "../context/DraftContext";
 import {DraftControls} from "./DraftControls";
 
@@ -8,7 +8,7 @@ export function DraftHeader() {
   const sample = rankingsMeta.totalDrafts ? `${rankingsMeta.totalDrafts.toLocaleString()} mocks · ` : "";
   return <>
     <section className="draftV2Setup">
-      <div className="draftV2Brand"><span className="eyebrow">OKFL Draft Room <i>V4.3.2</i></span>
+      <div className="draftV2Brand"><span className="eyebrow">OKFL Draft Room <i>V4.4.0</i></span>
         <h2>{started ? `${controlledManager.manager}'s Draft Room` : "Choose your franchise"}</h2><p>{lastMessage}</p>
       </div>
       <div className="draftHeaderStatus" aria-label="Draft progress">
@@ -28,7 +28,7 @@ export function DraftHeader() {
       <div className="draftV2ModelNote">
         <b>{rankingsLoading ? "Refreshing PPR market..." : rankingsMeta.sourceLabel}</b>
         <span>{rankingsMeta.format} · {updated} · {sample}{rankingsMeta.kickerCount} K · {rankingsMeta.defenseCount} DEF</span>
-        <span>{draftMode[0].toUpperCase() + draftMode.slice(1)} sim · {OKFL_QB_PREMIUM_PICKS}-pick QB adjustment</span>
+        <span>{draftMode[0].toUpperCase() + draftMode.slice(1)} sim · {OKFL_QB_HISTORY_LABEL} · current keepers removed</span>
         {rankingsMeta.sourceUrl && <a href={rankingsMeta.sourceUrl} target="_blank" rel="noreferrer">View source</a>}
       </div>
     </section>

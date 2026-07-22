@@ -20,6 +20,8 @@ assert(result.meta.source === "live", "valid market data should activate the liv
 assert(result.meta.kickerCount === 10, "PK rows should normalize to ten kickers");
 assert(result.meta.defenseCount === 10, "all ten defenses should survive the merge");
 assert(result.players[0].marketAdp === 1, "market players should remain sorted by ADP");
+assert(result.players.filter((player) => player.position === "QB").slice(0, 5).map((player) => player.okflRank).join(",") === "8,10,18,21,25", "live quarterbacks should receive the recent OKFL selection curve");
+assert(result.meta.format.includes("OKFL history curve"), "ranking metadata should identify the OKFL history model");
 assert(!result.players.some((player) => player.team === "OLD"), "suffix normalization should prevent duplicate players");
 assert(new Set(result.players.map((player) => draftPlayerKey(player.name))).size === result.players.length, "merged player keys must be unique");
 

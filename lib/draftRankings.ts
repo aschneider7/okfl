@@ -1,4 +1,5 @@
-import type {DraftPlayer} from "./draftSimulator";
+import {applyOkflHistoricalQuarterbackCurve} from "./draftHistory.ts";
+import type {DraftPlayer} from "./draftSimulator.ts";
 
 export type DraftRankingsMeta = {
   source: "live" | "fallback";
@@ -67,7 +68,7 @@ export function fallbackRankingsMeta(players: DraftPlayer[], message?: string): 
     sourceLabel: "OKFL offline PPR board",
     sourceUrl: "",
     scoring: "PPR",
-    format: "10-team keeper",
+    format: "10-team OKFL keeper",
     updatedAt: null,
     totalDrafts: null,
     playerCount: players.length,
@@ -116,11 +117,11 @@ export function buildFfcDraftPool(payload: FfcPayload, fallback: DraftPlayer[]):
     throw new Error("The live PPR board did not include enough players, kickers, or defenses.");
   }
 
-  const players = livePlayers.map((player, index) => ({
+  const players = applyOkflHistoricalQuarterbackCurve(livePlayers.map((player, index) => ({
     ...player,
     pprRank: index + 1,
     pprValue: rankValue(index + 1),
-  }));
+  })));
 
   const teams = Number(payload.meta?.teams);
   const totalDrafts = Number(payload.meta?.total_drafts);
@@ -131,7 +132,7 @@ export function buildFfcDraftPool(payload: FfcPayload, fallback: DraftPlayer[]):
       sourceLabel: "Fantasy Football Calculator",
       sourceUrl: "https://fantasyfootballcalculator.com/adp/ppr/10-team/all",
       scoring: "PPR",
-      format: `${Number.isFinite(teams) ? teams : 10}-team live ADP`,
+      format: `${Number.isFinite(teams) ? teams : 10}-team PPR + OKFL history curve`,
       updatedAt: typeof payload.meta?.end_date === "string" ? payload.meta.end_date : new Date().toISOString(),
       totalDrafts: Number.isFinite(totalDrafts) ? totalDrafts : null,
       playerCount: players.length,

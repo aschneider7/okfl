@@ -1,6 +1,14 @@
-# OKFL OS 8.6.0
+# OKFL OS 8.6.1
 
 The Obama Keeper Fantasy League command center for historical research, franchise intelligence, trade analysis, keeper decisions, live records, and mock drafts.
+
+## Version 8.6.1 — Draft calibration
+
+- Mock quarterback demand now follows the actual first-20 QB selection curve from the 2023–2025 OKFL drafts—not generic 2QB rankings
+- Current projected QB keepers are removed before the historical curve is assigned to available quarterbacks
+- Manager QB aggression is calibrated from each franchise's recent first non-keeper quarterback selections
+- Lamar Jackson receives a league-history safeguard that prevents him from slipping beyond the late second round
+- Player names display on two readable lines across the draft board, player pool, recommendations, queue, and watchlist
 
 ## Version 8.6.0 — Interface refinement
 

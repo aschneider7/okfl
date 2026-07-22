@@ -1,5 +1,8 @@
 
 import draftPlayerDepth from "./draft-player-depth.json";
+import {applyOkflHistoricalQuarterbackCurve, draftHistoryPlayerKey, OKFL_QB_DRAFT_CURVE, OKFL_QB_HISTORY_LABEL} from "./draftHistory";
+
+export {OKFL_QB_DRAFT_CURVE,OKFL_QB_HISTORY_LABEL};
 
 export type DraftManager = {
   slot: number;
@@ -28,6 +31,7 @@ export type DraftPlayer = {
   keeperEligible: boolean;
   source?: string;
   marketAdp?: number;
+  okflRank?: number;
 };
 
 export type DraftPick = {
@@ -46,19 +50,18 @@ export type DraftPick = {
 export type DraftMode = "realistic" | "balanced" | "chaos";
 
 export const DRAFT_ROUNDS = 17;
-export const OKFL_QB_PREMIUM_PICKS = 5;
 
 export const managers: DraftManager[] = [
-  {slot:1,franchiseId:"F02",name:"Blow",manager:"Blow",archetype:"Calculated Value",motto:"Wait for the room to make the mistake.",tendencies:{qbAggression:.67,youth:.54,risk:.34,keeperFocus:.78,needWeight:.80,veteran:.48}},
-  {slot:2,franchiseId:"F04",name:"Isaac",manager:"Isaac",archetype:"Win-Now Builder",motto:"Proven production before projection.",tendencies:{qbAggression:.61,youth:.36,risk:.25,keeperFocus:.56,needWeight:.92,veteran:.84}},
-  {slot:3,franchiseId:"F05",name:"Zvi",manager:"Zvi",archetype:"Balanced Constructor",motto:"Build the weekly lineup first.",tendencies:{qbAggression:.60,youth:.58,risk:.37,keeperFocus:.70,needWeight:.86,veteran:.53}},
-  {slot:4,franchiseId:"F09",name:"Maurice",manager:"Maurice",archetype:"Backfield Investor",motto:"Secure volume before the RB cliff.",tendencies:{qbAggression:.63,youth:.55,risk:.35,keeperFocus:.66,needWeight:.88,veteran:.58}},
-  {slot:5,franchiseId:"F08",name:"Haimy",manager:"Haimy",archetype:"Breakout Hunter",motto:"Upside today, keeper value tomorrow.",tendencies:{qbAggression:.66,youth:.92,risk:.70,keeperFocus:.92,needWeight:.70,veteran:.20}},
-  {slot:6,franchiseId:"F01",name:"Aaron",manager:"Aaron",archetype:"Keeper Optimizer",motto:"Draft the value before the name.",tendencies:{qbAggression:.70,youth:.73,risk:.38,keeperFocus:.98,needWeight:.88,veteran:.38}},
-  {slot:7,franchiseId:"F06",name:"Usher",manager:"Usher",archetype:"Floor General",motto:"Bank dependable starters.",tendencies:{qbAggression:.58,youth:.35,risk:.20,keeperFocus:.50,needWeight:.94,veteran:.90}},
-  {slot:8,franchiseId:"F03",name:"Sammy",manager:"Sammy",archetype:"Chaos Upside",motto:"The ceiling is the strategy.",tendencies:{qbAggression:.50,youth:.68,risk:.82,keeperFocus:.64,needWeight:.64,veteran:.28}},
-  {slot:9,franchiseId:"F10",name:"Sean/Ted",manager:"Sean/Ted",archetype:"Championship Machine",motto:"Complete the starting lineup early.",tendencies:{qbAggression:.71,youth:.44,risk:.27,keeperFocus:.60,needWeight:.96,veteran:.77}},
-  {slot:10,franchiseId:"F07",name:"Gorb",manager:"Gorb",archetype:"Market Disruptor",motto:"Start the run before anyone is ready.",tendencies:{qbAggression:.88,youth:.62,risk:.98,keeperFocus:.54,needWeight:.57,veteran:.33}},
+  {slot:1,franchiseId:"F02",name:"Blow",manager:"Blow",archetype:"Calculated Value",motto:"Wait for the room to make the mistake.",tendencies:{qbAggression:.78,youth:.54,risk:.34,keeperFocus:.78,needWeight:.80,veteran:.48}},
+  {slot:2,franchiseId:"F04",name:"Isaac",manager:"Isaac",archetype:"Win-Now Builder",motto:"Proven production before projection.",tendencies:{qbAggression:.82,youth:.36,risk:.25,keeperFocus:.56,needWeight:.92,veteran:.84}},
+  {slot:3,franchiseId:"F05",name:"Zvi",manager:"Zvi",archetype:"Balanced Constructor",motto:"Build the weekly lineup first.",tendencies:{qbAggression:.70,youth:.58,risk:.37,keeperFocus:.70,needWeight:.86,veteran:.53}},
+  {slot:4,franchiseId:"F09",name:"Maurice",manager:"Maurice",archetype:"Backfield Investor",motto:"Secure volume before the RB cliff.",tendencies:{qbAggression:.52,youth:.55,risk:.35,keeperFocus:.66,needWeight:.88,veteran:.58}},
+  {slot:5,franchiseId:"F08",name:"Haimy",manager:"Haimy",archetype:"Breakout Hunter",motto:"Upside today, keeper value tomorrow.",tendencies:{qbAggression:.47,youth:.92,risk:.70,keeperFocus:.92,needWeight:.70,veteran:.20}},
+  {slot:6,franchiseId:"F01",name:"Aaron",manager:"Aaron",archetype:"Keeper Optimizer",motto:"Draft the value before the name.",tendencies:{qbAggression:.92,youth:.73,risk:.38,keeperFocus:.98,needWeight:.88,veteran:.38}},
+  {slot:7,franchiseId:"F06",name:"Usher",manager:"Usher",archetype:"Floor General",motto:"Bank dependable starters.",tendencies:{qbAggression:.55,youth:.35,risk:.20,keeperFocus:.50,needWeight:.94,veteran:.90}},
+  {slot:8,franchiseId:"F03",name:"Sammy",manager:"Sammy",archetype:"Chaos Upside",motto:"The ceiling is the strategy.",tendencies:{qbAggression:.32,youth:.68,risk:.82,keeperFocus:.64,needWeight:.64,veteran:.28}},
+  {slot:9,franchiseId:"F10",name:"Sean/Ted",manager:"Sean/Ted",archetype:"Championship Machine",motto:"Complete the starting lineup early.",tendencies:{qbAggression:.35,youth:.44,risk:.27,keeperFocus:.60,needWeight:.96,veteran:.77}},
+  {slot:10,franchiseId:"F07",name:"Gorb",manager:"Gorb",archetype:"Market Disruptor",motto:"Start the run before anyone is ready.",tendencies:{qbAggression:.76,youth:.62,risk:.98,keeperFocus:.54,needWeight:.57,veteran:.33}},
 ];
 
 export const projectedKeepers = [
@@ -121,12 +124,16 @@ export function keeperOverall(round:number,slot:number){
 }
 
 export function pprAdjustedRank(player:DraftPlayer){
-  return Math.max(1,player.pprRank-(player.position==="QB"?OKFL_QB_PREMIUM_PICKS:0));
+  if(player.position!=="QB")return player.pprRank;
+  const historicalRank=player.okflRank??player.pprRank;
+  return draftHistoryPlayerKey(player.name)==="lamarjackson"?Math.min(20,historicalRank):historicalRank;
 }
 
 export function pprAdjustedValue(player:DraftPlayer){
   const base=player.pprValue||Math.max(250,10000-(player.pprRank-1)*100);
-  return base+(player.position==="QB"?OKFL_QB_PREMIUM_PICKS*100:0);
+  if(player.position!=="QB")return base;
+  const historicalFloor=Math.max(250,10000-(pprAdjustedRank(player)-1)*80);
+  return Math.max(base,historicalFloor);
 }
 
 export function draftRankLabel(player:DraftPlayer){
@@ -186,6 +193,7 @@ export function scorePlayer(params:{
   const volatility=mode==="balanced"?.4:mode==="chaos"?2.25:1;
   const need=missing*230*manager.tendencies.needWeight*needStrength;
   const qbNeed=player.position==="QB"&&missing>0?260*manager.tendencies.qbAggression:0;
+  const historicalQbDeadline=player.position==="QB"&&missing>0&&round>=2&&pprAdjustedRank(player)<=21?900:0;
   const youth=player.age?Math.max(-250,(27-player.age)*34*manager.tendencies.youth):0;
   const veteran=player.age?Math.max(0,(player.age-27)*28*manager.tendencies.veteran):0;
   const keeper=keeperUpside(player,round)*manager.tendencies.keeperFocus;
@@ -202,7 +210,7 @@ export function scorePlayer(params:{
   const normalized=(hash>>>0)/4294967295*2-1;
   const variation=normalized*(90+manager.tendencies.risk*360)*volatility;
 
-  return pprAdjustedValue(player)+need+qbNeed+youth+veteran+keeper+scarcity+personality+variation;
+  return pprAdjustedValue(player)+need+qbNeed+historicalQbDeadline+youth+veteran+keeper+scarcity+personality+variation;
 }
 
 export function explainPick(params:{
@@ -304,11 +312,11 @@ export function fallbackPprPool():DraftPlayer[]{
     source:"2025-archive-depth",
   }));
 
-  return [...rows.map((row)=>({
+  return applyOkflHistoricalQuarterbackCurve([...rows.map((row)=>({
     name:String(row[0]),position:String(row[1]),team:String(row[2]),
     pprRank:Number(row[3]),pprValue:Number(row[4]),age:Number(row[5]),
     keeperEligible:true,source:"ppr-fallback"
-  })),...rankedDepth];
+  })),...rankedDepth],projectedKeepers.map((keeper)=>keeper.player));
 }
 
 export function draftReport(picks:DraftPick[],franchiseId:string){
