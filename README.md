@@ -1,6 +1,15 @@
-# OKFL OS 8.5.1
+# OKFL OS 8.6.0
 
 The Obama Keeper Fantasy League command center for historical research, franchise intelligence, trade analysis, keeper decisions, live records, and mock drafts.
+
+## Version 8.6.0 — Interface refinement
+
+- Calmer desktop and mobile type scales put league data higher on every screen
+- A consistent card, form, table, and control system replaces uneven spacing and harsh hover movement
+- Cobalt, teal, and acid lime are reserved for meaningful signals instead of filling every promotional card
+- Feature introductions are shorter and denser while retaining the established OKFL editorial identity
+- Mobile navigation labels, data rows, page headings, and touch states are easier to scan
+- Motion is quicker, quieter, and disabled cleanly when reduced motion is requested
 
 ## Version 8.5.1 — Mobile refinement
 

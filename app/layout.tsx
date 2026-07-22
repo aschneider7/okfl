@@ -14,6 +14,7 @@ import "./communications.css";
 import "./commissioner-settings.css";
 import "./league-calendar.css";
 import "./mobile-tuneup.css";
+import "./ui-refinement.css";
 import {AppShell} from "@/components/AppShell";
 import {DataProvider} from "@/components/DataProvider";
 import {AuthProvider} from "@/components/AuthProvider";
@@ -21,7 +22,7 @@ import {PwaBootstrap} from "@/components/PwaBootstrap";
 
 const deploymentHost = process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL;
 const metadataBase = new URL(deploymentHost ? (deploymentHost.startsWith("http") ? deploymentHost : `https://${deploymentHost}`) : "http://localhost:3000");
-const title = "OKFL OS 8.5.1 · Mobile Refinement";
+const title = "OKFL OS 8.6.0 · Interface Refinement";
 const description = "The Obama Keeper Fantasy League, reframed through live standings, playoff odds, trades, drafts, records, and franchise intelligence.";
 
 export const viewport:Viewport={themeColor:"#171915",width:"device-width",initialScale:1,viewportFit:"cover"};
