@@ -9,12 +9,15 @@ async function commissioner(request:Request){
   return account?.role==="commissioner"&&!account.mustChangePassword?account:null;
 }
 
-function summarize(communications:any[],votes:any[],recipients:any[]){
+function summarize(communications:any[],votes:any[],recipients:any[],accounts:any[]){
+  const accountByUser=new Map(accounts.map((account)=>[account.user_id,account]));
   return communications.map((row)=>{
     const rowVotes=votes.filter((vote)=>vote.communication_id===row.id);
-    const results=(Array.isArray(row.choices)?row.choices:[]).map((choice:any)=>({...choice,votes:rowVotes.filter((vote)=>vote.option_id===choice.id).length}));
+    const choices=Array.isArray(row.choices)?row.choices:[];
+    const results=choices.map((choice:any)=>({...choice,votes:rowVotes.filter((vote)=>vote.option_id===choice.id).length}));
     const deliveries=recipients.filter((recipient)=>recipient.communication_id===row.id);
-    return {...row,results,totalVotes:rowVotes.length,recipientCount:deliveries.length,push:{queued:deliveries.reduce((total,item)=>total+Number(item.push_success_count||0),0),failed:deliveries.reduce((total,item)=>total+Number(item.push_failure_count||0),0),notEnabled:deliveries.filter((item)=>item.push_status==="not_enabled").length,notConfigured:deliveries.filter((item)=>item.push_status==="not_configured").length},sms:{queued:deliveries.filter((item)=>item.sms_status==="queued").length,failed:deliveries.filter((item)=>item.sms_status==="failed").length,notConsented:deliveries.filter((item)=>item.sms_status==="not_consented").length,notConfigured:deliveries.filter((item)=>item.sms_status==="not_configured").length}};
+    const voters=row.kind==="poll"?deliveries.map((recipient)=>{const account=accountByUser.get(recipient.user_id),vote=rowVotes.find((item)=>item.user_id===recipient.user_id),choice=choices.find((item:any)=>item.id===vote?.option_id),franchise=Array.isArray(account?.franchises)?account.franchises[0]:account?.franchises;return {userId:recipient.user_id,franchiseId:account?.franchise_id||"—",franchise:franchise?.name||account?.franchise_id||"Unknown franchise",displayName:account?.display_name||account?.username||"Unknown manager",username:account?.username||"",optionId:vote?.option_id||null,optionLabel:choice?.label||null,votedAt:vote?.updated_at||null};}).sort((a,b)=>Number(Boolean(a.optionId))-Number(Boolean(b.optionId))||a.franchiseId.localeCompare(b.franchiseId)):[];
+    return {...row,results,voters,totalVotes:rowVotes.length,recipientCount:deliveries.length,push:{queued:deliveries.reduce((total,item)=>total+Number(item.push_success_count||0),0),failed:deliveries.reduce((total,item)=>total+Number(item.push_failure_count||0),0),notEnabled:deliveries.filter((item)=>item.push_status==="not_enabled").length,notConfigured:deliveries.filter((item)=>item.push_status==="not_configured").length},sms:{queued:deliveries.filter((item)=>item.sms_status==="queued").length,failed:deliveries.filter((item)=>item.sms_status==="failed").length,notConsented:deliveries.filter((item)=>item.sms_status==="not_consented").length,notConfigured:deliveries.filter((item)=>item.sms_status==="not_configured").length}};
   });
 }
 
@@ -26,7 +29,7 @@ export async function GET(request:Request){
       supabase.from("franchise_accounts").select("user_id,franchise_id,username,display_name,franchises(name)").order("franchise_id"),
       supabase.from("league_contacts").select("user_id,franchise_id,phone_e164,sms_opted_in,consent_confirmed_at,updated_at"),
       supabase.from("league_communications").select("id,kind,title,body,choices,status,closes_at,sms_requested,created_at,closed_at").order("created_at",{ascending:false}).limit(30),
-      supabase.from("league_votes").select("communication_id,user_id,option_id"),
+      supabase.from("league_votes").select("communication_id,user_id,option_id,updated_at"),
       supabase.from("league_communication_recipients").select("communication_id,user_id,sms_status,push_status,push_success_count,push_failure_count"),
       supabase.from("manager_push_devices").select("user_id").eq("enabled",true),
     ]);
@@ -35,7 +38,7 @@ export async function GET(request:Request){
     const contactByUser=new Map((contactsResult.data||[]).map((row:any)=>[row.user_id,row]));
     const deviceCount=new Map<string,number>();for(const device of devicesResult.data||[])deviceCount.set(device.user_id,(deviceCount.get(device.user_id)||0)+1);
     const contacts=(accountsResult.data||[]).map((row:any)=>{const contact:any=contactByUser.get(row.user_id)||{};const franchise=Array.isArray(row.franchises)?row.franchises[0]:row.franchises;return {userId:row.user_id,franchiseId:row.franchise_id,franchise:franchise?.name||row.franchise_id,username:row.username,displayName:row.display_name,phone:contact.phone_e164||"",smsOptedIn:Boolean(contact.sms_opted_in),consentConfirmedAt:contact.consent_confirmed_at||null,updatedAt:contact.updated_at||null,pushDevices:deviceCount.get(row.user_id)||0};});
-    return NextResponse.json({contacts,communications:summarize(communicationsResult.data||[],votesResult.data||[],recipientsResult.data||[]),smsConfigured:smsIsConfigured(),pushConfigured:firebasePushIsConfigured()});
+    return NextResponse.json({contacts,communications:summarize(communicationsResult.data||[],votesResult.data||[],recipientsResult.data||[],accountsResult.data||[]),smsConfigured:smsIsConfigured(),pushConfigured:firebasePushIsConfigured()});
   }catch(error){return NextResponse.json({error:error instanceof Error?error.message:"Could not load league communications."},{status:500});}
 }
 
