@@ -1,4 +1,12 @@
-# OKFL OS 8.7.0
+# OKFL OS 8.7.1
+
+## Version 8.7.1 - Trade War Room market correction
+
+- Prices suggested targets from the current full-PPR board instead of blindly selecting the buyer's earliest pick.
+- Protects first-round picks for elite assets or documented keeper surplus.
+- Requires a meaningful lineup upgrade before suggesting a target.
+- Tracks all 17 tradable rounds and avoids repeating the same player across multiple recommendations.
+- Diversifies sellers and excludes players without reliable market ranks.
 
 The Obama Keeper Fantasy League command center for historical research, franchise intelligence, trade analysis, keeper decisions, live records, and mock drafts.
 
