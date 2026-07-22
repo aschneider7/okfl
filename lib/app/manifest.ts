@@ -1,0 +1,3 @@
+import type {MetadataRoute} from "next";
+
+export default function manifest():MetadataRoute.Manifest{return {name:"OKFL OS · League Intelligence",short_name:"OKFL OS",description:"The Obama Keeper Fantasy League command center.",start_url:"/",scope:"/",display:"standalone",background_color:"#f4f1e8",theme_color:"#171915",orientation:"portrait-primary",categories:["sports","productivity"],icons:[{src:"/pwa-192.png",sizes:"192x192",type:"image/png",purpose:"any"},{src:"/pwa-512.png",sizes:"512x512",type:"image/png",purpose:"any"},{src:"/pwa-maskable-512.png",sizes:"512x512",type:"image/png",purpose:"maskable"}]};}
