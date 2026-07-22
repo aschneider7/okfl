@@ -24,7 +24,7 @@ import {PwaBootstrap} from "@/components/PwaBootstrap";
 
 const deploymentHost = process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL;
 const metadataBase = new URL(deploymentHost ? (deploymentHost.startsWith("http") ? deploymentHost : `https://${deploymentHost}`) : "http://localhost:3000");
-const title = "OKFL OS 9.0.2 · The League Command Center";
+const title = "OKFL OS 9.1 · The League Command Center";
 const description = "The Obama Keeper Fantasy League, reframed through live standings, playoff odds, trades, drafts, records, and franchise intelligence.";
 
 export const viewport:Viewport={themeColor:"#0b1220",width:"device-width",initialScale:1,viewportFit:"cover"};
@@ -36,8 +36,8 @@ export const metadata: Metadata = {
   appleWebApp:{capable:true,statusBarStyle:"black-translucent",title:"OKFL OS"},
   formatDetection:{telephone:false},
   icons:{icon:"/okfl-logo.png",apple:"/okfl-logo.png"},
-  openGraph: {title, description, type: "website", images: [{url: "/og-v3.png", width: 1536, height: 1024, alt: "OKFL OS — The League, Reframed"}]},
-  twitter: {card: "summary_large_image", title, description, images: ["/og-v3.png"]},
+  openGraph: {title, description, type: "website", images: [{url: "/og-v4.png", width: 1536, height: 1024, alt: "OKFL OS — The whole league. One clear view."}]},
+  twitter: {card: "summary_large_image", title, description, images: ["/og-v4.png"]},
 };
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
