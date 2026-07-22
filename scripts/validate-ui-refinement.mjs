@@ -1,21 +1,22 @@
 import fs from "node:fs";
 
 const read = (path) => fs.readFileSync(path, "utf8");
-const css = read("app/ui-refinement.css");
+const legacyCss = read("app/ui-refinement.css");
+const css = read("app/okfl-v9.css");
 const layout = read("app/layout.tsx");
 const shell = read("components/AppShell.tsx");
 const pkg = JSON.parse(read("package.json"));
 
 const checks = [
-  [layout.indexOf('import "./ui-refinement.css";') > layout.indexOf('import "./mobile-tuneup.css";'), "UI refinement CSS loads last"],
-  [css.includes(".pageHead h1") && css.includes("clamp(32px,10.7vw,43px)"), "mobile page title scale is restrained"],
-  [css.includes(".home2Hero h1") && css.includes("clamp(40px,12.5vw,50px)"), "mobile home hero scale is restrained"],
-  [css.includes("background:var(--surface)!important") && css.includes("border-top:5px solid var(--signal)"), "home tool cards use color as an accent"],
-  [css.includes(".tableWrap th") && css.includes(".tableWrap td"), "table rhythm is standardized"],
-  [css.includes("@media(hover:hover)") && css.includes("@media(prefers-reduced-motion:reduce)"), "motion respects input mode and user preference"],
-  [css.includes("var(--okfl-safe-left)") && css.includes(".mobileDock a span"), "mobile refinements preserve safe areas and readable dock labels"],
-  [shell.includes('label === "League Calendar" ? "Calendar"'), "mobile calendar label is concise"],
-  [pkg.version === "8.7.2", "package version is 8.7.2"],
+  [layout.indexOf('import "./okfl-v9.css";') > layout.indexOf('import "./front-office-suite.css";'), "OKFL 9 design system loads last"],
+  [css.includes(".pageHead h1") && css.includes("font-size:32px!important"), "mobile page title scale is restrained"],
+  [css.includes(".home2Hero h1") && css.includes("font-size:44px!important"), "mobile home hero scale is restrained"],
+  [css.includes("--v9-primary:#2563eb") && css.includes("--v9-teal:#0f9f8f"), "brand color is systematic and accessible"],
+  [css.includes(".tableWrap") && css.includes("th,td"), "table rhythm is standardized"],
+  [legacyCss.includes("@media(hover:hover)") && css.includes("@media(prefers-reduced-motion:reduce)"), "motion respects input mode and user preference"],
+  [css.includes("safe-area-inset-top") && css.includes(".mobileDock span"), "mobile refinements preserve safe areas and readable dock labels"],
+  [shell.includes('["/calendar","Calendar","CL"]'), "mobile calendar label is concise"],
+  [pkg.version === "9.0.0", "package version is 9.0.0"],
 ];
 
 const failed = checks.filter(([ok]) => !ok);
