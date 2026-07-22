@@ -10,3 +10,11 @@ export const POSITION_CLASS: Record<string, string> = {
 };
 
 export const pickKey = (round: number, slot: number) => `${round}-${slot}`;
+
+export function gradeTone(grade?: string) {
+  if (grade === "A+" || grade === "A") return "gradeExcellent";
+  if (grade === "B+" || grade === "B") return "gradeGood";
+  if (grade === "C+" || grade === "C") return "gradeReach";
+  if (grade === "D") return "gradePoor";
+  return "gradeKeeper";
+}

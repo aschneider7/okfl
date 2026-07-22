@@ -1,6 +1,15 @@
-# OKFL OS 8.6.3
+# OKFL OS 8.6.4
 
 The Obama Keeper Fantasy League command center for historical research, franchise intelligence, trade analysis, keeper decisions, live records, and mock drafts.
+
+## Version 8.6.4 - Draft room readability
+
+- Pick grades are now large, color-coded badges with an always-visible A/B/C/D legend
+- Player names, team/position labels, pick numbers, manager headers, controls, and sidebar content use a stronger readable type scale
+- The board uses taller, wider cards with clearer selected-team, keeper, and on-the-clock states
+- The player pool and decision sidebar have stronger panel separation and touch-friendly mobile sizing
+- Recent picks, roster rows, and the final report reuse the same grade language and color system
+- Mobile puts the on-the-clock decision panel ahead of the player pool and preserves readable board cards while swiping
 
 ## Version 8.6.3 - Draft grading rebuild
 

@@ -1,0 +1,234 @@
+/* Draft Room 4.6 - readable data hierarchy and visible value grades. */
+.draftRoomV3 {
+  --grade-a: #19c995;
+  --grade-b: #58aaf5;
+  --grade-c: #f0b84b;
+  --grade-d: #f36b78;
+  --grade-k: #d9b45d;
+  font-size: 14px;
+}
+
+.draftRoomV3 .eyebrow { font-size: 10px; line-height: 1.25; }
+.draftRoomV3 .draftV2Brand .eyebrow { font-size: 9px; }
+.draftRoomV3 .draftV2Brand h2 { font-size: clamp(21px, 1.8vw, 27px); }
+.draftRoomV3 .draftV2Brand p { font-size: 11px; line-height: 1.4; }
+.draftRoomV3 .draftHeaderStatus span { font-size: 9px; }
+.draftRoomV3 .draftHeaderStatus b { font-size: 14px; }
+.draftRoomV3 .draftV2TeamSelect label span { font-size: 9px; }
+.draftRoomV3 .draftV2TeamSelect select,
+.draftRoomV3 .draftV2TeamSelect button { font-size: 11px; min-height: 40px; }
+.draftRoomV3 .draftV2Identity>div:nth-child(2)>span,
+.draftRoomV3 .draftV2ModelNote span,
+.draftRoomV3 .draftV2ModelNote a { font-size: 8px; }
+.draftRoomV3 .draftV2Identity>div:nth-child(2)>b { font-size: 14px; }
+.draftRoomV3 .draftV2Identity>div:nth-child(2)>p,
+.draftRoomV3 .draftV2ModelNote b { font-size: 10px; }
+
+.gradeExcellent { background: #0d5a45 !important; border-color: var(--grade-a) !important; color: #effff9 !important; }
+.gradeGood { background: #17466f !important; border-color: var(--grade-b) !important; color: #f1f8ff !important; }
+.gradeReach { background: #6b490d !important; border-color: var(--grade-c) !important; color: #fff8e7 !important; }
+.gradePoor { background: #712631 !important; border-color: var(--grade-d) !important; color: #fff2f4 !important; }
+.gradeKeeper { background: #57461e !important; border-color: var(--grade-k) !important; color: #fff8e4 !important; }
+
+.draftRoomV3 .draftV2BoardPanel>header { min-height: 66px; padding: 12px 15px; }
+.draftRoomV3 .draftV2BoardPanel h2 { font-size: 20px; margin-top: 3px; }
+.boardHeaderTools { align-items: center; display: flex; gap: 18px; }
+.gradeLegend { align-items: center; display: flex; gap: 10px; }
+.gradeLegend>span { align-items: center; color: #aeb7c9; display: flex; font-size: 9px; font-weight: 750; gap: 4px; white-space: nowrap; }
+.gradeLegend i {
+  align-items: center;
+  border: 1px solid;
+  border-radius: 5px;
+  display: inline-flex;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 950;
+  height: 23px;
+  justify-content: center;
+  min-width: 23px;
+  padding: 0 4px;
+}
+.draftRoomV3 .clockStatus { min-width: 96px; padding: 7px 11px; }
+.draftRoomV3 .clockStatus span { font-size: 8px; }
+.draftRoomV3 .clockStatus b { font-size: 17px; }
+
+.draftRoomV3 .draftV2BoardScroller { max-height: 550px; padding: 7px; }
+.draftRoomV3 .draftV2ManagerRow,
+.draftRoomV3 .draftV2Board {
+  gap: 4px;
+  grid-template-columns: 36px repeat(10, minmax(128px, 1fr));
+  min-width: 1352px;
+}
+.draftRoomV3 .draftV2ManagerRow { margin-bottom: 4px; }
+.draftRoomV3 .draftV2ManagerRow>div { min-height: 60px; padding: 7px 8px; }
+.draftRoomV3 .draftV2ManagerRow i { height: 28px; width: 28px; }
+.draftRoomV3 .draftV2ManagerRow span { font-size: 7px; }
+.draftRoomV3 .draftV2ManagerRow b { font-size: 11px; }
+.draftRoomV3 .draftV2ManagerRow small { font-size: 7px; }
+.draftRoomV3 .draftV2ManagerRow .draftRoundCorner { font-size: 8px; min-height: 60px; }
+.draftRoomV3 .draftV2Board { grid-auto-rows: 76px; grid-template-rows: repeat(17, 76px); }
+.draftRoundLabel span { font-size: 7px; }
+.draftRoundLabel b { font-size: 14px; }
+.draftRoomV3 .draftV2Cell { border-radius: 7px; }
+.draftRoomV3 .draftV2Cell.keeper { box-shadow: inset 4px 0 0 var(--grade-k); }
+.draftRoomV3 .draftV2PickLabel { font-size: 7px; font-weight: 850; right: 6px; top: 5px; }
+.draftRoomV3 .draftV2Player {
+  align-content: stretch;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto auto;
+  height: 100%;
+  padding: 8px 9px 7px;
+}
+.draftRoomV3 .draftV2Player b {
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1.14;
+  max-height: 2.28em;
+  padding-right: 22px;
+}
+.draftRoomV3 .draftV2Player small { font-size: 8px; font-weight: 800; margin-top: 2px; }
+.draftRoomV3 .draftV2Player footer { align-items: end; display: flex; margin-top: 4px; }
+.draftRoomV3 .draftV2Player footer .pickGradeBadge {
+  align-items: center;
+  border: 1px solid;
+  border-radius: 5px;
+  display: inline-flex;
+  font-size: 9px;
+  font-weight: 950;
+  justify-content: center;
+  letter-spacing: .02em;
+  line-height: 1;
+  min-height: 22px;
+  min-width: 30px;
+  padding: 3px 6px;
+}
+.draftRoomV3 .draftV2Empty { font-size: 12px; padding: 9px; }
+
+.draftRoomV3 .draftV2Workbench { gap: 12px; margin-top: 12px; }
+.playerPoolHeader { min-height: 68px; padding: 13px 15px; }
+.playerPoolHeader h2 { font-size: 19px; }
+.draftRoomV3 .playerPoolFilters input { font-size: 12px; height: 42px; }
+.availableCount { font-size: 9px; }
+.availableCount b { font-size: 16px; }
+.positionTabs { gap: 6px; padding: 8px 12px; }
+.positionTabs button { font-size: 10px; min-height: 38px; padding-inline: 12px; }
+.positionTabs button span { font-size: 8px; }
+.playerTableLabels { font-size: 8px; min-height: 31px; }
+.draftRoomV3 .draftV2PlayerGrid { height: 470px; }
+.draftRoomV3 .draftPlayerCard { min-height: 68px; }
+.draftRoomV3 .draftPlayerMain { min-height: 68px; }
+.draftRoomV3 .playerPosition { font-size: 10px; height: 34px; }
+.draftRoomV3 .playerCardIdentity b { font-size: 13px; }
+.draftRoomV3 .playerCardIdentity span { font-size: 9px; }
+.draftRoomV3 .playerRanks span { font-size: 8px; }
+.draftRoomV3 .playerRanks b { font-size: 11px; }
+.draftRoomV3 .draftPlayerMain>strong { font-size: 12px; }
+.draftPlayerActions button { font-size: 9px; min-height: 39px; }
+
+.draftRoomV3 .draftV2Sidebar { height: 570px; }
+.draftRoomV3 .draftV2Sidebar .draftV2OnClock {
+  background: #141a29 !important;
+  color: #f5f7fb !important;
+  min-height: 92px;
+  padding: 16px !important;
+}
+.draftRoomV3 .draftV2Sidebar .draftV2OnClock.isUserTurn { background: #17332f !important; }
+.draftRoomV3 .draftV2OnClock h2 { color: #ffffff; font-size: 22px; }
+.draftRoomV3 .draftV2OnClock p { color: #b1bbcc; font-size: 11px; }
+.draftSidebarTabs button { font-size: 9px; min-height: 42px; }
+.draftSidebarTabs button span { font-size: 8px; }
+.draftRoomV3 .draftV2Recommendations h2,
+.draftRoomV3 .draftV2Recent h2,
+.draftStrategyPanel h2 { font-size: 17px; }
+.draftRoomV3 .draftV2Recommendations>button { min-height: 65px; }
+.draftRoomV3 .draftV2Recommendations>button div b,
+.draftRoomV3 .draftV2Recent>div b,
+.draftRoomV3 .draftV2Roster section>div b { font-size: 12px; }
+.draftRoomV3 .draftV2Recommendations small,
+.draftRoomV3 .draftV2Recent small,
+.draftRoomV3 .draftV2Roster section>div span { font-size: 9px; }
+.draftRoomV3 .draftV2Recommendations strong { font-size: 13px; }
+.draftRoomV3 .draftV2Recent>div { min-height: 53px; }
+.inlineGrade {
+  border: 1px solid;
+  border-radius: 4px;
+  display: inline-flex;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 950;
+  line-height: 1;
+  margin-left: 7px;
+  padding: 3px 5px;
+}
+
+.draftReport { gap: 20px; padding: 18px; }
+.draftReportGrade { border-width: 2px; min-width: 112px; padding: 13px 16px; }
+.draftReportGrade span { color: inherit; font-size: 9px; font-weight: 900; letter-spacing: .1em; }
+.draftReportGrade b { color: inherit; font-size: 42px; }
+.draftReportGrade strong { color: inherit; font-size: 11px; }
+.draftReport h2 { font-size: 21px; }
+.draftReport p { font-size: 10px; }
+.draftReportStats { gap: 7px; margin-top: 9px; }
+.draftReportStats span { border: 1px solid #2b3b50; border-radius: 6px; font-size: 9px; padding: 7px 9px; }
+.draftReportBreakdown b { font-size: 14px; }
+.draftReport>button { font-size: 11px; min-height: 42px; }
+
+@media(max-width: 1100px) {
+  .gradeLegend>span { font-size: 0; }
+  .gradeLegend i { font-size: 9px; }
+}
+
+@media(max-width: 760px) {
+  .draftRoomV3 .draftV2Setup {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) !important;
+    position: static !important;
+  }
+  .draftRoomV3 .draftV2Brand { min-width: 0; width: 100%; }
+  .draftRoomV3 .eyebrow { font-size: 9px; }
+  .draftRoomV3 .draftV2Brand p { font-size: 10px; }
+  .draftRoomV3 .draftV2TeamSelect {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    width: 100%;
+  }
+  .draftRoomV3 .draftV2TeamSelect label { grid-column: 1 / -1 !important; min-width: 0; }
+  .draftRoomV3 .draftV2TeamSelect label span { font-size: 10px; }
+  .draftRoomV3 .draftV2TeamSelect select,
+  .draftRoomV3 .draftV2TeamSelect button { font-size: 12px; min-height: 46px; }
+  .draftRoomV3 .draftV2TeamSelect select { max-width: none; width: 100%; }
+  .draftRoomV3 .draftV2TeamSelect .startMockButton { grid-column: 1 / -1; width: 100%; }
+  .draftRoomV3 .draftV2BoardPanel>header { min-height: 64px; }
+  .draftRoomV3 .draftV2BoardPanel h2 { font-size: 18px; }
+  .gradeLegend { display: none; }
+  .draftRoomV3 .draftV2BoardScroller { max-height: 480px; }
+  .draftRoomV3 .draftV2ManagerRow,
+  .draftRoomV3 .draftV2Board { grid-template-columns: 34px repeat(10, 128px); min-width: 1350px; }
+  .draftRoomV3 .draftV2Board { grid-auto-rows: 76px; grid-template-rows: repeat(17, 76px); }
+  .draftRoomV3 .draftV2Player b { font-size: 11px; }
+  .draftRoomV3 .draftV2Player small { font-size: 8px; }
+  .draftRoomV3 .draftV2Player footer .pickGradeBadge { font-size: 10px; min-height: 22px; }
+  .draftRoomV3 .draftV2Workbench { gap: 10px; }
+  .draftRoomV3 .draftV2Sidebar { height: auto; min-height: 0; order: -1; }
+  .draftSidebarPanel { max-height: 280px; }
+  .playerPoolHeader h2 { font-size: 18px; }
+  .draftRoomV3 .playerPoolFilters input { font-size: 16px; height: 46px; }
+  .positionTabs button { font-size: 10px; min-height: 42px; }
+  .draftRoomV3 .draftV2PlayerGrid { height: 500px; }
+  .draftRoomV3 .draftPlayerCard,
+  .draftRoomV3 .draftPlayerMain { min-height: 70px; }
+  .draftRoomV3 .playerCardIdentity b { font-size: 13px; }
+  .draftRoomV3 .playerCardIdentity span { font-size: 9px; }
+  .draftReport { grid-template-columns: 1fr; }
+  .draftReportGrade { grid-template-columns: auto 1fr; width: 100%; }
+  .draftReportGrade span { grid-column: auto; margin-right: 10px; }
+  .draftReportGrade strong { justify-self: end; }
+  .draftReport>button { grid-column: auto; }
+}
+
+@media(max-width: 430px) {
+  .draftRoomV3 .draftV2ModelNote span { font-size: 8px; }
+  .draftRoomV3 .draftV2Sidebar .draftV2OnClock { min-height: 84px; }
+  .draftSidebarTabs button { font-size: 8px; }
+  .draftRoomV3 .draftPlayerMain { grid-template-columns: 36px minmax(100px, 1fr) 70px; }
+}

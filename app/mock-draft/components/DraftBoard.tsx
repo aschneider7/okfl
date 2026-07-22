@@ -8,9 +8,12 @@ export function DraftBoard() {
   const {board, complete, current, controlledFranchise, userOnClock, paused} = useDraft();
   return <section className="draftV2BoardPanel">
     <header><div><span className="eyebrow">10-team PPR · 17 rounds · Snake</span><h2>Draft board</h2><span className="boardSwipeHint">Swipe to explore every team →</span></div>
-      <div className={`clockStatus ${userOnClock ? "yourTurn" : ""}`}>
+      <div className="boardHeaderTools"><div className="gradeLegend" aria-label="Pick grade legend">
+        <span><i className="gradeExcellent">A</i> Value</span><span><i className="gradeGood">B</i> Fair</span>
+        <span><i className="gradeReach">C</i> Reach</span><span><i className="gradePoor">D</i> Major reach</span>
+      </div><div className={`clockStatus ${userOnClock ? "yourTurn" : ""}`}>
         <span>{complete ? "Complete" : paused ? "Paused" : userOnClock ? "Your pick" : "On the clock"}</span><b>{current ? `${current.round}.${current.slot}` : "—"}</b>
-      </div></header>
+      </div></div></header>
     <div className="draftV2BoardScroller">
       <div className="draftV2ManagerRow"><div className="draftRoundCorner">RD</div>{managers.map((manager) => <div
         className={manager.franchiseId === controlledFranchise ? "controlled" : ""} key={manager.franchiseId}>
