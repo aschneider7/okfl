@@ -1,4 +1,12 @@
-# OKFL OS 8.7.1
+# OKFL OS 8.7.2
+
+## Version 8.7.2 - Trade War Room clarity
+
+- Removes kickers and defenses from trade-need diagnosis.
+- Restores the collapsed War Room hero with an isolated, explicit layout.
+- Labels preseason contender/seller calls as projections.
+- Summarizes draft capital instead of listing all 17 rounds individually.
+- Shows an honest no-match state rather than forcing bad trade ideas.
 
 ## Version 8.7.1 - Trade War Room market correction
 

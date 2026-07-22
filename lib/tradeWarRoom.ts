@@ -8,7 +8,8 @@ export type WarRoomDeal={id:string;buyer:string;buyerId:string;seller:string;sel
 export type TradeWarRoom={season:number;week:number;teams:WarRoomTeam[];deals:WarRoomDeal[];updatedAt:string|null};
 export type WarRoomMarketPlayer={name:string;position:string;pprRank:number;keeperEligible?:boolean};
 
-const rosterSlots:Record<string,number>={QB:1,RB:2,WR:2,TE:1,K:1,DEF:1};
+// Kicker and defense shortages are draft/waiver decisions, not deadline trade needs.
+const rosterSlots:Record<string,number>={QB:1,RB:2,WR:3,TE:1};
 function playerName(directory:Record<string,any>,id:string){const p=directory[id]||{};return p.full_name||[p.first_name,p.last_name].filter(Boolean).join(" ")||`Player ${id}`}
 function position(directory:Record<string,any>,id:string){return String(directory[id]?.position||"FLEX").toUpperCase()}
 function playerKey(value:string){return value.normalize("NFKD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/\b(jr|sr|ii|iii|iv)\b/g,"").replace(/[^a-z0-9]/g,"")}
