@@ -11,12 +11,12 @@ const checks = [
   [layout.indexOf('import "./okfl-v9.css";') > layout.indexOf('import "./front-office-suite.css";'), "OKFL 9 design system loads last"],
   [css.includes(".pageHead h1") && css.includes("font-size:32px!important"), "mobile page title scale is restrained"],
   [css.includes(".home2Hero h1") && css.includes("font-size:44px!important"), "mobile home hero scale is restrained"],
-  [css.includes("--v9-primary:#2563eb") && css.includes("--v9-teal:#0f9f8f"), "brand color is systematic and accessible"],
+  [css.includes("--v9-primary:#335765") && css.includes("--v9-teal:#176d63"), "brand color is systematic and accessible"],
   [css.includes(".tableWrap") && css.includes("th,td"), "table rhythm is standardized"],
   [legacyCss.includes("@media(hover:hover)") && css.includes("@media(prefers-reduced-motion:reduce)"), "motion respects input mode and user preference"],
   [css.includes("safe-area-inset-top") && css.includes(".mobileDock span"), "mobile refinements preserve safe areas and readable dock labels"],
   [shell.includes('["/calendar","Calendar","CL"]'), "mobile calendar label is concise"],
-  [pkg.version === "9.0.0", "package version is 9.0.0"],
+  [pkg.version === "9.0.1", "package version is 9.0.1"],
 ];
 
 const failed = checks.filter(([ok]) => !ok);
