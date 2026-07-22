@@ -7,7 +7,7 @@ import "./styles/draft-room.css";
 
 export default function MockDraftPage() {
   return <Page title="2026 OKFL Draft Room"
-    subtitle="Draft against a live PPR market, the 2023–2025 OKFL draft curve, current keeper demand, kickers, defenses, and explainable final grades.">
+    subtitle="Draft from Sleeper's current full-PPR market, adjusted by how OKFL actually drafted quarterbacks against that market in 2023-2025.">
     <DraftProvider><DraftLayout /></DraftProvider>
   </Page>;
 }

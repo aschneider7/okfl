@@ -20,27 +20,15 @@ export type DraftRankingsResponse = {
   meta: DraftRankingsMeta;
 };
 
-type FfcPlayer = {
-  name?: unknown;
-  position?: unknown;
-  team?: unknown;
-  adp?: unknown;
-  times_drafted?: unknown;
-  stdev?: unknown;
-};
-
-type FfcPayload = {
-  status?: unknown;
-  meta?: {
-    type?: unknown;
-    teams?: unknown;
-    total_drafts?: unknown;
-    end_date?: unknown;
+type SleeperProjection = {
+  player?: {
+    first_name?: unknown;
+    last_name?: unknown;
+    position?: unknown;
+    team?: unknown;
   };
-  players?: FfcPlayer[];
+  stats?: {adp_ppr?: unknown};
 };
-
-const SUPPORTED_POSITIONS = new Set(["QB", "RB", "WR", "TE", "K", "DEF"]);
 
 export function draftPlayerKey(name: string) {
   return name
@@ -78,20 +66,18 @@ export function fallbackRankingsMeta(players: DraftPlayer[], message?: string): 
   };
 }
 
-export function buildFfcDraftPool(payload: FfcPayload, fallback: DraftPlayer[]): DraftRankingsResponse {
-  if (payload.status !== "Success" || !Array.isArray(payload.players)) {
-    throw new Error("The rankings provider returned an invalid response.");
-  }
+export function buildSleeperDraftPool(payload: unknown, fallback: DraftPlayer[]): DraftRankingsResponse {
+  if (!Array.isArray(payload)) throw new Error("Sleeper returned an invalid projections response.");
 
   const fallbackByKey = new Map(fallback.map((player) => [draftPlayerKey(player.name), player]));
   const seen = new Set<string>();
-  const livePlayers = payload.players
+  const skillPlayers = (payload as SleeperProjection[])
     .map((row) => {
-      const name = String(row.name || "").trim();
-      const position = normalizePosition(row.position);
-      const team = String(row.team || "FA").trim().toUpperCase();
-      const marketAdp = Number(row.adp);
-      if (!name || !SUPPORTED_POSITIONS.has(position) || !Number.isFinite(marketAdp)) return null;
+      const name = `${String(row.player?.first_name || "").trim()} ${String(row.player?.last_name || "").trim()}`.trim();
+      const position = normalizePosition(row.player?.position);
+      const team = String(row.player?.team || "FA").trim().toUpperCase();
+      const marketAdp = Number(row.stats?.adp_ppr);
+      if (!name || !["QB", "RB", "WR", "TE"].includes(position) || !Number.isFinite(marketAdp) || marketAdp >= 999) return null;
       const key = draftPlayerKey(name);
       if (!key || seen.has(key)) return null;
       seen.add(key);
@@ -105,39 +91,44 @@ export function buildFfcDraftPool(payload: FfcPayload, fallback: DraftPlayer[]):
         marketAdp,
         age: archived?.age ?? null,
         keeperEligible: archived?.keeperEligible ?? true,
-        source: "ffc-live-ppr-adp",
+        source: "sleeper-live-ppr-adp",
       } satisfies DraftPlayer;
     })
     .filter((player): player is NonNullable<typeof player> => Boolean(player))
     .sort((a, b) => (a.marketAdp || Number.MAX_SAFE_INTEGER) - (b.marketAdp || Number.MAX_SAFE_INTEGER));
 
-  const liveKickerCount = livePlayers.filter((player) => player.position === "K").length;
-  const liveDefenseCount = livePlayers.filter((player) => player.position === "DEF").length;
-  if (livePlayers.length < 180 || liveKickerCount < 10 || liveDefenseCount < 10) {
-    throw new Error("The live PPR board did not include enough players, kickers, or defenses.");
+  if (skillPlayers.length < 180 || skillPlayers.filter((player) => player.position === "QB").length < 20) {
+    throw new Error("Sleeper's full-PPR board did not include enough active players.");
   }
 
-  const players = applyOkflHistoricalQuarterbackCurve(livePlayers.map((player, index) => ({
+  // Sleeper's projection ADP does not rank K/DEF, so retain the curated OKFL
+  // fallback rows after the live skill-position market.
+  const specialists = fallback
+    .filter((player) => (player.position === "K" || player.position === "DEF") && !seen.has(draftPlayerKey(player.name)))
+    .sort((a, b) => a.pprRank - b.pprRank);
+  const ranked = [...skillPlayers, ...specialists].map((player, index) => ({
     ...player,
     pprRank: index + 1,
     pprValue: rankValue(index + 1),
-  })));
+  }));
+  const players = applyOkflHistoricalQuarterbackCurve(ranked);
+  const kickerCount = players.filter((player) => player.position === "K").length;
+  const defenseCount = players.filter((player) => player.position === "DEF").length;
+  if (kickerCount < 10 || defenseCount < 10) throw new Error("The draft board needs at least ten kickers and defenses.");
 
-  const teams = Number(payload.meta?.teams);
-  const totalDrafts = Number(payload.meta?.total_drafts);
   return {
     players,
     meta: {
       source: "live",
-      sourceLabel: "Fantasy Football Calculator",
-      sourceUrl: "https://fantasyfootballcalculator.com/adp/ppr/10-team/all",
+      sourceLabel: "Sleeper full-PPR ADP",
+      sourceUrl: "https://api.sleeper.com/projections/nfl/2026?season_type=regular",
       scoring: "PPR",
-      format: `${Number.isFinite(teams) ? teams : 10}-team PPR + OKFL history curve`,
-      updatedAt: typeof payload.meta?.end_date === "string" ? payload.meta.end_date : new Date().toISOString(),
-      totalDrafts: Number.isFinite(totalDrafts) ? totalDrafts : null,
+      format: "10-team PPR market x OKFL 2023-25 premium",
+      updatedAt: new Date().toISOString(),
+      totalDrafts: null,
       playerCount: players.length,
-      kickerCount: liveKickerCount,
-      defenseCount: liveDefenseCount,
+      kickerCount,
+      defenseCount,
     },
   };
 }

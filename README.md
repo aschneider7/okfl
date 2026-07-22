@@ -2,18 +2,19 @@
 
 The Obama Keeper Fantasy League command center for historical research, franchise intelligence, trade analysis, keeper decisions, live records, and mock drafts.
 
-## Version 8.6.2 — Dak calibration
+## Version 8.6.2 - PPR market calibration
 
-- The complete PPR ADP board remains the base market order, with the OKFL historical curve applied only to quarterback slots
-- Dak Prescott moves to QB6 on that curve, matching his QB5, QB6, and QB6 positions in the 2023–2025 OKFL drafts
-- Elite quarterback timing and the wider historical QB curve remain unchanged
+- Sleeper's current full-PPR ADP now drives the complete live skill-position board
+- The quarterback adjustment is derived from 83 valid non-keeper selections: each 2023-2025 OKFL QB pick is compared with that season's Sleeper full-PPR ADP
+- Historical pick-to-ADP multipliers are applied by available-QB market tier after current QB keepers are removed
+- No quarterback has a player-specific anchor or manual position override
+- Kickers and defenses remain on the curated OKFL board because Sleeper's projection ADP does not rank those positions
 
 ## Version 8.6.1 — Draft calibration
 
 - Mock quarterback demand now follows the actual first-20 QB selection curve from the 2023–2025 OKFL drafts—not generic 2QB rankings
 - Current projected QB keepers are removed before the historical curve is assigned to available quarterbacks
 - Manager QB aggression is calibrated from each franchise's recent first non-keeper quarterback selections
-- Lamar Jackson receives a league-history safeguard that prevents him from slipping beyond the late second round
 - Player names display on two readable lines across the draft board, player pool, recommendations, queue, and watchlist
 
 ## Version 8.6.0 — Interface refinement

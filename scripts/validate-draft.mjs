@@ -30,25 +30,14 @@ const keeperOverall=(round,slot)=>(round-1)*10+(round%2===1?slot:11-slot);
 assert(snakeSlot(1,1)===1&&snakeSlot(2,1)===10&&snakeSlot(2,10)===1,"snake slot mapping is invalid");
 assert(keeperOverall(1,1)===1&&keeperOverall(2,10)===11&&keeperOverall(2,1)===20,"keeper slot mapping is invalid");
 
-const playerPositions=new Map(archive.players.map((player)=>[player.name,player.positions?.[0]||""]));
-const recentQbPicks=[2023,2024,2025].map((season)=>archive.draft_picks
-  .filter((pick)=>pick.season===season&&pick.keeper!=="Yes"&&(pick.position==="QB"||playerPositions.get(pick.player)==="QB"))
-  .sort((a,b)=>a.overall_num-b.overall_num)
-  .map((pick)=>pick.overall_num));
-const median=(values)=>values.slice().sort((a,b)=>a-b)[Math.floor(values.length/2)];
-const historicalCurve=Array.from({length:20},(_,index)=>median(recentQbPicks.map((season)=>season[index])));
 const projectedQbKeepers=[...source.matchAll(/\{franchiseId:"[^"]+",player:"([^"]+)",round:\d+,position:"QB"\}/g)].map((match)=>match[1]);
-const recentDakQbPositions=[2023,2024,2025].map((season)=>archive.draft_picks
-  .filter((pick)=>pick.season===season&&pick.keeper!=="Yes"&&(pick.position==="QB"||playerPositions.get(pick.player)==="QB"))
-  .sort((a,b)=>a.overall_num-b.overall_num)
-  .findIndex((pick)=>pick.player==="Dak Prescott")+1);
-assert(historicalCurve.slice(0,5).join(",")==="8,10,18,21,25","recent OKFL QB curve changed unexpectedly");
-assert(historySource.includes(`OKFL_QB_DRAFT_CURVE = [${historicalCurve.join(",")}]`),"simulator QB curve must match the 2023-2025 archive");
+const tierSamples=[...historySource.matchAll(/samples:(\d+)/g)].map((match)=>Number(match[1]));
+assert(historySource.includes("OKFL_QB_MARKET_TIERS"),"draft model must expose historical PPR market tiers");
+assert(tierSamples.reduce((sum,count)=>sum+count,0)===83,"historical market model must retain all 83 valid observations");
 assert(historySource.includes(`CURRENT_PROJECTED_QB_KEEPERS = ["${projectedQbKeepers.join('\",\"')}"]`),"historical curve exclusions must match the current projected QB keepers");
-assert(source.includes('if(key==="lamarjackson")return Math.min(20,historicalRank);'),"Lamar Jackson needs the historical late-second ceiling");
-assert(recentDakQbPositions.join(",")==="5,6,6"&&median(recentDakQbPositions)===6,"Dak Prescott's recent OKFL position should remain QB6");
-assert(historySource.includes("dakprescott:6"),"Dak Prescott must occupy QB6 on the OKFL curve");
+assert(!historySource.toLowerCase().includes("dakprescott")&&!historySource.toLowerCase().includes("lamarjackson"),"the market model cannot contain player-specific QB anchors");
+assert(!source.includes("Math.min(20"),"the simulator cannot contain an individual late-second QB cap");
 assert(source.includes("applyOkflHistoricalQuarterbackCurve"),"simulator must apply the historical quarterback curve");
 assert(draftCss.includes("-webkit-line-clamp: 2")&&draftCss.includes("white-space: normal"),"draft player names must support two readable lines");
 
-console.log({draft_players:allNames.length,projected_keepers:keeperNames.length,live_selections:liveSelections,okfl_qb_curve:historicalCurve});
+console.log({draft_players:allNames.length,projected_keepers:keeperNames.length,live_selections:liveSelections,qb_market_samples:tierSamples.reduce((sum,count)=>sum+count,0)});

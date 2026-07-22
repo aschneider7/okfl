@@ -1,8 +1,8 @@
 
 import draftPlayerDepth from "./draft-player-depth.json";
-import {applyOkflHistoricalQuarterbackCurve, draftHistoryPlayerKey, OKFL_QB_DRAFT_CURVE, OKFL_QB_HISTORY_LABEL} from "./draftHistory";
+import {applyOkflHistoricalQuarterbackCurve, OKFL_QB_HISTORY_LABEL} from "./draftHistory";
 
-export {OKFL_QB_DRAFT_CURVE,OKFL_QB_HISTORY_LABEL};
+export {OKFL_QB_HISTORY_LABEL};
 
 export type DraftManager = {
   slot: number;
@@ -125,10 +125,7 @@ export function keeperOverall(round:number,slot:number){
 
 export function pprAdjustedRank(player:DraftPlayer){
   if(player.position!=="QB")return player.pprRank;
-  const historicalRank=player.okflRank??player.pprRank;
-  const key=draftHistoryPlayerKey(player.name);
-  if(key==="lamarjackson")return Math.min(20,historicalRank);
-  return historicalRank;
+  return player.okflRank??player.pprRank;
 }
 
 export function pprAdjustedValue(player:DraftPlayer){
