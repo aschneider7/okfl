@@ -15,7 +15,7 @@ const checks = [
   [css.includes("@media(hover:hover)") && css.includes("@media(prefers-reduced-motion:reduce)"), "motion respects input mode and user preference"],
   [css.includes("var(--okfl-safe-left)") && css.includes(".mobileDock a span"), "mobile refinements preserve safe areas and readable dock labels"],
   [shell.includes('label === "League Calendar" ? "Calendar"'), "mobile calendar label is concise"],
-  [pkg.version === "8.6.2", "package version is 8.6.2"],
+  [pkg.version === "8.6.3", "package version is 8.6.3"],
 ];
 
 const failed = checks.filter(([ok]) => !ok);

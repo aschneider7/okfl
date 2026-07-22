@@ -1,8 +1,10 @@
 
 import draftPlayerDepth from "./draft-player-depth.json";
 import {applyOkflHistoricalQuarterbackCurve, OKFL_QB_HISTORY_LABEL} from "./draftHistory";
+import {draftExpectedRank, draftReport, pickGrade} from "./draftGrading";
 
 export {OKFL_QB_HISTORY_LABEL};
+export {draftExpectedRank, draftReport, pickGrade};
 
 export type DraftManager = {
   slot: number;
@@ -122,7 +124,6 @@ export function keeperOverall(round:number,slot:number){
   const pickInRound=round%2===1?slot:11-slot;
   return (round-1)*10+pickInRound;
 }
-
 export function pprAdjustedRank(player:DraftPlayer){
   if(player.position!=="QB")return player.pprRank;
   return player.okflRank??player.pprRank;
@@ -240,17 +241,6 @@ export function explainPick(params:{
   return notes.slice(0,4);
 }
 
-export function pickGrade(player:DraftPlayer,overall:number){
-  const expected=pprAdjustedRank(player);
-  const difference=expected-overall;
-  if(difference>=18)return"A+";
-  if(difference>=9)return"A";
-  if(difference>=2)return"B+";
-  if(difference>=-7)return"B";
-  if(difference>=-16)return"C";
-  return"D";
-}
-
 export function fallbackPprPool():DraftPlayer[]{
   const rows=[
     ["Bijan Robinson","RB","ATL",1,10000,24],["Ja'Marr Chase","WR","CIN",2,9850,26],
@@ -316,19 +306,4 @@ export function fallbackPprPool():DraftPlayer[]{
     pprRank:Number(row[3]),pprValue:Number(row[4]),age:Number(row[5]),
     keeperEligible:true,source:"ppr-fallback"
   })),...rankedDepth],projectedKeepers.map((keeper)=>keeper.player));
-}
-
-export function draftReport(picks:DraftPick[],franchiseId:string){
-  const team=picks.filter((pick)=>pick.franchiseId===franchiseId);
-  const live=team.filter((pick)=>!pick.keeper);
-  const gradePoints:Record<string,number>={"A+":4.3,A:4,"B+":3.4,B:3,C:2,D:1};
-  const average=live.length?live.reduce((sum,pick)=>sum+(gradePoints[pick.grade||"C"]||2),0)/live.length:0;
-  const rosterCounts=counts(team.map((pick)=>pick.player));
-  const filled=Object.entries(starterTargets).filter(([position,target])=>(rosterCounts[position]||0)>=target).length;
-  const coverage=Math.round(filled/Object.keys(starterTargets).length*100);
-  const steals=live.filter((pick)=>["A+","A"].includes(pick.grade||"")).length;
-  const reaches=live.filter((pick)=>pick.grade==="D").length;
-  const score=Math.max(0,Math.min(100,Math.round(average/4.3*72+coverage*.23+Math.min(5,steals)*2-reaches*2)));
-  const grade=score>=94?"A+":score>=88?"A":score>=82?"B+":score>=75?"B":score>=66?"C":"D";
-  return {grade,score,coverage,steals,reaches,totalPlayers:team.length};
 }

@@ -1,6 +1,14 @@
-# OKFL OS 8.6.2
+# OKFL OS 8.6.3
 
 The Obama Keeper Fantasy League command center for historical research, franchise intelligence, trade analysis, keeper decisions, live records, and mock drafts.
+
+## Version 8.6.3 - Draft grading rebuild
+
+- Final grades now expose separate draft value, starting-lineup, roster-construction, and keeper-value scores
+- Early-round reaches carry more weight while late-round value is measured in rounds instead of a fixed pick threshold
+- Starter coverage is calculated across all ten required lineup slots rather than six all-or-nothing position checks
+- Duplicate kickers, defenses, and excessive QB/TE depth are penalized while useful RB/WR depth is rewarded
+- Keeper players are hydrated from the live PPR board so their real market rank and keeper cost determine surplus
 
 ## Version 8.6.2 - PPR market calibration
 

@@ -208,6 +208,8 @@
 .draftReportStats { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
 .draftReportStats span { background: #132d3e; border-radius: 3px; color: var(--draft-muted); font-size: 7px; padding: 5px 7px; }
 .draftReportStats b { color: white; }
+.draftReportBreakdown span { background: #0d3a4e; border: 1px solid #285f76; min-width: 82px; }
+.draftReportBreakdown b { color: #65d5ff; font-size: 11px; }
 .draftReport>button { background: var(--draft-accent); border: 1px solid #e13b56; border-radius: 5px; color: white; font-size: 9px; min-height: 36px; padding: 0 13px; }
 
 .draftRoomV3 .draftV2Layout {

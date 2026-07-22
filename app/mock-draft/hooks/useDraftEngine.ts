@@ -17,13 +17,15 @@ type SavedDraft = {
   draftMode: DraftMode; paused: boolean; watchlist: string[]; queue: string[]; savedAt: string;
 };
 
-function buildKeeperPicks(): DraftPick[] {
+function buildKeeperPicks(pool: DraftPlayer[]): DraftPick[] {
   return projectedKeepers.map((keeper) => {
     const manager = managers.find((row) => row.franchiseId === keeper.franchiseId)!;
+    const rankedPlayer = pool.find((player) => draftPlayerKey(player.name) === draftPlayerKey(keeper.player));
     return {
       overall: keeperOverall(keeper.round, manager.slot), round: keeper.round, slot: manager.slot,
       franchiseId: manager.franchiseId, manager: manager.manager,
-      player: {name: keeper.player, position: keeper.position, team: "—", pprRank: 999, pprValue: 0, keeperEligible: false, source: "keeper"},
+      player: rankedPlayer ? {...rankedPlayer, keeperEligible: false, source: "keeper"}
+        : {name: keeper.player, position: keeper.position, team: "—", pprRank: 999, pprValue: 0, keeperEligible: false, source: "keeper"},
       keeper: true, keeperCost: keeper.round, grade: "K",
       explanation: [`Projected keeper uses ${manager.manager}'s Round ${keeper.round} pick.`],
     };
@@ -49,7 +51,7 @@ export function useDraftEngine() {
   const startedRef = useRef(started);
   startedRef.current = started;
 
-  const keepers = useMemo(buildKeeperPicks, []);
+  const keepers = useMemo(() => buildKeeperPicks(pool), [pool]);
   const allPicks = useMemo(() => [...keepers, ...draftPicks], [keepers, draftPicks]);
   const available = useMemo(() => {
     const drafted = new Set(allPicks.map((pick) => draftPlayerKey(pick.player.name)));
@@ -158,7 +160,7 @@ export function useDraftEngine() {
   function toggleQueue(player: DraftPlayer) { setQueue((rows) => rows.includes(player.name) ? rows.filter((name) => name !== player.name) : [...rows, player.name]); }
   async function shareRecap() {
     const firstPicks = boardState.controlledRoster.filter((pick) => !pick.keeper).slice(0, 5).map((pick) => `${pick.round}.${pick.slot} ${pick.player.name}`).join(", ");
-    const recap = `${controlledManager.manager}'s OKFL mock: ${report.grade} (${report.score}/100), ${report.steals} value picks, ${report.coverage}% starter coverage. First picks: ${firstPicks}.`;
+    const recap = `${controlledManager.manager}'s OKFL mock: ${report.grade} (${report.score}/100). Value ${report.valueScore}, lineup ${report.lineupScore}, construction ${report.constructionScore}, keepers ${report.keeperScore}. First picks: ${firstPicks}.`;
     const canShare = typeof navigator.share === "function";
     if (canShare) await navigator.share({title: "OKFL Mock Draft Recap", text: recap}); else await navigator.clipboard.writeText(recap);
     setLastMessage(canShare ? "Draft recap shared." : "Draft recap copied.");
