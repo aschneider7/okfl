@@ -10,6 +10,7 @@ export type HistoricalDraftPlayer = {
 // 2023-2025 OKFL drafts. This intentionally is not a generic 2QB board.
 export const OKFL_QB_DRAFT_CURVE = [8,10,18,21,25,37,41,42,43,47,55,56,60,70,71,77,80,89,94,95] as const;
 export const OKFL_QB_HISTORY_LABEL = "2023-25 OKFL draft curve";
+export const OKFL_QB_POSITION_OVERRIDES:Record<string,number>={dakprescott:6};
 
 // These quarterbacks are removed before the historical curve is applied.
 export const CURRENT_PROJECTED_QB_KEEPERS = ["Jaxson Dart","Drake Maye","Trevor Lawrence","Daniel Jones","Sam Darnold"] as const;
@@ -24,6 +25,14 @@ export function applyOkflHistoricalQuarterbackCurve<T extends HistoricalDraftPla
   const quarterbacks=players
     .filter((player)=>player.position==="QB"&&!keeperKeys.has(draftHistoryPlayerKey(player.name)))
     .sort((a,b)=>(a.marketAdp??a.pprRank)-(b.marketAdp??b.pprRank));
+  for(const [key,position] of Object.entries(OKFL_QB_POSITION_OVERRIDES)){
+    const currentIndex=quarterbacks.findIndex((player)=>draftHistoryPlayerKey(player.name)===key);
+    const targetIndex=Math.min(quarterbacks.length-1,position-1);
+    if(currentIndex>=0&&currentIndex!==targetIndex){
+      const [player]=quarterbacks.splice(currentIndex,1);
+      quarterbacks.splice(targetIndex,0,player);
+    }
+  }
   const lastCurvePick=OKFL_QB_DRAFT_CURVE[OKFL_QB_DRAFT_CURVE.length-1];
   const modeled=new Map(quarterbacks.map((player,index)=>[
     draftHistoryPlayerKey(player.name),

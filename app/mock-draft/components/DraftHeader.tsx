@@ -8,7 +8,7 @@ export function DraftHeader() {
   const sample = rankingsMeta.totalDrafts ? `${rankingsMeta.totalDrafts.toLocaleString()} mocks · ` : "";
   return <>
     <section className="draftV2Setup">
-      <div className="draftV2Brand"><span className="eyebrow">OKFL Draft Room <i>V4.4.0</i></span>
+      <div className="draftV2Brand"><span className="eyebrow">OKFL Draft Room <i>V4.4.1</i></span>
         <h2>{started ? `${controlledManager.manager}'s Draft Room` : "Choose your franchise"}</h2><p>{lastMessage}</p>
       </div>
       <div className="draftHeaderStatus" aria-label="Draft progress">

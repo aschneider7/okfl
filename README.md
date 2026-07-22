@@ -1,6 +1,12 @@
-# OKFL OS 8.6.1
+# OKFL OS 8.6.2
 
 The Obama Keeper Fantasy League command center for historical research, franchise intelligence, trade analysis, keeper decisions, live records, and mock drafts.
+
+## Version 8.6.2 — Dak calibration
+
+- The complete PPR ADP board remains the base market order, with the OKFL historical curve applied only to quarterback slots
+- Dak Prescott moves to QB6 on that curve, matching his QB5, QB6, and QB6 positions in the 2023–2025 OKFL drafts
+- Elite quarterback timing and the wider historical QB curve remain unchanged
 
 ## Version 8.6.1 — Draft calibration
 

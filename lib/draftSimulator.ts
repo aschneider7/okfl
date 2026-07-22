@@ -126,7 +126,9 @@ export function keeperOverall(round:number,slot:number){
 export function pprAdjustedRank(player:DraftPlayer){
   if(player.position!=="QB")return player.pprRank;
   const historicalRank=player.okflRank??player.pprRank;
-  return draftHistoryPlayerKey(player.name)==="lamarjackson"?Math.min(20,historicalRank):historicalRank;
+  const key=draftHistoryPlayerKey(player.name);
+  if(key==="lamarjackson")return Math.min(20,historicalRank);
+  return historicalRank;
 }
 
 export function pprAdjustedValue(player:DraftPlayer){
