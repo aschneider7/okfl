@@ -9,6 +9,7 @@ export type LiveDraftRoom = {
   status: LiveDraftStatus;
   currentOverall: number;
   clockSeconds: number;
+  keeperSource: "official" | "projected";
   pickDeadline: string | null;
   hostName: string;
   createdAt: string;

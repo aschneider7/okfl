@@ -38,6 +38,7 @@ export async function getLiveDraftSnapshot(code: string): Promise<LiveDraftSnaps
     room: {
       id: room.id, code: room.code, name: room.name, status: room.status, currentOverall: room.current_overall,
       clockSeconds: Math.max(1, Number(room.settings?.clockSeconds) || 30), pickDeadline: room.pick_deadline,
+      keeperSource: room.settings?.keeperSource==="projected"?"projected":"official",
       hostName: room.host_name, createdAt: room.created_at,
     },
     seats: (seats || []).map((seat): LiveDraftSeat => ({
