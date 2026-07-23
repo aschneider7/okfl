@@ -21,6 +21,7 @@ export type LiveDraftSeat = {
   managerName: string;
   claimedName: string | null;
   claimed: boolean;
+  autoDraft: boolean;
 };
 
 export type LiveDraftPick = {

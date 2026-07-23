@@ -21,6 +21,11 @@ for (const contract of requiredContracts) {
 
 const roomRoute = readFileSync(new URL("../app/api/live-draft/rooms/route.ts", import.meta.url), "utf8");
 const liveClient = readFileSync(new URL("../app/live-draft/LiveDraftClient.tsx", import.meta.url), "utf8");
+const aiRoute = readFileSync(new URL("../app/api/live-draft/rooms/[code]/ai-pick/route.ts", import.meta.url), "utf8");
+const timeoutRoute = readFileSync(new URL("../app/api/live-draft/rooms/[code]/timeout/route.ts", import.meta.url), "utf8");
+const pickRoute = readFileSync(new URL("../app/api/live-draft/rooms/[code]/pick/route.ts", import.meta.url), "utf8");
+const liveAi = readFileSync(new URL("../lib/liveDraftAi.ts", import.meta.url), "utf8");
+const rankingsServer = readFileSync(new URL("../lib/draftRankingsServer.ts", import.meta.url), "utf8");
 const authMigration = readFileSync(new URL("../supabase/006_official_keepers_and_auth_draft.sql", import.meta.url), "utf8");
 const joinRoute = readFileSync(new URL("../app/api/live-draft/rooms/[code]/join/route.ts", import.meta.url), "utf8");
 assert.ok(roomRoute.includes("getLockedKeeperBoard"), "Live rooms must preload the locked official keeper board.");
@@ -29,5 +34,9 @@ assert.ok(liveClient.includes("Projected Mock Draft keepers")&&liveClient.includ
 assert.ok(roomRoute.includes("role!==\"commissioner\""), "Only the commissioner may create official rooms.");
 assert.ok(authMigration.includes("claimed_user_id"), "Live seats must be bound to authenticated users.");
 assert.ok(joinRoute.includes("account.franchiseId")&&!joinRoute.includes("body.pin"), "Seat claims must use the signed-in franchise without PINs.");
+assert.ok(rankingsServer.includes("buildSleeperDraftPool")&&aiRoute.includes("getDraftRankingsResponse")&&liveAi.includes("scorePlayer"), "Live AI must use the same PPR pool and franchise minds as the local mock.");
+assert.ok(timeoutRoute.includes("updateAutoDraftSettings")&&timeoutRoute.includes("seat?.claimed&&!seat.autoDraft"), "Missing the clock must activate persistent franchise autodraft.");
+assert.ok(joinRoute.includes("updateAutoDraftSettings(room.settings,franchiseId,false)")&&pickRoute.includes("Your franchise is on autodraft"), "Rejoining must be required before manual drafting resumes.");
+assert.ok(liveClient.includes("Force AI pick")&&aiRoute.includes('account.role==="commissioner"'), "A Commissioner must be able to force AI for the current pick.");
 
-console.log("Authenticated Live Draft schema and room contracts validated.");
+console.log("Authenticated Live Draft, shared AI minds, persistent autodraft, and Commissioner override contracts validated.");

@@ -19,7 +19,7 @@ export async function POST(request:Request){
     const hostToken=createDraftSecret();const seatToken=createDraftSecret();const supabase=createAdminSupabase();
     let room:{id:string;code:string}|null=null;let lastError:unknown=null;
     for(let attempt=0;attempt<3&&!room;attempt+=1){
-      const code=createRoomCode();const result=await supabase.from("live_draft_rooms").insert({code,name:roomName,host_name:account.displayName,host_token_hash:hashDraftSecret(hostToken),settings:{teams:10,rounds:17,scoring:"PPR",clockSeconds,keeperSource}}).select("id,code").single();
+      const code=createRoomCode();const result=await supabase.from("live_draft_rooms").insert({code,name:roomName,host_name:account.displayName,host_token_hash:hashDraftSecret(hostToken),settings:{teams:10,rounds:17,scoring:"PPR",clockSeconds,keeperSource,autoDraftFranchises:[]}}).select("id,code").single();
       if(!result.error)room=result.data;else lastError=result.error;
     }
     if(!room)throw lastError||new Error("Could not create a unique room code.");

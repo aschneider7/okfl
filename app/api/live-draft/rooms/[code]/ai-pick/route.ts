@@ -2,6 +2,7 @@ import {NextResponse} from "next/server";
 import {draftPlayerKey} from "@/lib/draftRankings";
 import {overallToRoundSlot} from "@/lib/draftSimulator";
 import {chooseLiveDraftAiPlayer} from "@/lib/liveDraftAi";
+import {getDraftRankingsResponse} from "@/lib/draftRankingsServer";
 import {getLiveDraftSnapshot} from "@/lib/liveDraftServer";
 import {createAdminSupabase} from "@/lib/supabaseServer";
 import {getAccountFromRequest} from "@/lib/accountServer";
@@ -20,8 +21,10 @@ export async function POST(request: Request, context: {params: Promise<{code: st
     if (!snapshot) return NextResponse.json({error: "Draft room not found."}, {status: 404});
     const spot = overallToRoundSlot(room.current_overall);
     const seat = snapshot.seats.find((row) => row.slot === spot.slot);
-    if (seat?.claimed) return NextResponse.json({error: `${seat.claimedName || seat.managerName} controls this pick.`}, {status: 409});
-    const player = chooseLiveDraftAiPlayer(snapshot, room.current_overall);
+    const commissioner=account.role==="commissioner";
+    if (seat?.claimed&&!seat.autoDraft&&!commissioner) return NextResponse.json({error: `${seat.claimedName || seat.managerName} controls this pick.`}, {status: 409});
+    const rankings=await getDraftRankingsResponse();
+    const player = chooseLiveDraftAiPlayer(snapshot, room.current_overall,rankings.players);
     if (!player) return NextResponse.json({error: "No available player was found."}, {status: 409});
     const {error} = await supabase.rpc("make_live_draft_pick", {
       p_room_code: normalized,

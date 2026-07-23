@@ -27,11 +27,13 @@ export async function POST(request: Request, context: {params: Promise<{code: st
       keeperEligible: player.keeperEligible !== false, source: String(player.source || "live-draft"),
     };
     const supabase = createAdminSupabase();
-    const {data:room}=await supabase.from("live_draft_rooms").select("id,current_overall").eq("code",normalized).maybeSingle();
+    const {data:room}=await supabase.from("live_draft_rooms").select("id,current_overall,settings").eq("code",normalized).maybeSingle();
     if(!room)return NextResponse.json({error:"Draft room not found."},{status:404});
     const current=overallToRoundSlot(room.current_overall);
     const {data:seat}=await supabase.from("live_draft_seats").select("franchise_id,claimed_user_id").eq("room_id",room.id).eq("slot",current.slot).maybeSingle();
     if(!seat||seat.franchise_id!==account.franchiseId||seat.claimed_user_id!==account.userId)return NextResponse.json({error:"Your authenticated franchise is not on the clock."},{status:403});
+    const autoDraftIds=Array.isArray(room.settings?.autoDraftFranchises)?room.settings.autoDraftFranchises.map(String):[];
+    if(autoDraftIds.includes(account.franchiseId))return NextResponse.json({error:"Your franchise is on autodraft. Rejoin the room to resume manual drafting."},{status:409});
     const {error} = await supabase.rpc("make_live_draft_pick", {
       p_room_code: normalized, p_actor_token_hash: hashDraftSecret(String(body.actorToken || "")), p_player: safePlayer,
       p_expected_overall: expectedOverall,

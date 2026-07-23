@@ -1,8 +1,10 @@
 import {NextResponse} from "next/server";
 import {draftPlayerKey} from "@/lib/draftRankings";
+import {getDraftRankingsResponse} from "@/lib/draftRankingsServer";
 import {chooseLiveDraftAiPlayer} from "@/lib/liveDraftAi";
-import {getLiveDraftSnapshot} from "@/lib/liveDraftServer";
+import {getLiveDraftSnapshot,updateAutoDraftSettings} from "@/lib/liveDraftServer";
 import {createAdminSupabase} from "@/lib/supabaseServer";
+import {overallToRoundSlot} from "@/lib/draftSimulator";
 
 export async function POST(request: Request, context: {params: Promise<{code: string}>}) {
   try {
@@ -11,13 +13,23 @@ export async function POST(request: Request, context: {params: Promise<{code: st
     const {expectedOverall} = await request.json().catch(() => ({expectedOverall: 0}));
     const expected = Number(expectedOverall);
     const supabase = createAdminSupabase();
-    const {data: room} = await supabase.from("live_draft_rooms").select("status,current_overall,host_token_hash,pick_deadline").eq("code", normalized).maybeSingle();
+    const {data: room} = await supabase.from("live_draft_rooms").select("id,status,current_overall,host_token_hash,pick_deadline,settings").eq("code", normalized).maybeSingle();
     if (!room) return NextResponse.json({error: "Draft room not found."}, {status: 404});
     if (room.status !== "live" || room.current_overall !== expected) return NextResponse.json({snapshot: await getLiveDraftSnapshot(normalized)});
     if (!room.pick_deadline || Date.parse(room.pick_deadline) > Date.now()) return NextResponse.json({error: "Time remains on the clock."}, {status: 409});
     const snapshot = await getLiveDraftSnapshot(normalized);
     if (!snapshot) return NextResponse.json({error: "Draft room not found."}, {status: 404});
-    const player = chooseLiveDraftAiPlayer(snapshot, expected);
+    const spot=overallToRoundSlot(expected);
+    const seat=snapshot.seats.find((row)=>row.slot===spot.slot);
+    if(seat?.claimed&&!seat.autoDraft){
+      const {error:autoDraftError}=await supabase.from("live_draft_rooms").update({
+        settings:updateAutoDraftSettings(room.settings,seat.franchiseId,true),
+        updated_at:new Date().toISOString(),
+      }).eq("id",room.id);
+      if(autoDraftError)throw autoDraftError;
+    }
+    const rankings=await getDraftRankingsResponse();
+    const player = chooseLiveDraftAiPlayer(snapshot, expected,rankings.players);
     if (!player) return NextResponse.json({error: "No available player was found."}, {status: 409});
     const {error} = await supabase.rpc("make_live_draft_pick", {
       p_room_code: normalized,

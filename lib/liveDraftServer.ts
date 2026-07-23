@@ -16,6 +16,19 @@ export function createRoomCode() {
   return Array.from({length: 6}, () => CODE_ALPHABET[randomInt(0, CODE_ALPHABET.length)]).join("");
 }
 
+export function autoDraftFranchises(settings:any):string[]{
+  const values:string[]=Array.isArray(settings?.autoDraftFranchises)
+    ? settings.autoDraftFranchises.map((value:unknown)=>String(value)).filter((value:string)=>value.length>0)
+    : [];
+  return [...new Set<string>(values)];
+}
+
+export function updateAutoDraftSettings(settings:any,franchiseId:string,enabled:boolean){
+  const current=autoDraftFranchises(settings);
+  const next=enabled?[...new Set([...current,franchiseId])]:current.filter((id)=>id!==franchiseId);
+  return {...(settings&&typeof settings==="object"?settings:{}),autoDraftFranchises:next};
+}
+
 /** @deprecated Kept only so archived v7.1 source packages still type-check. */
 export function createSeatPin() {
   return String(randomInt(1000,10_000));
@@ -33,6 +46,7 @@ export async function getLiveDraftSnapshot(code: string): Promise<LiveDraftSnaps
   ]);
   if (seatsError) throw seatsError;
   if (picksError) throw picksError;
+  const autoDraftIds=new Set(autoDraftFranchises(room.settings));
   return {
     serverTime: new Date().toISOString(),
     room: {
@@ -44,6 +58,7 @@ export async function getLiveDraftSnapshot(code: string): Promise<LiveDraftSnaps
     seats: (seats || []).map((seat): LiveDraftSeat => ({
       franchiseId: seat.franchise_id, slot: seat.slot, managerName: seat.manager_name,
       claimedName: seat.claimed_name, claimed: Boolean(seat.claimed_name),
+      autoDraft:autoDraftIds.has(seat.franchise_id),
     })),
     picks: (picks || []).map((pick): LiveDraftPick => ({
       overall: pick.overall, round: pick.round, slot: pick.slot, franchiseId: pick.franchise_id,
