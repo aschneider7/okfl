@@ -1,6 +1,7 @@
 import fs from "node:fs";
 
 const source=fs.readFileSync(new URL("../lib/draftSimulator.ts",import.meta.url),"utf8");
+const keeperSource=fs.readFileSync(new URL("../lib/officialKeepers.ts",import.meta.url),"utf8");
 const historySource=fs.readFileSync(new URL("../lib/draftHistory.ts",import.meta.url),"utf8");
 const draftCss=fs.readFileSync(new URL("../app/mock-draft/styles/sleek-overhaul.css",import.meta.url),"utf8");
 const readabilityCss=fs.readFileSync(new URL("../app/mock-draft/styles/readability-overhaul.css",import.meta.url),"utf8");
@@ -11,7 +12,7 @@ const reportSource=fs.readFileSync(new URL("../app/mock-draft/components/DraftRe
 const depth=JSON.parse(fs.readFileSync(new URL("../lib/draft-player-depth.json",import.meta.url),"utf8"));
 const archive=JSON.parse(fs.readFileSync(new URL("../public/data/okfl.json",import.meta.url),"utf8"));
 const baseNames=[...source.matchAll(/\["([^"]+)","(?:QB|RB|WR|TE|K|DEF)"/g)].map((match)=>match[1]);
-const keeperNames=[...source.matchAll(/player:"([^"]+)"/g)].map((match)=>match[1]);
+const keeperNames=[...keeperSource.matchAll(/player:"([^"]+)"/g)].map((match)=>match[1]);
 const allNames=[...baseNames,...depth.map((player)=>player.name)];
 const normalized=allNames.map((name)=>name.trim().toLowerCase());
 const allowedPositions=new Set(["QB","RB","WR","TE","K","DEF"]);
@@ -35,7 +36,7 @@ const keeperOverall=(round,slot)=>(round-1)*10+(round%2===1?slot:11-slot);
 assert(snakeSlot(1,1)===1&&snakeSlot(2,1)===10&&snakeSlot(2,10)===1,"snake slot mapping is invalid");
 assert(keeperOverall(1,1)===1&&keeperOverall(2,10)===11&&keeperOverall(2,1)===20,"keeper slot mapping is invalid");
 
-const officialQbKeepers=[...source.matchAll(/\{franchiseId:"[^"]+",player:"([^"]+)",round:\d+,position:"QB"\}/g)].map((match)=>match[1]);
+const officialQbKeepers=[...keeperSource.matchAll(/\{franchiseId:"[^"]+",player:"([^"]+)",round:\d+,position:"QB"\}/g)].map((match)=>match[1]);
 const tierSamples=[...historySource.matchAll(/samples:(\d+)/g)].map((match)=>Number(match[1]));
 assert(historySource.includes("OKFL_QB_MARKET_TIERS"),"draft model must expose historical PPR market tiers");
 assert(tierSamples.reduce((sum,count)=>sum+count,0)===83,"historical market model must retain all 83 valid observations");

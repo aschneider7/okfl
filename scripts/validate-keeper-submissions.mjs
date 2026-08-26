@@ -8,6 +8,8 @@ const commissionerRoute=readFileSync(new URL("../app/api/commissioner/keepers/ro
 const liveRoomRoute=readFileSync(new URL("../app/api/live-draft/rooms/route.ts",import.meta.url),"utf8");
 const serverErrors=readFileSync(new URL("../lib/serverError.ts",import.meta.url),"utf8");
 const commissionerPanel=readFileSync(new URL("../components/KeeperCommissionerPanel.tsx",import.meta.url),"utf8");
+const keepersPage=readFileSync(new URL("../app/keepers/page.tsx",import.meta.url),"utf8");
+const submissionPanel=readFileSync(new URL("../components/KeeperSubmissionPanel.tsx",import.meta.url),"utf8");
 
 for(const token of ["keeper_windows","keeper_submissions","keeper_submission_events","changed_after_submission","enable row level security"]){
   assert.ok(migration.includes(token),`Keeper migration is missing ${token}`);
@@ -22,4 +24,6 @@ assert.ok(commissionerRoute.includes('rpc("set_official_keeper_lock"'),"Keeper l
 assert.ok(commissionerRoute.includes("keeperServerError")&&managerRoute.includes("keeperServerError"),"Keeper APIs must preserve structured Supabase errors.");
 assert.ok(serverErrors.includes("008_keeper_integrity.sql")&&commissionerPanel.includes("Retry keeper board"),"The commissioner must receive an actionable keeper recovery state.");
 assert.ok(liveRoomRoute.includes("getLockedKeeperBoard"),"The live draft must consume the final locked keeper board.");
+assert.ok(keepersPage.includes("officialKeepers")&&keepersPage.includes("historicalKeepers")&&keepersPage.includes('status:"Current"'),"The Keepers tab must replace only current-season tentative rows with the current official board.");
+assert.ok(submissionPanel.includes("officialKeepers")&&submissionPanel.indexOf("officialKeepers.length")<submissionPanel.indexOf("if(!account)"),"The current board must be visible before the sign-in gate.");
 console.log("Official keeper submission contracts validated.");

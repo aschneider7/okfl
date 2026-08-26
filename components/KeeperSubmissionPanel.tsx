@@ -4,6 +4,7 @@ import Link from "next/link";
 import {useEffect,useState} from "react";
 import {useAuth} from "@/components/AuthProvider";
 import {KEEPERS_PER_TEAM,type KeeperChoice} from "@/lib/keeperSubmission";
+import {keeperFranchises,officialKeepers} from "@/lib/officialKeepers";
 
 const emptyChoice=():KeeperChoice=>({player:"",position:"",round:0});
 const threeRows=(rows:KeeperChoice[]=[])=>Array.from({length:KEEPERS_PER_TEAM},(_,index)=>rows[index]||emptyChoice());
@@ -36,6 +37,12 @@ export function KeeperSubmissionPanel(){
     setBusy(true);setMessage(action==="submit"?"Submitting official keepers…":"Saving draft…");
     try{const response=await authFetch("/api/keepers/submission",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({action,choices})});const body=await response.json();if(!response.ok){setMessage(body.issues?.map((issue:any)=>issue.message).join(" ")||body.error||"Keeper update failed.");return}setData(body);setChoices(threeRows(body.submission?.choices||choices));setConfirmed(false);setMessage(action==="submit"?"Official keeper submission received.":"Keeper draft saved.")}
     catch{setMessage("Keeper update failed.")}finally{setBusy(false)}
+  }
+
+  if(officialKeepers.length===10*KEEPERS_PER_TEAM){
+    type OfficialKeeper=(typeof officialKeepers)[number];
+    const groups=new Map<string,OfficialKeeper[]>();officialKeepers.forEach((row)=>groups.set(row.franchiseId,[...(groups.get(row.franchiseId)||[]),row]));
+    return <section className="keeperSubmitShell keeperLocked"><header><div><span className="eyebrow">Current official board</span><h2>2026 keepers are set.</h2><p>Thirty official keepers imported from Sleeper. The Mock Draft and Live Draft both load this exact board automatically.</p></div><span className="keeperState locked">Current</span></header><div className="officialKeeperGrid">{[...groups.entries()].map(([franchiseId,rows])=>{const team=keeperFranchises.find((franchise)=>franchise.franchiseId===franchiseId);return <article key={franchiseId}><span>{team?.name||franchiseId}</span><small className="officialKeeperManager">{team?.manager||""}</small>{rows.toSorted((a,b)=>a.round-b.round).map((choice,index)=><div key={`${choice.player}-${index}`}><b>{choice.player}</b><small>{choice.position} · Round {choice.round}</small></div>)}</article>})}</div></section>;
   }
 
   if(loading)return <section className="keeperSubmitShell card"><div className="keeperSubmitLoading">Checking franchise access…</div></section>;

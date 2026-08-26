@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Page, Loading } from "@/components/Page";
 import { useData } from "@/components/DataProvider";
 import {KeeperSubmissionPanel} from "@/components/KeeperSubmissionPanel";
+import {keeperFranchises,officialKeepers} from "@/lib/officialKeepers";
 
 type SortKey = "season" | "franchise" | "player" | "cost" | "keeper_year" | "status";
 type Direction = "asc" | "desc";
@@ -11,6 +12,11 @@ type Direction = "asc" | "desc";
 function roundNumber(cost: string) {
   const match = String(cost || "").match(/\d+/);
   return match ? Number(match[0]) : 99;
+}
+
+function ordinal(round:number){
+  const mod100=round%100;if(mod100>=11&&mod100<=13)return `${round}th`;
+  return `${round}${round%10===1?"st":round%10===2?"nd":round%10===3?"rd":"th"}`;
 }
 
 function View() {
@@ -24,12 +30,23 @@ function View() {
 
   if (!data) return <Loading />;
 
-  const years = [...new Set(data.keepers.map((keeper: any) => keeper.season))].sort((a, b) => b - a);
+  const historicalKeepers=data.keepers.filter((keeper:any)=>Number(keeper.season)!==2026);
+  const currentKeepers=officialKeepers.map((keeper)=>({
+    season:2026,
+    franchise_id:keeper.franchiseId,
+    franchise:keeperFranchises.find((franchise)=>franchise.franchiseId===keeper.franchiseId)?.name||keeper.franchiseId,
+    player:keeper.player,
+    cost:ordinal(keeper.round),
+    keeper_year:"Official board",
+    status:"Current",
+  }));
+  const keeperRows=[...historicalKeepers,...currentKeepers];
+  const years = [...new Set(keeperRows.map((keeper: any) => keeper.season))].sort((a, b) => b - a);
   const teams = [...data.franchises].sort((a: any, b: any) => a.name.localeCompare(b.name));
-  const statuses = [...new Set(data.keepers.map((keeper: any) => keeper.status).filter(Boolean))].sort();
+  const statuses = [...new Set(keeperRows.map((keeper: any) => keeper.status).filter(Boolean))].sort();
 
   const term = query.trim().toLowerCase();
-  const filtered = data.keepers
+  const filtered = keeperRows
     .filter((keeper: any) => {
       const teamMatch = team === "all" || keeper.franchise_id === team;
       const yearMatch = year === "all" || String(keeper.season) === year;
@@ -78,9 +95,9 @@ function View() {
       <KeeperSubmissionPanel />
       <section className="keepersHero">
         <div>
-          <span className="eyebrow">Roster continuity archive</span>
+          <span className="eyebrow">Current board + historical archive</span>
           <h2>{filtered.length} keeper decisions</h2>
-          <p>Filter the archive, compare team usage, and sort every column without leaving the page.</p>
+          <p>The official 2026 board leads into every keeper decision from prior seasons. Filter, compare, and sort without losing league history.</p>
         </div>
         <div className="keeperHeroStats">
           <div><b>{years.length}</b><span>Seasons</span></div>

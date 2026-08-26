@@ -16,7 +16,7 @@ const checks = [
   [legacyCss.includes("@media(hover:hover)") && css.includes("@media(prefers-reduced-motion:reduce)"), "motion respects input mode and user preference"],
   [css.includes("safe-area-inset-top") && css.includes(".mobileDock span"), "mobile refinements preserve safe areas and readable dock labels"],
   [shell.includes('["/calendar","Calendar","CL"]'), "mobile calendar label is concise"],
-  [pkg.version === "9.4.0", "package version is 9.4.0"],
+  [pkg.version === "9.4.1", "package version is 9.4.1"],
 ];
 
 const failed = checks.filter(([ok]) => !ok);

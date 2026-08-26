@@ -2,9 +2,11 @@
 import draftPlayerDepth from "./draft-player-depth.json";
 import {applyOkflHistoricalQuarterbackCurve, OKFL_QB_HISTORY_LABEL} from "./draftHistory";
 import {draftExpectedRank, draftReport, pickGrade} from "./draftGrading";
+import {officialKeepers} from "./officialKeepers";
 
 export {OKFL_QB_HISTORY_LABEL};
 export {draftExpectedRank, draftReport, pickGrade};
+export {officialKeepers};
 
 export type DraftManager = {
   slot: number;
@@ -64,48 +66,6 @@ export const managers: DraftManager[] = [
   {slot:8,franchiseId:"F03",name:"Sammy",manager:"Sammy",archetype:"Chaos Upside",motto:"The ceiling is the strategy.",tendencies:{qbAggression:.32,youth:.68,risk:.82,keeperFocus:.64,needWeight:.64,veteran:.28}},
   {slot:9,franchiseId:"F10",name:"Sean/Ted",manager:"Sean/Ted",archetype:"Championship Machine",motto:"Complete the starting lineup early.",tendencies:{qbAggression:.35,youth:.44,risk:.27,keeperFocus:.60,needWeight:.96,veteran:.77}},
   {slot:10,franchiseId:"F07",name:"Gorb",manager:"Gorb",archetype:"Market Disruptor",motto:"Start the run before anyone is ready.",tendencies:{qbAggression:.76,youth:.62,risk:.98,keeperFocus:.54,needWeight:.57,veteran:.33}},
-];
-
-export const officialKeepers = [
-  {franchiseId:"F02",player:"Colston Loveland",round:10,position:"TE"},
-  {franchiseId:"F02",player:"Puka Nacua",round:12,position:"WR"},
-  {franchiseId:"F02",player:"Bucky Irving",round:13,position:"RB"},
-
-  {franchiseId:"F04",player:"George Pickens",round:4,position:"WR"},
-  {franchiseId:"F04",player:"Jaxon Smith-Njigba",round:11,position:"WR"},
-  {franchiseId:"F04",player:"Ka'imi Fairbairn",round:14,position:"K"},
-
-  {franchiseId:"F05",player:"Brock Bowers",round:4,position:"TE"},
-  {franchiseId:"F05",player:"Chris Olave",round:6,position:"WR"},
-  {franchiseId:"F05",player:"Jaxson Dart",round:14,position:"QB"},
-
-  {franchiseId:"F09",player:"Malik Nabers",round:3,position:"WR"},
-  {franchiseId:"F09",player:"Caleb Williams",round:5,position:"QB"},
-  {franchiseId:"F09",player:"James Cook",round:6,position:"RB"},
-
-  {franchiseId:"F08",player:"Rashee Rice",round:5,position:"WR"},
-  {franchiseId:"F08",player:"Drake Maye",round:7,position:"QB"},
-  {franchiseId:"F08",player:"De'Von Achane",round:9,position:"RB"},
-
-  {franchiseId:"F01",player:"Ladd McConkey",round:5,position:"WR"},
-  {franchiseId:"F01",player:"Trevor Lawrence",round:10,position:"QB"},
-  {franchiseId:"F01",player:"Chase Brown",round:12,position:"RB"},
-
-  {franchiseId:"F06",player:"Jonathan Taylor",round:3,position:"RB"},
-  {franchiseId:"F06",player:"Tetairoa McMillan",round:4,position:"WR"},
-  {franchiseId:"F06",player:"Jaylen Waddle",round:6,position:"WR"},
-
-  {franchiseId:"F03",player:"Emeka Egbuka",round:4,position:"WR"},
-  {franchiseId:"F03",player:"Travis Etienne",round:10,position:"RB"},
-  {franchiseId:"F03",player:"Kyren Williams",round:12,position:"RB"},
-
-  {franchiseId:"F10",player:"Trey McBride",round:4,position:"TE"},
-  {franchiseId:"F10",player:"Christian Watson",round:13,position:"WR"},
-  {franchiseId:"F10",player:"Wan'Dale Robinson",round:14,position:"WR"},
-
-  {franchiseId:"F07",player:"Cam Skattebo",round:8,position:"RB"},
-  {franchiseId:"F07",player:"Sam Darnold",round:13,position:"QB"},
-  {franchiseId:"F07",player:"Alec Pierce",round:14,position:"WR"},
 ];
 
 const starterTargets:Record<string,number>={QB:2,RB:2,WR:3,TE:1,K:1,DEF:1};

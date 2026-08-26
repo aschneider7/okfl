@@ -1,4 +1,11 @@
-# OKFL OS 9.4.0
+# OKFL OS 9.4.1
+
+## Version 9.4.1 - Official Keepers tab
+
+- Shows the current 30-player 2026 Sleeper keeper board to every visitor on the Keepers tab.
+- Replaces only the 44 preseason 2026 tentative candidates in the current view.
+- Preserves all 57 keeper records from 2021–2025 in the sortable historical archive.
+- Uses the exact same official keeper source as Mock Draft while keeping submission controls authenticated.
 
 ## Version 9.4.0 - Official Sleeper keeper lock
 
