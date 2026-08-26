@@ -1,12 +1,11 @@
 import {Page} from "@/components/Page";
-import {LiveDraftClient} from "./LiveDraftClient";
+import {SleeperLiveDraftClient} from "@/components/SleeperLiveDraftClient";
 import "../mock-draft/styles/draft-room.css";
 import "./live-draft.css";
 
-export default async function LiveDraftPage({searchParams}: {searchParams: Promise<{room?: string}>}) {
-  const {room} = await searchParams;
-  return <Page title="OKFL Live Draft Room"
-    subtitle="Draft together with the same franchise AI as the local mock, persistent missed-pick autodraft, and Commissioner controls for every selection.">
-    <LiveDraftClient initialCode={String(room || "").toUpperCase()} />
+export default function LiveDraftPage() {
+  return <Page title="Sleeper Live Draft Companion"
+    subtitle="The official Sleeper board, private manager rankings, and OKFL sync status in one draft-night screen.">
+    <SleeperLiveDraftClient />
   </Page>;
 }

@@ -1,4 +1,13 @@
-# OKFL OS 9.5.0
+# OKFL OS 10.0.0
+
+## Version 10.0.0 - Draft Day Command Center
+
+- Every authenticated manager has a private, saved draft ranking board.
+- Personal rankings automatically power the available-player list in the OKFL live room.
+- The official Sleeper draft board polls every 12 seconds and removes drafted players from private boards.
+- Commissioner preflight checks Sleeper, official keepers, identity mappings, accounts, and database pick parity.
+- Force refresh, source comparison, automatic final-draft persistence, and JSON/CSV recovery backups are built in.
+- Draft and keeper RPCs are restricted to service-role server routes.
 
 ## Version 9.5.0 - Sunday draft sync readiness
 

@@ -13,7 +13,7 @@ const navGroups: readonly NavGroup[] = [
   {label:"Dashboard",links:[["/","Home","01"],["/account","My Franchise","MF"],["/calendar","League Calendar","CL"],["/league-votes","League Votes","LV"],["/live-league","Live Dashboard","02"],["/weekly-recap","Weekly Recap","03"],["/league-awards","Awards Race","04"],["/playoff-odds","Playoff Odds","05"],["/power-rankings","Power Rankings","06"]]},
   {label:"League Lab",links:[["/clinching-scenarios","Clinching Paths","CP"],["/luck-index","Luck Index","LI"],["/player-ownership","Player Genealogy","PG"],["/waiver-hall","Waiver Hall","WH"]]},
   {label:"Front Office",links:[["/franchises","Franchises","07"],["/compare","Compare","08"],["/trades","Trade Center","09"],["/trade-war-room","Deadline War Room","WR"],["/keepers","Keepers","10"]]},
-  {label:"Draft",links:[["/mock-draft","Draft Room","11"],["/live-draft","Live Draft","12"],["/drafts","Draft History","13"]]},
+  {label:"Draft",links:[["/draft-rankings","My Rankings","RK"],["/mock-draft","Draft Room","11"],["/live-draft","Live Draft","12"],["/drafts","Draft History","13"]]},
   {label:"Archive",links:[["/records","Record Book","14"],["/time-machine","Time Machine","15"],["/rules","Rulebook","16"]]},
 ];
 
@@ -41,7 +41,8 @@ const navDescriptions:Record<string,string>={
   "/trade-war-room":"Deadline needs, assets and targets",
   "/keepers":"Official keeper planning and submission",
   "/mock-draft":"League-calibrated mock draft simulator",
-  "/live-draft":"Real-time multiplayer draft room",
+  "/draft-rankings":"Your private board with live Sleeper picks",
+  "/live-draft":"Official Sleeper board with private rankings",
   "/drafts":"Past draft boards and results",
   "/records":"League records and all-time leaders",
   "/time-machine":"Explore every completed season",
