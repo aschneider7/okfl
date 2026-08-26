@@ -30,7 +30,7 @@ export const OKFL_QB_MARKET_TIERS:QbMarketTier[]=[
 export const OKFL_QB_HISTORY_LABEL = "Sleeper PPR ADP x OKFL premium";
 
 // These quarterbacks are removed before available-QB market tiers are assigned.
-export const CURRENT_PROJECTED_QB_KEEPERS = ["Jaxson Dart","Drake Maye","Trevor Lawrence","Daniel Jones","Sam Darnold"] as const;
+export const CURRENT_OFFICIAL_QB_KEEPERS = ["Jaxson Dart","Caleb Williams","Drake Maye","Trevor Lawrence","Sam Darnold"] as const;
 
 export function draftHistoryPlayerKey(name:string){
   return name.normalize("NFKD").replace(/[\u0300-\u036f]/g,"").toLowerCase()
@@ -41,7 +41,7 @@ function tierForAvailableQb(marketRank:number){
   return OKFL_QB_MARKET_TIERS.find((tier)=>marketRank>=tier.min&&marketRank<=tier.max)??OKFL_QB_MARKET_TIERS.at(-1)!;
 }
 
-export function applyOkflHistoricalQuarterbackCurve<T extends HistoricalDraftPlayer>(players:T[],keeperNames:readonly string[]=CURRENT_PROJECTED_QB_KEEPERS){
+export function applyOkflHistoricalQuarterbackCurve<T extends HistoricalDraftPlayer>(players:T[],keeperNames:readonly string[]=CURRENT_OFFICIAL_QB_KEEPERS){
   const keeperKeys=new Set(keeperNames.map(draftHistoryPlayerKey));
   const quarterbacks=players
     .filter((player)=>player.position==="QB"&&!keeperKeys.has(draftHistoryPlayerKey(player.name)))

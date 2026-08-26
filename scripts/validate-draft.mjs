@@ -35,11 +35,11 @@ const keeperOverall=(round,slot)=>(round-1)*10+(round%2===1?slot:11-slot);
 assert(snakeSlot(1,1)===1&&snakeSlot(2,1)===10&&snakeSlot(2,10)===1,"snake slot mapping is invalid");
 assert(keeperOverall(1,1)===1&&keeperOverall(2,10)===11&&keeperOverall(2,1)===20,"keeper slot mapping is invalid");
 
-const projectedQbKeepers=[...source.matchAll(/\{franchiseId:"[^"]+",player:"([^"]+)",round:\d+,position:"QB"\}/g)].map((match)=>match[1]);
+const officialQbKeepers=[...source.matchAll(/\{franchiseId:"[^"]+",player:"([^"]+)",round:\d+,position:"QB"\}/g)].map((match)=>match[1]);
 const tierSamples=[...historySource.matchAll(/samples:(\d+)/g)].map((match)=>Number(match[1]));
 assert(historySource.includes("OKFL_QB_MARKET_TIERS"),"draft model must expose historical PPR market tiers");
 assert(tierSamples.reduce((sum,count)=>sum+count,0)===83,"historical market model must retain all 83 valid observations");
-assert(historySource.includes(`CURRENT_PROJECTED_QB_KEEPERS = ["${projectedQbKeepers.join('\",\"')}"]`),"historical curve exclusions must match the current projected QB keepers");
+assert(historySource.includes(`CURRENT_OFFICIAL_QB_KEEPERS = ["${officialQbKeepers.join('\",\"')}"]`),"historical curve exclusions must match the current official QB keepers");
 assert(!historySource.toLowerCase().includes("dakprescott")&&!historySource.toLowerCase().includes("lamarjackson"),"the market model cannot contain player-specific QB anchors");
 assert(!source.includes("Math.min(20"),"the simulator cannot contain an individual late-second QB cap");
 assert(source.includes("applyOkflHistoricalQuarterbackCurve"),"simulator must apply the historical quarterback curve");

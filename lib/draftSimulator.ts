@@ -66,22 +66,22 @@ export const managers: DraftManager[] = [
   {slot:10,franchiseId:"F07",name:"Gorb",manager:"Gorb",archetype:"Market Disruptor",motto:"Start the run before anyone is ready.",tendencies:{qbAggression:.76,youth:.62,risk:.98,keeperFocus:.54,needWeight:.57,veteran:.33}},
 ];
 
-export const projectedKeepers = [
+export const officialKeepers = [
   {franchiseId:"F02",player:"Colston Loveland",round:10,position:"TE"},
   {franchiseId:"F02",player:"Puka Nacua",round:12,position:"WR"},
-  {franchiseId:"F02",player:"Luther Burden III",round:13,position:"WR"},
+  {franchiseId:"F02",player:"Bucky Irving",round:13,position:"RB"},
 
   {franchiseId:"F04",player:"George Pickens",round:4,position:"WR"},
-  {franchiseId:"F04",player:"Jameson Williams",round:5,position:"WR"},
   {franchiseId:"F04",player:"Jaxon Smith-Njigba",round:11,position:"WR"},
+  {franchiseId:"F04",player:"Ka'imi Fairbairn",round:14,position:"K"},
 
   {franchiseId:"F05",player:"Brock Bowers",round:4,position:"TE"},
   {franchiseId:"F05",player:"Chris Olave",round:6,position:"WR"},
   {franchiseId:"F05",player:"Jaxson Dart",round:14,position:"QB"},
 
   {franchiseId:"F09",player:"Malik Nabers",round:3,position:"WR"},
+  {franchiseId:"F09",player:"Caleb Williams",round:5,position:"QB"},
   {franchiseId:"F09",player:"James Cook",round:6,position:"RB"},
-  {franchiseId:"F09",player:"Javonte Williams",round:10,position:"RB"},
 
   {franchiseId:"F08",player:"Rashee Rice",round:5,position:"WR"},
   {franchiseId:"F08",player:"Drake Maye",round:7,position:"QB"},
@@ -95,17 +95,17 @@ export const projectedKeepers = [
   {franchiseId:"F06",player:"Tetairoa McMillan",round:4,position:"WR"},
   {franchiseId:"F06",player:"Jaylen Waddle",round:6,position:"WR"},
 
-  {franchiseId:"F03",player:"Rome Odunze",round:7,position:"WR"},
-  {franchiseId:"F03",player:"Travis Etienne Jr.",round:10,position:"RB"},
+  {franchiseId:"F03",player:"Emeka Egbuka",round:4,position:"WR"},
+  {franchiseId:"F03",player:"Travis Etienne",round:10,position:"RB"},
   {franchiseId:"F03",player:"Kyren Williams",round:12,position:"RB"},
 
   {franchiseId:"F10",player:"Trey McBride",round:4,position:"TE"},
-  {franchiseId:"F10",player:"Wan'Dale Robinson",round:13,position:"WR"},
-  {franchiseId:"F10",player:"Daniel Jones",round:14,position:"QB"},
+  {franchiseId:"F10",player:"Christian Watson",round:13,position:"WR"},
+  {franchiseId:"F10",player:"Wan'Dale Robinson",round:14,position:"WR"},
 
   {franchiseId:"F07",player:"Cam Skattebo",round:8,position:"RB"},
   {franchiseId:"F07",player:"Sam Darnold",round:13,position:"QB"},
-  {franchiseId:"F07",player:"Dallas Goedert",round:15,position:"TE"},
+  {franchiseId:"F07",player:"Alec Pierce",round:14,position:"WR"},
 ];
 
 const starterTargets:Record<string,number>={QB:2,RB:2,WR:3,TE:1,K:1,DEF:1};
@@ -305,5 +305,5 @@ export function fallbackPprPool():DraftPlayer[]{
     name:String(row[0]),position:String(row[1]),team:String(row[2]),
     pprRank:Number(row[3]),pprValue:Number(row[4]),age:Number(row[5]),
     keeperEligible:true,source:"ppr-fallback"
-  })),...rankedDepth],projectedKeepers.map((keeper)=>keeper.player));
+  })),...rankedDepth],officialKeepers.map((keeper)=>keeper.player));
 }

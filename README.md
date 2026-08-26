@@ -1,4 +1,12 @@
-# OKFL OS 8.7.2
+# OKFL OS 9.4.0
+
+## Version 9.4.0 - Official Sleeper keeper lock
+
+- Imports all 30 final 2026 keepers and round costs from Sleeper draft `1381102523594604544`.
+- Replaces the preseason tentative keeper board in the app and Supabase.
+- Locks all ten franchise submissions with certified eligibility and a Commissioner audit trail.
+- Makes new Live Draft rooms use the locked official board automatically; the tentative-board selector is retired.
+- Keeps Mock Draft, Live Draft, My Franchise, and Commissioner OS on one official keeper source.
 
 ## Version 8.7.2 - Trade War Room clarity
 

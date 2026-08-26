@@ -29,8 +29,8 @@ const rankingsServer = readFileSync(new URL("../lib/draftRankingsServer.ts", imp
 const authMigration = readFileSync(new URL("../supabase/006_official_keepers_and_auth_draft.sql", import.meta.url), "utf8");
 const joinRoute = readFileSync(new URL("../app/api/live-draft/rooms/[code]/join/route.ts", import.meta.url), "utf8");
 assert.ok(roomRoute.includes("getLockedKeeperBoard"), "Live rooms must preload the locked official keeper board.");
-assert.ok(roomRoute.includes("projectedKeepers")&&roomRoute.includes('keeperSource==="projected"'), "Live rooms must support the same projected keeper board as the local mock.");
-assert.ok(liveClient.includes("Projected Mock Draft keepers")&&liveClient.includes("keeperSource"), "Commissioners must be able to choose the projected keeper board.");
+assert.ok(roomRoute.includes('const keeperSource="official"')&&!roomRoute.includes("projectedKeepers"), "New live rooms must use only the locked official keeper board.");
+assert.ok(liveClient.includes("Locked official Sleeper keepers")&&!liveClient.includes("Projected Mock Draft keepers"), "Tentative keeper selection must be removed from room creation.");
 assert.ok(roomRoute.includes("role!==\"commissioner\""), "Only the commissioner may create official rooms.");
 assert.ok(authMigration.includes("claimed_user_id"), "Live seats must be bound to authenticated users.");
 assert.ok(joinRoute.includes("account.franchiseId")&&!joinRoute.includes("body.pin"), "Seat claims must use the signed-in franchise without PINs.");

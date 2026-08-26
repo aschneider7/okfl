@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {
-  DRAFT_ROUNDS, draftReport, fallbackPprPool, keeperOverall, managers, overallToRoundSlot, projectedKeepers,
+  DRAFT_ROUNDS, draftReport, fallbackPprPool, keeperOverall, managers, officialKeepers, overallToRoundSlot,
 } from "@/lib/draftSimulator";
 import {draftPlayerKey, fallbackRankingsMeta, type DraftRankingsMeta, type DraftRankingsResponse} from "@/lib/draftRankings";
 import type {DraftMode, DraftPick, DraftPlayer, SimulationSpeed} from "../types";
@@ -18,7 +18,7 @@ type SavedDraft = {
 };
 
 function buildKeeperPicks(pool: DraftPlayer[]): DraftPick[] {
-  return projectedKeepers.map((keeper) => {
+  return officialKeepers.map((keeper) => {
     const manager = managers.find((row) => row.franchiseId === keeper.franchiseId)!;
     const rankedPlayer = pool.find((player) => draftPlayerKey(player.name) === draftPlayerKey(keeper.player));
     return {
@@ -27,7 +27,7 @@ function buildKeeperPicks(pool: DraftPlayer[]): DraftPick[] {
       player: rankedPlayer ? {...rankedPlayer, keeperEligible: false, source: "keeper"}
         : {name: keeper.player, position: keeper.position, team: "—", pprRank: 999, pprValue: 0, keeperEligible: false, source: "keeper"},
       keeper: true, keeperCost: keeper.round, grade: "K",
-      explanation: [`Projected keeper uses ${manager.manager}'s Round ${keeper.round} pick.`],
+      explanation: [`Official keeper uses ${manager.manager}'s Round ${keeper.round} pick.`],
     };
   });
 }

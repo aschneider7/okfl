@@ -4,7 +4,7 @@ import {buildLeagueDashboard,simulatePlayoffOdds} from "@/lib/liveLeague";
 import type {LivePowerSnapshot} from "@/lib/livePowerRankings";
 import {buildPowerRankings,type PowerRanking} from "@/lib/powerRankings";
 import {draftPlayerKey} from "@/lib/draftRankings";
-import {fallbackPprPool,projectedKeepers} from "@/lib/draftSimulator";
+import {fallbackPprPool,officialKeepers} from "@/lib/draftSimulator";
 import type {OKFLData} from "@/lib/types";
 
 type ProfileRow={team_display_name?:string|null;avatar_url?:string|null;primary_color?:string|null;accent_color?:string|null;bio?:string|null;motto?:string|null};
@@ -44,7 +44,7 @@ export function buildMyFranchiseDashboard(input:{account:AccountProfile;data:OKF
   const awards=snapshot?buildAwardsRace(snapshot,directory,power,dashboard):null;
   const awardRows=[...(awards?.managerRaces||[]).map((race)=>{const candidate=race.candidates.find((row)=>row.franchiseId===account.franchiseId);return candidate?{key:race.key,title:race.title,rank:candidate.rank,score:candidate.score,detail:candidate.reason}:null}),...(awards?.playerRaces||[]).flatMap((race)=>race.candidates.filter((row)=>row.franchiseId===account.franchiseId).slice(0,2).map((candidate)=>({key:`${race.key}-${candidate.playerId}`,title:race.title,rank:candidate.rank,score:candidate.score,detail:`${candidate.name} · ${candidate.points.toFixed(1)} points`})))].filter(Boolean);
   const savedKeepers=Array.isArray(input.keeperSubmission?.choices)?input.keeperSubmission.choices:[];
-  const keeperRecommendations=(savedKeepers.length?savedKeepers:projectedKeepers.filter((row)=>row.franchiseId===account.franchiseId).map((row)=>({player:row.player,position:row.position,round:row.round}))).map((row:any)=>({...row,value:Math.max(1,18-Number(row.round||17)),status:savedKeepers.length?input.keeperSubmission.status:"recommended"}));
+  const keeperRecommendations=(savedKeepers.length?savedKeepers:officialKeepers.filter((row)=>row.franchiseId===account.franchiseId).map((row)=>({player:row.player,position:row.position,round:row.round}))).map((row:any)=>({...row,value:Math.max(1,18-Number(row.round||17)),status:savedKeepers.length?input.keeperSubmission.status:"official"}));
   const targetCounts:Record<string,number>={QB:2,RB:4,WR:5,TE:2};const positionCounts=rosterPlayers.reduce((map:any,row:any)=>({...map,[row.position]:(map[row.position]||0)+1}),{});const needs=Object.entries(targetCounts).map(([position,target])=>({position,count:positionCounts[position]||0,target,gap:Math.max(0,target-(positionCounts[position]||0))})).sort((a,b)=>b.gap-a.gap||a.count-b.count);
   const rankMap=new Map(fallbackPprPool().map((player)=>[draftPlayerKey(player.name),player.pprRank]));const neededPositions=new Set(needs.filter((row)=>row.gap>0).map((row)=>row.position));
   const otherRosterIds=new Map<string,string>();for(const other of snapshot?.rosters||[])if(other.franchise_id&&other.franchise_id!==account.franchiseId)for(const id of other.players||[])otherRosterIds.set(String(id),other.franchise_id);

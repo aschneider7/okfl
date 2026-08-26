@@ -26,16 +26,16 @@ create index if not exists idx_keeper_eligibility_team
 alter table public.keeper_eligibility enable row level security;
 
 with seed(franchise_id,player,position,round) as (values
-  ('F02','Colston Loveland','TE',10),('F02','Puka Nacua','WR',12),('F02','Luther Burden III','WR',13),
-  ('F04','George Pickens','WR',4),('F04','Jameson Williams','WR',5),('F04','Jaxon Smith-Njigba','WR',11),
+  ('F02','Colston Loveland','TE',10),('F02','Puka Nacua','WR',12),('F02','Bucky Irving','RB',13),
+  ('F04','George Pickens','WR',4),('F04','Jaxon Smith-Njigba','WR',11),('F04','Ka''imi Fairbairn','K',14),
   ('F05','Brock Bowers','TE',4),('F05','Chris Olave','WR',6),('F05','Jaxson Dart','QB',14),
-  ('F09','Malik Nabers','WR',3),('F09','James Cook','RB',6),('F09','Javonte Williams','RB',10),
+  ('F09','Malik Nabers','WR',3),('F09','Caleb Williams','QB',5),('F09','James Cook','RB',6),
   ('F08','Rashee Rice','WR',5),('F08','Drake Maye','QB',7),('F08','De''Von Achane','RB',9),
   ('F01','Ladd McConkey','WR',5),('F01','Trevor Lawrence','QB',10),('F01','Chase Brown','RB',12),
   ('F06','Jonathan Taylor','RB',3),('F06','Tetairoa McMillan','WR',4),('F06','Jaylen Waddle','WR',6),
-  ('F03','Rome Odunze','WR',7),('F03','Travis Etienne Jr.','RB',10),('F03','Kyren Williams','RB',12),
-  ('F10','Trey McBride','TE',4),('F10','Wan''Dale Robinson','WR',13),('F10','Daniel Jones','QB',14),
-  ('F07','Cam Skattebo','RB',8),('F07','Sam Darnold','QB',13),('F07','Dallas Goedert','TE',15)
+  ('F03','Emeka Egbuka','WR',4),('F03','Travis Etienne','RB',10),('F03','Kyren Williams','RB',12),
+  ('F10','Trey McBride','TE',4),('F10','Christian Watson','WR',13),('F10','Wan''Dale Robinson','WR',14),
+  ('F07','Cam Skattebo','RB',8),('F07','Sam Darnold','QB',13),('F07','Alec Pierce','WR',14)
 )
 insert into public.keeper_eligibility(
   season,franchise_id,player_key,player,position,round,
@@ -44,7 +44,10 @@ insert into public.keeper_eligibility(
 select 2026,franchise_id,regexp_replace(lower(player),'[^a-z0-9]+','','g'),player,position,round,
   true,true,true,true,'2026 commissioner-certified board'
 from seed
-on conflict (season,franchise_id,player_key) do nothing;
+on conflict (season,franchise_id,player_key) do update set
+  player=excluded.player,position=excluded.position,round=excluded.round,
+  roster_verified=true,cost_verified=true,pick_verified=true,eligible=true,
+  source=excluded.source,note=null,updated_at=now();
 
 create or replace function public.save_official_keeper_submission(
   p_user_id uuid,
