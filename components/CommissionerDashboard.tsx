@@ -44,7 +44,7 @@ export function CommissionerDashboard() {
     const response=await authFetch("/api/sleeper/sync",{method:"POST"});
     const body=await response.json();
     setSyncing(false);
-    setMessage(response.ok?`Sync completed at ${new Date(body.synced_at).toLocaleString()}`:body.error||"Sync failed");
+    setMessage(response.ok?`Sync complete · ${body.counts?.draft_picks??0} draft picks · ${body.counts?.populated_rosters??0}/10 rosters filled`:body.error||"Sync failed");
     if(response.ok) load();
   }
 
@@ -202,6 +202,8 @@ export function CommissionerDashboard() {
               <div className="statGrid commissionerStats">
                 <div className="card stat"><b>{snapshot.users.length}</b><span>League users</span></div>
                 <div className="card stat"><b>{snapshot.rosters.length}</b><span>Rosters</span></div>
+                <div className="card stat"><b>{snapshot.integrity?.draft_pick_count??0}</b><span>Draft picks synced</span></div>
+                <div className="card stat"><b>{snapshot.integrity?.populated_rosters??0}/10</b><span>Populated rosters</span></div>
                 <div className="card stat"><b>{snapshot.trades.length}</b><span>2026 trades</span></div>
                 <div className="card stat"><b>{snapshot.transactions.length}</b><span>Transactions</span></div>
                 <div className="card stat"><b>{completedMappings.length}</b><span>Saved repairs</span></div>

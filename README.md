@@ -1,4 +1,12 @@
-# OKFL OS 9.4.2
+# OKFL OS 9.5.0
+
+## Version 9.5.0 - Sunday draft sync readiness
+
+- Draft History now reads the current Sleeper draft from Supabase instead of stopping at the frozen historical archive.
+- The current draft board refreshes every 30 seconds and whenever the browser tab regains focus, with caching disabled on the live snapshot endpoint.
+- A completed Sleeper draft triggers a second roster fetch in the same Commissioner sync so all 10 franchise rosters are captured after the final pick.
+- Commissioner sync results now report draft picks, mapped picks, populated rosters, rostered players, and an explicit post-draft readiness result.
+- No Supabase migration is required; the existing draft and roster records already contain the needed data.
 
 ## Version 9.4.2 - Keeper board contrast
 

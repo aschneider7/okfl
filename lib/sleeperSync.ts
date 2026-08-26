@@ -1,5 +1,6 @@
 import { createAdminSupabase } from "@/lib/supabaseServer";
 import {saveLivePowerSnapshot} from "@/lib/livePowerStore";
+import {sleeperDraftSyncSummary} from "@/lib/sleeperDraftSync";
 
 export const SLEEPER_LEAGUE_ID = "1381102523590389760";
 export const OKFL_LEAGUE_ID = "okfl";
@@ -362,7 +363,12 @@ async function saveSnapshot(snapshot: any, runId: string) {
     matchups:matchupRows.length,
     traded_picks:tradedPickRows.length,
     drafts:draftRows.length,
-    bracket_rows:bracketRows.length
+    bracket_rows:bracketRows.length,
+    draft_picks:snapshot.integrity.draft_pick_count,
+    mapped_draft_picks:snapshot.integrity.mapped_draft_picks,
+    populated_rosters:snapshot.integrity.populated_rosters,
+    roster_players:snapshot.integrity.roster_player_count,
+    post_draft_ready:snapshot.integrity.post_draft_ready
   };
 
   const { error: runError } = await supabase.from("sync_runs").update({
@@ -389,7 +395,7 @@ export async function syncSleeper() {
   if (runError || !run) throw runError ?? new Error("Could not create sync run.");
 
   try {
-    const [league,state,users,rosters,tradedPicks,winnersBracket,losersBracket,drafts] = await Promise.all([
+    const [league,state,users,initialRosters,tradedPicks,winnersBracket,losersBracket,drafts] = await Promise.all([
       sleeper<any>(`/league/${SLEEPER_LEAGUE_ID}`),
       sleeper<any>(`/state/nfl`),
       sleeper<any[]>(`/league/${SLEEPER_LEAGUE_ID}/users`),
@@ -407,6 +413,12 @@ export async function syncSleeper() {
       Promise.all(drafts.map((draft:any)=>sleeper<any[]>(`/draft/${draft.draft_id}/picks`).catch(()=>[])))
     ]);
 
+    // Sleeper can finalize picks just before its roster endpoint settles. Re-read once
+    // after a completed draft so a single Commissioner sync captures the final teams.
+    const rosters=drafts.some((draft:any)=>draft.status==="complete")
+      ?await sleeper<any[]>(`/league/${SLEEPER_LEAGUE_ID}/rosters`).catch(()=>initialRosters)
+      :initialRosters;
+
     const savedOverrides=await loadCommissionerOverrides();
     const { mappedUsers,userToFranchise,unresolved:unresolvedUsers } = mapUsers(users,savedOverrides);
     const { mappedRosters,rosterToFranchise,unresolved:unresolvedRosters } = buildRosterMap(
@@ -423,6 +435,7 @@ export async function syncSleeper() {
         franchise_id:rosterToFranchise[String(pick.roster_id)]??userToFranchise[String(pick.picked_by)]??null
       }))
     }));
+    const draftIntegrity=sleeperDraftSyncSummary(mappedDrafts,mappedRosters);
 
     const snapshot = {
       version:2,
@@ -443,7 +456,8 @@ export async function syncSleeper() {
         unresolved_users:unresolvedUsers,
         unresolved_rosters:unresolvedRosters,
         mapped_users:mappedUsers.filter((user)=>user.franchise_id).length,
-        mapped_rosters:mappedRosters.filter((roster)=>roster.franchise_id).length
+        mapped_rosters:mappedRosters.filter((roster)=>roster.franchise_id).length,
+        ...draftIntegrity
       }
     };
 
@@ -514,6 +528,8 @@ export async function readSleeperSnapshot() {
     franchise_id:row.franchise_id,
     franchise:row.franchise_id ? franchiseNames[row.franchise_id] : null
   }));
+  const storedDrafts=(draftsResult.data ?? []).map((row:any)=>({...row.raw,picks:row.raw?.picks??[]}));
+  const draftIntegrity=sleeperDraftSyncSummary(storedDrafts,rosters);
 
   const brackets = bracketsResult.data ?? [];
   const unresolvedUsers = users
@@ -538,7 +554,7 @@ export async function readSleeperSnapshot() {
     trades:tradesResult.data ?? [],
     matchups:matchupsResult.data ?? [],
     traded_picks:picksResult.data ?? [],
-    drafts:(draftsResult.data ?? []).map((row:any)=>({...row.raw,picks:row.raw?.picks??[]})),
+    drafts:storedDrafts,
     winners_bracket:brackets.filter((row:any)=>row.bracket_type==="winners").map((row:any)=>row.row_data),
     losers_bracket:brackets.filter((row:any)=>row.bracket_type==="losers").map((row:any)=>row.row_data),
     nfl_state:{season:SYNC_SEASON,week:null,season_type:null},
@@ -547,7 +563,8 @@ export async function readSleeperSnapshot() {
       unresolved_users:unresolvedUsers,
       unresolved_rosters:unresolvedRosters,
       mapped_users:users.filter((user:any)=>user.franchise_id).length,
-      mapped_rosters:rosters.filter((roster:any)=>roster.franchise_id).length
+      mapped_rosters:rosters.filter((roster:any)=>roster.franchise_id).length,
+      ...draftIntegrity
     },
     latest_sync_run:latestRunResult.data ?? null
   };
