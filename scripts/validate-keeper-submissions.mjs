@@ -10,6 +10,7 @@ const serverErrors=readFileSync(new URL("../lib/serverError.ts",import.meta.url)
 const commissionerPanel=readFileSync(new URL("../components/KeeperCommissionerPanel.tsx",import.meta.url),"utf8");
 const keepersPage=readFileSync(new URL("../app/keepers/page.tsx",import.meta.url),"utf8");
 const submissionPanel=readFileSync(new URL("../components/KeeperSubmissionPanel.tsx",import.meta.url),"utf8");
+const keeperCss=readFileSync(new URL("../app/keeper-submission.css",import.meta.url),"utf8");
 
 for(const token of ["keeper_windows","keeper_submissions","keeper_submission_events","changed_after_submission","enable row level security"]){
   assert.ok(migration.includes(token),`Keeper migration is missing ${token}`);
@@ -26,4 +27,5 @@ assert.ok(serverErrors.includes("008_keeper_integrity.sql")&&commissionerPanel.i
 assert.ok(liveRoomRoute.includes("getLockedKeeperBoard"),"The live draft must consume the final locked keeper board.");
 assert.ok(keepersPage.includes("officialKeepers")&&keepersPage.includes("historicalKeepers")&&keepersPage.includes('status:"Current"'),"The Keepers tab must replace only current-season tentative rows with the current official board.");
 assert.ok(submissionPanel.includes("officialKeepers")&&submissionPanel.indexOf("officialKeepers.length")<submissionPanel.indexOf("if(!account)"),"The current board must be visible before the sign-in gate.");
+assert.ok(keeperCss.includes(".routeStage .keeperLocked")&&keeperCss.includes("background:#e7f0ef!important")&&keeperCss.includes("color:#17323b!important"),"The current keeper board needs explicit readable colors after global surface overrides.");
 console.log("Official keeper submission contracts validated.");

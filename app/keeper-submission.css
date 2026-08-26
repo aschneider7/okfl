@@ -24,3 +24,16 @@
 .keeperControlUnavailable{min-height:210px}.keeperControlUnavailable.hasError{border-color:#7d4938}.keeperControlUnavailable>p[role="alert"]{background:#2b211b;border-left:3px solid #ff9b72;color:#ffd5c4!important;margin-top:16px!important;padding:13px 15px}.keeperRecovery{align-items:center;background:#1d1f19;border:1px solid #34372d;display:grid;gap:8px;grid-template-columns:minmax(110px,.35fr) minmax(240px,1fr) auto;margin-top:14px;padding:14px}.keeperRecovery>span{color:#c8ff38;font-size:9px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}.keeperRecovery>p{font-size:10px!important}.keeperRecovery>button{min-height:42px;padding:0 18px}
 @media(max-width:900px){.officialKeeperGrid{grid-template-columns:repeat(2,1fr)}.keeperTeamReview{grid-template-columns:1fr}.keeperChoiceList>article{grid-template-columns:35px minmax(160px,1fr) 95px 125px}}
 @media(max-width:640px){.keeperSubmitShell,.commissionerKeeper{margin-left:-3px;margin-right:-3px;padding:17px 14px}.keeperSubmitHead,.keeperLocked>header,.commissionerKeeper>header,.keeperSubmitFooter,.keeperGate{align-items:stretch;flex-direction:column}.keeperDeadline{min-width:0}.keeperChoiceList>article{align-items:stretch;grid-template-columns:30px 1fr}.keeperChoiceNumber{grid-row:1/4;padding-top:15px}.keeperChoiceList label{grid-column:2}.keeperSubmitFooter>div,.keeperCommissionerActions,.keeperRecovery{display:grid;grid-template-columns:1fr}.keeperSubmitFooter button,.keeperCommissionerActions button,.keeperRecovery button{width:100%}.keeperControlStats{grid-template-columns:repeat(2,1fr)}.keeperCommissionerActions label{min-width:0}.officialKeeperGrid{grid-template-columns:1fr}.keeperReviewChoices>div{grid-template-columns:22px 1fr}.keeperReviewChoices small{grid-column:2}}
+
+/* Current keeper board: explicit contrast after the global OKFL surface overrides. */
+.routeStage .keeperLocked{background:#f5f9f8!important;border-color:#b8cdd0!important;color:#17323b!important}
+.routeStage .keeperLocked h2{color:#17323b!important}
+.routeStage .keeperLocked p{color:#4c646c!important}
+.routeStage .keeperLocked .eyebrow{color:#335765!important}
+.routeStage .keeperLocked .keeperState.locked{background:#335765;border-color:#335765;color:#fff!important}
+.routeStage .keeperLocked .officialKeeperGrid>article{background:#e7f0ef!important;border-color:#b8cdd0!important;box-shadow:0 8px 22px rgba(51,87,101,.08)}
+.routeStage .keeperLocked .officialKeeperGrid article>span{color:#335765!important;font-size:11px}
+.routeStage .keeperLocked .officialKeeperManager{color:#5e747b!important}
+.routeStage .keeperLocked .officialKeeperGrid article>div{border-color:#b8cdd0!important}
+.routeStage .keeperLocked .officialKeeperGrid b{color:#17323b!important}
+.routeStage .keeperLocked .officialKeeperGrid article>div>small{color:#526a72!important}

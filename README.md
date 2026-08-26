@@ -1,4 +1,10 @@
-# OKFL OS 9.4.1
+# OKFL OS 9.4.2
+
+## Version 9.4.2 - Keeper board contrast
+
+- Replaces the washed-out white-on-white keeper chart with the OKFL teal and ink palette.
+- Gives team names, player names, round costs, supporting copy, and the Current badge explicit accessible colors.
+- Applies the same readable hierarchy on desktop and mobile.
 
 ## Version 9.4.1 - Official Keepers tab
 
