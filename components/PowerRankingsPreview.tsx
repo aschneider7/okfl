@@ -5,9 +5,19 @@ import {useEffect,useState} from "react";
 import type {PowerRanking} from "@/lib/powerRankings";
 import type {LivePowerSnapshot} from "@/lib/livePowerRankings";
 
-export function PowerRankingsPreview({fallback,variant="default"}:{fallback:PowerRanking[];variant?:"default"|"home9"|"homeCalm"}){
+export function PowerRankingsPreview({fallback,variant="default",autoRefresh=true}:{fallback:PowerRanking[];variant?:"default"|"home9"|"homeCalm";autoRefresh?:boolean}){
   const [live,setLive]=useState<LivePowerSnapshot|null>(null);
-  useEffect(()=>{fetch("/api/power-rankings/live").then((response)=>response.json()).then((result)=>setLive(result.snapshot??null)).catch(()=>setLive(null));},[]);
+  useEffect(()=>{
+    if(!autoRefresh)return;
+    let active=true;
+    const refresh=()=>fetch("/api/power-rankings/live",{cache:"no-store"}).then((response)=>response.json()).then((result)=>{if(active)setLive(result.snapshot??null)}).catch(()=>{});
+    const onVisible=()=>{if(document.visibilityState==="visible")void refresh()};
+    void refresh();
+    const timer=window.setInterval(()=>void refresh(),5*60*1000);
+    window.addEventListener("focus",refresh);
+    document.addEventListener("visibilitychange",onVisible);
+    return()=>{active=false;window.clearInterval(timer);window.removeEventListener("focus",refresh);document.removeEventListener("visibilitychange",onVisible)};
+  },[autoRefresh]);
   const rankings=(live?.rankings??fallback).slice(0,3);
 
   if(variant==="homeCalm")return <article className="homeCalmPower">

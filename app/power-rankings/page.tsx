@@ -13,7 +13,16 @@ function Movement({value}:{value:number}){return <span className={`powerMove ${v
 function View(){
   const {data}=useData();
   const [live,setLive]=useState<LivePowerSnapshot|null>(null);
-  useEffect(()=>{fetch("/api/power-rankings/live").then((response)=>response.json()).then((result)=>setLive(result.snapshot??null)).catch(()=>setLive(null));},[]);
+  useEffect(()=>{
+    let active=true;
+    const refresh=()=>fetch("/api/power-rankings/live",{cache:"no-store"}).then((response)=>response.json()).then((result)=>{if(active)setLive(result.snapshot??null)}).catch(()=>{});
+    const onVisible=()=>{if(document.visibilityState==="visible")void refresh()};
+    void refresh();
+    const timer=window.setInterval(()=>void refresh(),5*60*1000);
+    window.addEventListener("focus",refresh);
+    document.addEventListener("visibilitychange",onVisible);
+    return()=>{active=false;window.clearInterval(timer);window.removeEventListener("focus",refresh);document.removeEventListener("visibilitychange",onVisible)};
+  },[]);
   if(!data)return <Loading/>;
   const rankings=live?.rankings??buildPowerRankings(data); const leader=rankings[0];
   const weights=live?.weights??[{label:"Recent scoring",value:30},{label:"Recent wins",value:20},{label:"Final finishes",value:15},{label:"Weekly force",value:15},{label:"Development",value:10},{label:"Resume",value:10}];

@@ -7,6 +7,7 @@ import {Loading} from "@/components/Page";
 import {SearchHome} from "@/components/SearchHome";
 import {buildPowerRankings} from "@/lib/powerRankings";
 import {PowerRankingsPreview} from "@/components/PowerRankingsPreview";
+import {useLeagueDashboard} from "@/components/useLeagueDashboard";
 
 const quickLinks=[
   {href:"/live-league",label:"Live League",detail:"Scores, matchups, standings"},
@@ -18,25 +19,33 @@ const quickLinks=[
 export default function Home(){
   const {data}=useData();
   const {account}=useAuth();
+  const {dashboard,power:livePower}=useLeagueDashboard(data);
   if(!data)return <Loading/>;
 
-  const season=2025;
-  const standings=data.regular_standings
-    .filter((row:any)=>Number(row.season)===season)
+  const archiveSeason=2025;
+  const archiveStandings=data.regular_standings
+    .filter((row:any)=>Number(row.season)===archiveSeason)
     .sort((a:any,b:any)=>Number(a.rank)-Number(b.rank))
     .slice(0,5);
+  const standings=dashboard.available
+    ?dashboard.standings.slice(0,5).map((team,index)=>({rank:index+1,franchise_id:team.franchiseId,franchise:team.franchise,record:`${team.wins}-${team.losses}${team.ties?`-${team.ties}`:""}`,points:team.points}))
+    :archiveStandings;
+  const standingsLabel=dashboard.available?`2026 live table · Week ${dashboard.currentWeek}`:`${archiveSeason} final table`;
   const scores=[...data.weekly_games].sort((a:any,b:any)=>Number(b.score)-Number(a.score));
   const record=scores[0];
-  const trades=[...data.trade_analysis]
+  const archiveTrades=[...data.trade_analysis]
     .sort((a:any,b:any)=>Number(b.season)-Number(a.season)||Number(b.week||0)-Number(a.week||0))
     .slice(0,2);
-  const power=buildPowerRankings(data).slice(0,3);
+  const power=(livePower.length?livePower:buildPowerRankings(data)).slice(0,3);
   const powerLeader=power[0];
   const accountHref=account?"/account":"/login";
   const accountLabel=account?"Open My Franchise":"Manager Sign In";
 
   const tradeTitle=(trade:any)=>trade?.sides?.map((side:any)=>side.franchise).join(" ↔ ")||"No recent trade";
   const tradeDetail=(trade:any)=>trade?.sides?.map((side:any)=>`${side.franchise}: ${side.assets?.map((asset:any)=>asset.player).join(", ")}`).join(" · ")||"The transaction wire is quiet.";
+  const activity=dashboard.available&&dashboard.activity.length
+    ?dashboard.activity.slice(0,2).map((item)=>({title:item.title,detail:item.detail,meta:item.type}))
+    :archiveTrades.map((trade:any)=>({title:tradeTitle(trade),detail:tradeDetail(trade),meta:`${trade.season} · Week ${trade.week||"—"}`}));
 
   return <div className="homeCalm">
     <section className="homeCalmHero">
@@ -50,7 +59,7 @@ export default function Home(){
         </div>
       </div>
       <aside className="homeCalmSnapshot" aria-label="League snapshot">
-        <header><span>League snapshot</span><small>Archive online</small></header>
+        <header><span>League snapshot</span><small>{dashboard.available?`Live · Week ${dashboard.currentWeek}`:"Archive online"}</small></header>
         <div className="homeCalmLeader"><span>Power ranking leader</span><b>{powerLeader?.franchise||"—"}</b><small>{powerLeader?`${powerLeader.score} power score · ${powerLeader.tier}`:"Rankings awaiting data"}</small></div>
         <dl>
           <div><dt>Format</dt><dd>2QB PPR</dd></div>
@@ -83,18 +92,18 @@ export default function Home(){
           <Link href="/playoff-odds" className="homeCalmStory"><span>Postseason model</span><h3>Every path counts.</h3><p>See each franchise’s route to the playoffs.</p><b>Run the simulator →</b></Link>
         </div>
       </div>
-      <PowerRankingsPreview fallback={power} variant="homeCalm"/>
+      <PowerRankingsPreview fallback={power} variant="homeCalm" autoRefresh={false}/>
     </section>
 
     <section className="homeCalmData">
       <article className="homeCalmStandings">
-        <header><div><span>{season} final table</span><h3>Regular-season leaders</h3></div><Link href="/records">Full standings →</Link></header>
+        <header><div><span>{standingsLabel}</span><h3>Regular-season leaders</h3></div><Link href={dashboard.available?"/live-league":"/records"}>{dashboard.available?"Live dashboard":"Full standings"} →</Link></header>
         <div className="homeCalmTableHead"><span>#</span><span>Franchise</span><span>Record</span><span>Points</span></div>
         <div>{standings.map((row:any)=><Link href={`/franchises/${row.franchise_id}`} key={row.franchise_id}><i>{row.rank}</i><b>{row.franchise}</b><span>{row.record}</span><strong>{row.points?Number(row.points).toFixed(1):"—"}</strong></Link>)}</div>
       </article>
       <aside className="homeCalmRail">
         <div className="homeCalmRecord"><span>All-time weekly record</span><b>{record?Number(record.score).toFixed(2):"—"}</b><strong>{record?.franchise||"—"}</strong><small>{record?`${record.season} · Week ${record.week}`:"No score available"}</small><Link href="/records">Open record book →</Link></div>
-        <div className="homeCalmTrades"><header><span>Transaction wire</span><Link href="/trades">All trades →</Link></header>{trades.map((trade:any)=><Link href="/trades" key={trade.transaction_id}><b>{tradeTitle(trade)}</b><p>{tradeDetail(trade)}</p><small>{trade.season} · Week {trade.week||"—"}</small></Link>)}</div>
+        <div className="homeCalmTrades"><header><span>Transaction wire</span><Link href="/trades">All trades →</Link></header>{activity.map((item,index)=><Link href="/trades" key={`${item.title}-${index}`}><b>{item.title}</b><p>{item.detail}</p><small>{item.meta}</small></Link>)}</div>
       </aside>
     </section>
   </div>;
