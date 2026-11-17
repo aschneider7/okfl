@@ -39,5 +39,5 @@ export function useLeagueDashboard(data:OKFLData|null){
     };
   },[fallback]);
   const dashboard:LeagueDashboard=useMemo(()=>buildLeagueDashboard(state.snapshot,state.power.length?state.power:fallback,data?.franchises??[]),[state.snapshot,state.power,fallback,data]);
-  return {dashboard,loading:state.loading,power:state.power.length?state.power:fallback};
+  return {dashboard,loading:state.loading,power:state.power.length?state.power:fallback,snapshot:state.snapshot};
 }

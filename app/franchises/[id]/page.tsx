@@ -3,18 +3,18 @@
 import Link from "next/link";
 import {useParams} from "next/navigation";
 import {Loading} from "@/components/Page";
-import {useData} from "@/components/DataProvider";
+import {useLiveFranchiseData} from "@/components/useLiveFranchiseData";
 import {fmt} from "@/lib/data";
 import {buildFranchiseProfile} from "@/lib/franchiseProfiles";
 
 function View(){
   const params=useParams<{id:string}>();
-  const {data}=useData();
+  const {data}=useLiveFranchiseData();
   if(!data)return <Loading/>;
   const profile=buildFranchiseProfile(data,String(params.id).toUpperCase());
   if(!profile)return <div className="card">Franchise not found.</div>;
 
-  const {franchise,metric,tags,dna,signature,strongest,weakest,records,summary,lenses,relationships}=profile;
+  const {franchise,metric,tags,dna,signature,strongest,weakest,records,summary,lenses,relationships,live}=profile;
   const regular=data.regular_standings.filter((row:any)=>row.franchise_id===franchise.id).sort((a:any,b:any)=>a.season-b.season);
   const draftGrades=data.draft_grades.filter((row:any)=>row.franchise_id===franchise.id).sort((a:any,b:any)=>a.season-b.season);
   const trades=data.trade_analysis.filter((trade:any)=>trade.sides.some((side:any)=>side.franchise_id===franchise.id)).sort((a:any,b:any)=>b.season-a.season||Number(b.week||0)-Number(a.week||0));
@@ -41,6 +41,15 @@ function View(){
       <div><b>{metric.legacy_score}</b><small>Legacy</small></div>
     </section>
 
+    {live&&<section className="careerStrip currentSeasonStrip">
+      <div><b>{live.record}</b><small>2026 record</small></div>
+      <div><b>#{live.rank}</b><small>Current standing</small></div>
+      <div><b>{fmt(live.points)}</b><small>2026 points</small></div>
+      <div><b>{live.streak}</b><small>Current streak</small></div>
+      <div><b>#{live.powerRank}</b><small>Power ranking</small></div>
+      <div><b>Week {live.throughWeek}</b><small>Live through</small></div>
+    </section>}
+
     <div className="detailGrid">
       <article className="card identityStory"><span className="eyebrow">Front-office identity</span><h2>{summary}</h2><p>{signature.detail}</p><div className="profileTags largeTags">{tags.map((tag)=><em className={`tone-${tag.tone}`} key={tag.label}><span>{tag.icon}</span><div><b>{tag.label}</b><small>{tag.detail}</small></div></em>)}</div></article>
       <article className="card dnaPanel"><span className="eyebrow">Franchise DNA</span><h2>Behavioral profile</h2>{dna.map((row)=><div className="dnaRow" key={row.label}><div><b>{row.label}</b><small>{row.detail}</small></div><i><span style={{width:`${row.value}%`}}/></i><strong>{row.value}</strong></div>)}</article>
@@ -58,12 +67,12 @@ function View(){
     </section>
 
     <section className="card">
-      <div className="sectionHeading"><div><span className="eyebrow">Five-season résumé</span><h2>Final bracket finishes</h2></div></div>
+      <div className="sectionHeading"><div><span className="eyebrow">Five completed seasons</span><h2>Final bracket finishes</h2></div></div>
       <div className="bigFinishTimeline">{metric.season_finishes.map((finish:any)=><div className={finish.finish<=3?"podium":""} key={finish.season}><span>{finish.season}</span><b>#{finish.finish}</b><small>{finish.finish===1?"Champion":finish.finish===2?"Runner-up":finish.finish===3?"Third place":"Final finish"}</small></div>)}</div>
     </section>
 
     <div className="detailGrid lowerGrid">
-      <article className="card"><span className="eyebrow">Regular seasons</span><h2>Year-by-year performance</h2><div className="profileTable">{regular.map((row:any)=><div key={row.season}><b>{row.season}</b><span>#{row.rank} regular season</span><span>{row.record}</span><span>{row.points?`${fmt(row.points)} pts`:"—"}</span></div>)}</div></article>
+      <article className="card"><span className="eyebrow">Regular seasons</span><h2>Year-by-year performance</h2><div className="profileTable">{regular.map((row:any)=><div key={row.season}><b>{row.season}{row.live?" · LIVE":""}</b><span>#{row.rank} regular season</span><span>{row.record}</span><span>{row.points?`${fmt(row.points)} pts`:"—"}</span></div>)}</div></article>
       <article className="card"><span className="eyebrow">Draft room</span><h2>Draft grades</h2><div className="profileTable">{draftGrades.map((row:any)=><div key={row.season}><b>{row.season}</b><span>Grade {row.grade}</span><span>{row.score}</span><span>{row.top_values?.[0]?.player||"—"}</span></div>)}</div></article>
       <article className="card"><span className="eyebrow">Trade desk</span><h2>Recent deals</h2><div className="activityList">{trades.slice(0,6).map((trade:any)=><div key={trade.transaction_id}><b>{trade.season} • Week {trade.week||"—"}</b><p>{trade.sides.map((side:any)=>`${side.franchise}: ${side.assets.map((asset:any)=>asset.player).join(", ")}`).join(" ↔ ")}</p></div>)}{!trades.length&&<p>No tracked trades.</p>}</div></article>
       <article className="card"><span className="eyebrow">Keeper desk</span><h2>Recent keeper decisions</h2><div className="activityList">{keepers.slice(0,8).map((keeper:any)=><div key={`${keeper.season}-${keeper.player}`}><b>{keeper.player}</b><p>{keeper.season} • {keeper.cost} • {keeper.keeper_year}</p></div>)}{!keepers.length&&<p>No tracked keeper events.</p>}</div></article>

@@ -1,11 +1,11 @@
 "use client";
 
 import {Page, Loading} from "@/components/Page";
-import {useData} from "@/components/DataProvider";
+import {useLiveFranchiseData} from "@/components/useLiveFranchiseData";
 import {fmt} from "@/lib/data";
 
 export default function Records() {
-  const {data} = useData();
+  const {data} = useLiveFranchiseData();
   if (!data) return <Loading />;
   const metrics = [...data.franchise_metrics].sort((a, b) => b.legacy_score - a.legacy_score);
   const weekly = [...data.weekly_games].sort((a: any, b: any) => Number(b.score) - Number(a.score));
@@ -13,7 +13,7 @@ export default function Records() {
   const biggestWin = [...data.weekly_games].sort((a: any, b: any) => Number(b.margin || 0) - Number(a.margin || 0))[0];
   const titleLeader = [...metrics].sort((a, b) => b.championships - a.championships || b.legacy_score - a.legacy_score)[0];
 
-  return <Page title="Record Book" subtitle="The definitive OKFL ledger: championships, career standings, scoring peaks, and league-defining performances.">
+  return <Page title="Record Book" subtitle="The definitive OKFL ledger, with career records and scoring totals updated from each weekly Sleeper sync.">
     <section className="archivePageHero recordBookHero"><div><span className="eyebrow">Official league ledger</span><h2>Built to remember everything.</h2><p>Every title, all-time record, points total, and historic weekly performance—verified across the full archive.</p></div>
       <div className="recordHeadline"><span>Highest weekly score</span><b>{Number(highScore.score).toFixed(2)}</b><strong>{highScore.franchise}</strong><small>{highScore.season} · Week {highScore.week}</small></div></section>
 

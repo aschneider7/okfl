@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import {Page,Loading} from "@/components/Page";
-import {useData} from "@/components/DataProvider";
+import {useLiveFranchiseData} from "@/components/useLiveFranchiseData";
 import {fmt} from "@/lib/data";
 import {buildFranchiseProfile} from "@/lib/franchiseProfiles";
 
 function View(){
-  const {data}=useData();
+  const {data}=useLiveFranchiseData();
   if(!data)return <Loading/>;
   const profiles=data.franchises.map((franchise:any)=>buildFranchiseProfile(data,franchise.id)).filter(Boolean) as NonNullable<ReturnType<typeof buildFranchiseProfile>>[];
   const traitLeader=(label:string)=>profiles.slice().sort((a,b)=>(b.dna.find((row)=>row.label===label)?.value||0)-(a.dna.find((row)=>row.label===label)?.value||0))[0];
@@ -30,17 +30,17 @@ function View(){
     <div className="franchiseGrid profileGrid">
       {profiles.map((profile)=>{
         const {franchise}=profile;
-        const {metric,tags,dna,signature,lenses}=profile;
+        const {metric,tags,dna,signature,lenses,live}=profile;
         return <Link href={`/franchises/${franchise.id}`} className="franchiseCard profileCard" key={franchise.id}>
           <header className="franchiseCardHeader">
-            <div><span className="franchiseId">{franchise.id}</span><h2>{franchise.name}</h2><p>{franchise.current_manager}<span>•</span> Founded 2021</p></div>
+            <div><span className="franchiseId">{franchise.id}</span><h2>{franchise.name}</h2><p>{franchise.current_manager}<span>•</span>{live?`2026 #${live.rank} · ${live.record}`:"Founded 2021"}</p></div>
             <div className="signatureMark"><span>{signature.icon}</span><small>Signature</small></div>
           </header>
           <div className="signatureTitle"><b>{signature.label}</b><p>{signature.detail}</p></div>
           <div className="profileLensStrip">{lenses.slice(0,2).map((lens)=><div className={`tone-${lens.tone}`} key={lens.label}><small>{lens.label}</small><b>{lens.value}</b></div>)}</div>
           <section className="recordPanel">
-            <div className="primaryRecord"><b>{metric.wins}-{metric.losses}{metric.ties?`-${metric.ties}`:""}</b><small>All-time record</small></div>
-            <div className="winRate"><b>{Number(metric.win_pct).toFixed(1)}%</b><small>Win percentage</small></div>
+            <div className="primaryRecord"><b>{metric.wins}-{metric.losses}{metric.ties?`-${metric.ties}`:""}</b><small>All-time record · live</small></div>
+            <div className="winRate"><b>{Number(metric.win_pct).toFixed(1)}%</b><small>Win percentage{live?` · ${live.streak} streak`:""}</small></div>
           </section>
           <section className="franchiseStats compactStats">
             <div><b>{fmt(metric.pf)}</b><small>PF</small></div>

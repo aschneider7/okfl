@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import {buildLeagueDashboard,simulatePlayoffOdds} from "../lib/liveLeague.ts";
 import {buildAwardsRace} from "../lib/leagueAwards.ts";
+import {mergeLiveFranchiseData} from "../lib/liveFranchiseData.ts";
 
 const franchises=Array.from({length:10},(_,index)=>({id:`F${String(index+1).padStart(2,"0")}`,name:`Team ${index+1}`,display_name:`Team ${index+1}`,current_manager:`Manager ${index+1}`,original_manager:`Manager ${index+1}`}));
 const power=franchises.map((team,index)=>({rank:index+1,franchiseId:team.id,franchise:team.name,manager:team.current_manager,score:90-index*5,tier:"Contender",movement:0,previousRank:index+1,record:"0-0",dimensions:[],strength:{key:"power",label:"Power",score:90-index*5,weight:100,detail:"Test"},concern:{key:"power",label:"Power",score:90-index*5,weight:100,detail:"Test"},summary:"Test"}));
@@ -31,4 +32,19 @@ assert.equal(awards.playerRaces.length,4);
 assert.equal(awards.managerRaces.length,2);
 assert.equal(awards.weeklyLeaders["1"].length,5);
 assert.equal(awards.playerRaces[0].candidates[0].name,"Player A");
-console.log({live_teams:dashboard.standings.length,simulations:1000,playoff_slots:6,award_races:awards.playerRaces.length+awards.managerRaces.length});
+const archiveData:any={
+  franchises,
+  franchise_metrics:franchises.map((team)=>({franchise_id:team.id,franchise:team.name,wins:10,losses:10,ties:0,pf:2000,pa:2000,win_pct:50,avg_score:100,trade_count:5,championships:0,runner_ups:0,average_finish:5,legacy_score:50,legacy_tier:"Test",profile_labels:[],season_finishes:[],keeper_count:0,draft_picks:0,late_round_hits:0,draft_positions:{},bottom_three:0,best_finish:1,worst_finish:10})),
+  regular_standings:[],weekly_games:[],players:[],trades:[],trade_analysis:[],draft_picks:[],draft_grades:[],keepers:[],rules:[],season_finishes:[],championship_history:[],round_values:[],transactions:[],manager_seasons:[],metadata:{}
+};
+const merged=mergeLiveFranchiseData(archiveData,dashboard,{...snapshot,trades:[{sides:[{franchise_id:"F01"},{franchise_id:"F02"}]}]});
+const firstMetric=merged.franchise_metrics.find((row:any)=>row.franchise_id==="F01");
+assert.equal(firstMetric.wins,11,"The current Sleeper win must be added to the archived career record.");
+assert.equal(firstMetric.losses,10);
+assert.equal(firstMetric.pf,2120,"Current points for must be added exactly once.");
+assert.equal(firstMetric.pa,2100,"Current points against must be added exactly once.");
+assert.equal(firstMetric.trade_count,6,"Current-season trades must update the franchise profile.");
+assert.equal(merged.regular_standings.filter((row:any)=>row.season===2026).length,10);
+assert.equal(merged.weekly_games.filter((row:any)=>row.season===2026).length,10);
+assert.equal(mergeLiveFranchiseData(merged,dashboard,snapshot),merged,"A certified 2026 archive must prevent live double-counting.");
+console.log({live_teams:dashboard.standings.length,simulations:1000,playoff_slots:6,award_races:awards.playerRaces.length+awards.managerRaces.length,live_franchise_records:merged.franchise_metrics.length});

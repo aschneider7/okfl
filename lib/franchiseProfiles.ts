@@ -193,6 +193,7 @@ export function buildFranchiseProfile(data:AnyData, franchiseId:string) {
   return {
     franchise,
     metric,
+    live:data.live_2026?.standings?.[franchiseId]??null,
     tags:uniqueTags,
     lenses,
     dna,
